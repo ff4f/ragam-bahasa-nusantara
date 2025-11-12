@@ -1,4 +1,4 @@
-# Ragam Bahasa Nusantara (RANA) 🌏
+# Ragam Bahasa Nusantara (RANA)
 A digital platform for preserving and revitalizing Indonesia’s local languages through interactive learning and community collaboration.
 
 ## Table of Contents
