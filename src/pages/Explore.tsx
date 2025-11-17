@@ -1,10 +1,30 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Users, AlertCircle, BookOpen } from "lucide-react";
-import mapImage from "@/assets/map-languages.jpg";
+import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
+import geoJson from "../assets/indonesia-geo.json";
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 const Explore = () => {
+  const [selectedProvince, setSelectedProvince] = useState("");
+
+  const languagesByProvince: Record<string, string[]> = {
+    Aceh: ["Acehnese", "Gayo", "Alas"],
+    "Sumatera Utara": ["Batak Toba", "Mandailing"],
+    "Jawa Tengah": ["Javanese"],
+    Bali: ["Balinese"],
+  };
+
+  const languagePoints = [
+    { name: "Acehnese", coords: [95.32, 5.55], region: "Aceh" },
+    { name: "Batak Toba", coords: [99.07, 2.38], region: "Sumatera Utara" },
+    { name: "Minangkabau", coords: [100.36, -0.95], region: "Sumatera Barat" },
+    { name: "Javanese", coords: [110.37, -7.0], region: "Jawa Tengah" },
+    { name: "Balinese", coords: [115.09, -8.37], region: "Bali" },
+  ];
+
   const regions = [
     {
       name: "Sumatera",
@@ -98,7 +118,7 @@ const Explore = () => {
         {/* Map Section */}
         <section className="mb-16">
           <Card className="overflow-hidden border-border shadow-warm">
-            <div className="relative">
+            {/* <div className="relative">
               <img 
                 src={mapImage} 
                 alt="Peta Bahasa Indonesia" 
@@ -116,7 +136,91 @@ const Explore = () => {
                   Lihat Peta Interaktif
                 </Button>
               </div>
-            </div>
+            </div> */}
+            <ComposableMap
+              projection="geoMercator"
+              projectionConfig={{
+                scale: 950,
+                center: [118, -2],
+              }}
+              height={330}
+            >
+              <Geographies geography={geoJson}>
+                {({ geographies }) =>
+                  geographies.map((geo) => {
+                    const province = geo.properties.province_bps_name;
+                    const langs = languagesByProvince[province] || [];
+                    // console.log('LIAT HERE', { geo, province, langs });
+
+                    return (
+                      <Tooltip.Root key={geo.rsmKey}>
+                        <Tooltip.Trigger asChild>
+                          <Geography
+                            geography={geo}
+                            style={{
+                              default: {
+                                fill: geo.properties.province_bps_code === selectedProvince ? "#F53" : "#D6D6DA",
+                                stroke: "#FFF",
+                                strokeWidth: 0.5,
+                                outline: "none",
+                              },
+                              hover: {
+                                fill: "#F53",
+                                outline: "none",
+                                cursor: "pointer",
+                              },
+                              pressed: {
+                                fill: "#E42",
+                                outline: "none",
+                              },
+                            }}
+                            onClick={() => setSelectedProvince(geo.properties.province_bps_code)}
+                          />
+                        </Tooltip.Trigger>
+
+                        <Tooltip.Portal>
+                          <Tooltip.Content
+                            side="top"
+                            align="center"
+                            className="bg-gray-800 text-white px-2 py-1 rounded text-sm shadow-lg"
+                          >
+                            <span className="font-medium">{province}</span>
+                            {langs.length > 0 && (
+                              <span className="ml-1 text-gray-300">
+                                — {langs.join(", ")}
+                              </span>
+                            )}
+                            <Tooltip.Arrow className="fill-gray-800" />
+                          </Tooltip.Content>
+                        </Tooltip.Portal>
+                      </Tooltip.Root>
+                    );
+                  })
+                }
+              </Geographies>
+
+              {languagePoints.map((lang) => (
+                <Tooltip.Root key={lang.name}>
+                  <Tooltip.Trigger asChild>
+                    <Marker coordinates={lang.coords}>
+                      <circle r={6} fill="#F53" stroke="#fff" strokeWidth={2} />
+                    </Marker>
+                  </Tooltip.Trigger>
+
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      side="top"
+                      align="center"
+                      className="bg-gray-800 text-white px-2 py-1 rounded text-sm shadow-lg"
+                    >
+                      <strong>{lang.name}</strong>
+                      <div className="text-gray-300 text-xs">{lang.region}</div>
+                      <Tooltip.Arrow className="fill-gray-800" />
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+              ))}
+            </ComposableMap>
           </Card>
         </section>
 
