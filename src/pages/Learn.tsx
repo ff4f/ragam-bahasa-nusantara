@@ -1,9 +1,90 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Volume2, BookOpen, Star, TrendingUp } from "lucide-react";
+import { Volume2, BookOpen, Star, TrendingUp, Award, Trophy, Target, Zap } from "lucide-react";
+import { useState } from "react";
 
 const Learn = () => {
+  const [currentFlashcard, setCurrentFlashcard] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const flashcards = [
+    {
+      word: "Sugeng enjang",
+      meaning: "Selamat pagi",
+      image: "☀️",
+      pronunciation: "/sugəŋ əɲdʒaŋ/",
+      example: "Sugeng enjang, Pak. Piye kabare?",
+      exampleTranslation: "Selamat pagi, Pak. Bagaimana kabarnya?"
+    },
+    {
+      word: "Matur nuwun",
+      meaning: "Terima kasih",
+      image: "🙏",
+      pronunciation: "/matur nuwun/",
+      example: "Matur nuwun sampun diampuni.",
+      exampleTranslation: "Terima kasih sudah dimaafkan."
+    },
+    {
+      word: "Sampun dhahar",
+      meaning: "Sudah makan",
+      image: "🍽️",
+      pronunciation: "/sampun ḍahar/",
+      example: "Sampun dhahar enjang dereng?",
+      exampleTranslation: "Sudah makan pagi belum?"
+    },
+    {
+      word: "Pinten rega",
+      meaning: "Berapa harga",
+      image: "💰",
+      pronunciation: "/pintən rəga/",
+      example: "Pinten regane barang niki?",
+      exampleTranslation: "Berapa harga barang ini?"
+    },
+  ];
+
+  const dailyChallenges = [
+    {
+      title: "Tantangan Kosakata Harian",
+      description: "Tebak 10 kata dalam bahasa Jawa",
+      points: 50,
+      completed: false,
+      icon: Target,
+    },
+    {
+      title: "Latihan Pelafalan",
+      description: "Rekam 5 kata dengan pelafalan yang benar",
+      points: 75,
+      completed: true,
+      icon: Volume2,
+    },
+    {
+      title: "Kuis Cerita Rakyat",
+      description: "Jawab pertanyaan tentang legenda lokal",
+      points: 100,
+      completed: false,
+      icon: BookOpen,
+    },
+  ];
+
+  const achievements = [
+    { name: "Pemula Rajin", icon: "🌱", unlocked: true },
+    { name: "Kolektor Kata", icon: "📚", unlocked: true },
+    { name: "Pelafalan Sempurna", icon: "🎯", unlocked: true },
+    { name: "Master Bahasa", icon: "👑", unlocked: false },
+    { name: "Kontributor Aktif", icon: "⭐", unlocked: false },
+  ];
+
+  const handleNextFlashcard = () => {
+    setIsFlipped(false);
+    setCurrentFlashcard((prev) => (prev + 1) % flashcards.length);
+  };
+
+  const handlePrevFlashcard = () => {
+    setIsFlipped(false);
+    setCurrentFlashcard((prev) => (prev - 1 + flashcards.length) % flashcards.length);
+  };
+
   const languages = [
     {
       name: "Bahasa Jawa",
@@ -120,52 +201,180 @@ const Learn = () => {
           </div>
         </section>
 
-        {/* Interactive Example */}
+        {/* Flashcards Section */}
         <section className="mb-16">
           <div className="mb-8 flex items-center gap-2">
-            <BookOpen className="h-6 w-6 text-primary" />
-            <h2 className="text-2xl font-bold text-foreground">Contoh Pembelajaran</h2>
+            <Zap className="h-6 w-6 text-primary" />
+            <h2 className="text-2xl font-bold text-foreground">Kartu Kosakata Harian</h2>
+          </div>
+
+          <Card className="border-border shadow-warm">
+            <CardContent className="p-8">
+              <div className="mb-6 text-center text-sm text-muted-foreground">
+                Kartu {currentFlashcard + 1} dari {flashcards.length}
+              </div>
+
+              <div
+                className="relative mx-auto mb-6 h-80 w-full max-w-md cursor-pointer"
+                onClick={() => setIsFlipped(!isFlipped)}
+              >
+                <div
+                  className={`absolute inset-0 flex flex-col items-center justify-center rounded-xl border-2 border-border bg-gradient-warm p-8 text-center shadow-lg transition-all duration-500 ${
+                    isFlipped ? "rotate-y-180 opacity-0" : "rotate-y-0 opacity-100"
+                  }`}
+                  style={{ transformStyle: "preserve-3d", backfaceVisibility: "hidden" }}
+                >
+                  <div className="mb-4 text-6xl">{flashcards[currentFlashcard].image}</div>
+                  <h3 className="mb-2 text-3xl font-bold text-foreground">
+                    {flashcards[currentFlashcard].word}
+                  </h3>
+                  <p className="text-lg text-muted-foreground">
+                    {flashcards[currentFlashcard].pronunciation}
+                  </p>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="mt-4"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <Volume2 className="h-5 w-5 text-primary" />
+                  </Button>
+                </div>
+
+                <div
+                  className={`absolute inset-0 flex flex-col items-center justify-center rounded-xl border-2 border-border bg-primary/10 p-8 text-center shadow-lg transition-all duration-500 ${
+                    isFlipped ? "rotate-y-0 opacity-100" : "rotate-y-180 opacity-0"
+                  }`}
+                  style={{ transformStyle: "preserve-3d", backfaceVisibility: "hidden" }}
+                >
+                  <h3 className="mb-4 text-2xl font-bold text-primary">
+                    {flashcards[currentFlashcard].meaning}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <p className="font-medium text-foreground">
+                      {flashcards[currentFlashcard].example}
+                    </p>
+                    <p className="italic text-muted-foreground">
+                      {flashcards[currentFlashcard].exampleTranslation}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-center gap-4">
+                <Button variant="outline" onClick={handlePrevFlashcard}>
+                  Sebelumnya
+                </Button>
+                <Button onClick={handleNextFlashcard}>
+                  Selanjutnya
+                </Button>
+              </div>
+
+              <p className="mt-6 text-center text-sm text-muted-foreground">
+                💡 Klik kartu untuk melihat artinya
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Daily Challenges */}
+        <section className="mb-16">
+          <div className="mb-8 flex items-center gap-2">
+            <Trophy className="h-6 w-6 text-primary" />
+            <h2 className="text-2xl font-bold text-foreground">Tantangan Harian</h2>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {dailyChallenges.map((challenge, index) => (
+              <Card
+                key={index}
+                className={`border-border shadow-soft transition-all hover:shadow-warm ${
+                  challenge.completed ? "bg-primary/5" : ""
+                }`}
+              >
+                <CardHeader>
+                  <div className="mb-3 inline-flex rounded-lg bg-primary/10 p-3">
+                    <challenge.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <CardTitle className="text-lg">{challenge.title}</CardTitle>
+                  <CardDescription>{challenge.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-4 flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Poin:</span>
+                    <Badge variant="secondary" className="font-bold">
+                      +{challenge.points}
+                    </Badge>
+                  </div>
+                  {challenge.completed ? (
+                    <Button className="w-full" variant="outline" disabled>
+                      ✓ Selesai
+                    </Button>
+                  ) : (
+                    <Button className="w-full">Mulai Tantangan</Button>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Achievements */}
+        <section className="mb-16">
+          <div className="mb-8 flex items-center gap-2">
+            <Award className="h-6 w-6 text-primary" />
+            <h2 className="text-2xl font-bold text-foreground">Pencapaian & Badge</h2>
           </div>
 
           <Card className="border-border shadow-soft">
             <CardHeader>
-              <CardTitle>Kosakata Dasar - Bahasa Jawa (Krama Inggil)</CardTitle>
+              <CardTitle>Koleksi Badge Anda</CardTitle>
               <CardDescription>
-                Klik ikon speaker untuk mendengar pelafalan dari penutur asli
+                Kumpulkan badge dengan menyelesaikan tantangan dan belajar konsisten
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {vocabularyExample.map((item, index) => (
+              <div className="flex flex-wrap gap-6">
+                {achievements.map((achievement, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-4"
+                    className={`flex flex-col items-center gap-2 ${
+                      !achievement.unlocked ? "opacity-40 grayscale" : ""
+                    }`}
                   >
-                    <div>
-                      <div className="mb-1 font-semibold text-foreground">
-                        {item.word}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {item.meaning}
-                      </div>
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-border bg-muted text-3xl">
+                      {achievement.icon}
                     </div>
-                    {item.audio && (
-                      <Button size="icon" variant="ghost" className="shrink-0">
-                        <Volume2 className="h-5 w-5 text-primary" />
-                      </Button>
-                    )}
+                    <span className="text-xs font-medium text-foreground">
+                      {achievement.name}
+                    </span>
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        </section>
 
-              <div className="mt-6 rounded-lg bg-gradient-warm p-6">
-                <h3 className="mb-2 font-semibold text-foreground">Tips Pembelajaran:</h3>
-                <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
-                  <li>Dengarkan audio berulang kali untuk familiar dengan intonasi</li>
-                  <li>Praktikkan dengan penutur asli di forum komunitas</li>
-                  <li>Pelajari dalam konteks kalimat, bukan hanya kata tunggal</li>
-                  <li>Gunakan bahasa dalam percakapan sehari-hari</li>
-                </ul>
+        {/* Progress Stats */}
+        <section className="mb-16">
+          <Card className="border-border bg-gradient-warm shadow-soft">
+            <CardContent className="p-8">
+              <h3 className="mb-6 text-xl font-bold text-foreground">Progres Belajar Anda</h3>
+              <div className="grid gap-6 md:grid-cols-3">
+                <div className="text-center">
+                  <div className="mb-2 text-3xl font-bold text-primary">47</div>
+                  <p className="text-sm text-muted-foreground">Hari beruntun</p>
+                </div>
+                <div className="text-center">
+                  <div className="mb-2 text-3xl font-bold text-primary">1,250</div>
+                  <p className="text-sm text-muted-foreground">Total poin</p>
+                </div>
+                <div className="text-center">
+                  <div className="mb-2 text-3xl font-bold text-primary">328</div>
+                  <p className="text-sm text-muted-foreground">Kata dikuasai</p>
+                </div>
               </div>
             </CardContent>
           </Card>

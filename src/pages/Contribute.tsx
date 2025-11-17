@@ -1,8 +1,15 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mic, FileText, BookOpen, Share2, Award, Sparkles } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Mic, FileText, BookOpen, Share2, Award, Sparkles, Upload } from "lucide-react";
+import { useState } from "react";
 
 const Contribute = () => {
+  const [selectedContribution, setSelectedContribution] = useState<string | null>(null);
+
   const contributionTypes = [
     {
       icon: Mic,
@@ -87,12 +94,209 @@ const Contribute = () => {
                       ))}
                     </ul>
                   </div>
-                  <Button className="w-full">Mulai Berkontribusi</Button>
+                  <Button 
+                    className="w-full"
+                    onClick={() => setSelectedContribution(type.title)}
+                  >
+                    Mulai Berkontribusi
+                  </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
         </section>
+
+        {/* Upload Forms */}
+        {selectedContribution && (
+          <section className="mb-16">
+            <Card className="border-border shadow-warm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Upload className="h-5 w-5 text-primary" />
+                  Form Kontribusi: {selectedContribution}
+                </CardTitle>
+                <CardDescription>
+                  Isi formulir di bawah ini untuk mengirimkan kontribusi Anda
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Common fields */}
+                  <div className="space-y-2">
+                    <Label htmlFor="language">Bahasa Daerah *</Label>
+                    <Select>
+                      <SelectTrigger id="language">
+                        <SelectValue placeholder="Pilih bahasa daerah" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="jawa">Bahasa Jawa</SelectItem>
+                        <SelectItem value="sunda">Bahasa Sunda</SelectItem>
+                        <SelectItem value="bali">Bahasa Bali</SelectItem>
+                        <SelectItem value="batak">Bahasa Batak</SelectItem>
+                        <SelectItem value="minang">Bahasa Minangkabau</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="region">Wilayah Asal *</Label>
+                    <Input id="region" placeholder="Contoh: Jawa Tengah, Yogyakarta" />
+                  </div>
+
+                  {/* Conditional fields based on contribution type */}
+                  {selectedContribution === "Rekam Suara" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="audio">File Audio *</Label>
+                        <Input id="audio" type="file" accept="audio/*" />
+                        <p className="text-xs text-muted-foreground">
+                          Format: MP3, WAV, M4A (Maks. 10MB)
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="transcription">Transkripsi *</Label>
+                        <Textarea
+                          id="transcription"
+                          placeholder="Tulis teks yang diucapkan dalam rekaman..."
+                          rows={4}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {selectedContribution === "Tambah Kosakata" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="word">Kata/Frasa *</Label>
+                        <Input id="word" placeholder="Masukkan kata atau frasa" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="meaning">Arti/Terjemahan *</Label>
+                        <Input id="meaning" placeholder="Arti dalam Bahasa Indonesia" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="example">Contoh Kalimat</Label>
+                        <Textarea
+                          id="example"
+                          placeholder="Berikan contoh penggunaan dalam kalimat..."
+                          rows={3}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="audio-word">Audio Pelafalan (opsional)</Label>
+                        <Input id="audio-word" type="file" accept="audio/*" />
+                      </div>
+                    </>
+                  )}
+
+                  {selectedContribution === "Cerita Rakyat" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="story-title">Judul Cerita *</Label>
+                        <Input id="story-title" placeholder="Judul cerita rakyat" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="story-type">Jenis Cerita</Label>
+                        <Select>
+                          <SelectTrigger id="story-type">
+                            <SelectValue placeholder="Pilih jenis cerita" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="legend">Legenda</SelectItem>
+                            <SelectItem value="myth">Mitos</SelectItem>
+                            <SelectItem value="fable">Fabel</SelectItem>
+                            <SelectItem value="folklore">Cerita Rakyat</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="story-content">Isi Cerita (Bahasa Daerah) *</Label>
+                        <Textarea
+                          id="story-content"
+                          placeholder="Tulis cerita dalam bahasa daerah..."
+                          rows={8}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="story-translation">Terjemahan (Indonesia)</Label>
+                        <Textarea
+                          id="story-translation"
+                          placeholder="Terjemahan cerita dalam Bahasa Indonesia..."
+                          rows={8}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="audio-story">Rekaman Audio (opsional)</Label>
+                        <Input id="audio-story" type="file" accept="audio/*" />
+                      </div>
+                    </>
+                  )}
+
+                  {selectedContribution === "Terjemahan" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="source-text">Teks Sumber (Indonesia) *</Label>
+                        <Textarea
+                          id="source-text"
+                          placeholder="Teks yang akan diterjemahkan..."
+                          rows={5}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="translated-text">Terjemahan (Bahasa Daerah) *</Label>
+                        <Textarea
+                          id="translated-text"
+                          placeholder="Hasil terjemahan..."
+                          rows={5}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="notes">Catatan Terjemahan</Label>
+                        <Textarea
+                          id="notes"
+                          placeholder="Jelaskan nuansa atau konteks khusus..."
+                          rows={3}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {/* Common fields */}
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nama Kontributor *</Label>
+                    <Input id="name" placeholder="Nama Anda" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email *</Label>
+                    <Input id="email" type="email" placeholder="email@example.com" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="additional-notes">Catatan Tambahan</Label>
+                    <Textarea
+                      id="additional-notes"
+                      placeholder="Informasi tambahan yang ingin Anda sampaikan..."
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <Button className="flex-1">
+                      Kirim Kontribusi
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setSelectedContribution(null)}
+                    >
+                      Batal
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        )}
 
         {/* Leaderboard */}
         <section className="mb-16">

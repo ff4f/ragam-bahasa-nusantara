@@ -1,13 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Users, AlertCircle, BookOpen } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MapPin, Search, Volume2, FileText } from "lucide-react";
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
 import geoJson from "../assets/indonesia-geo.json";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 const Explore = () => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [regionFilter, setRegionFilter] = useState("all");
+  const [ethnicFilter, setEthnicFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [selectedProvince, setSelectedProvince] = useState("");
 
   const languagesByProvince: Record<string, string[]> = {
@@ -24,6 +32,118 @@ const Explore = () => {
     { name: "Javanese", coords: [110.37, -7.0], region: "Jawa Tengah" },
     { name: "Balinese", coords: [115.09, -8.37], region: "Bali" },
   ];
+
+  const languageArchive = [
+    {
+      name: "Bahasa Jawa",
+      region: "Jawa Tengah, Jawa Timur",
+      ethnic: "Jawa",
+      speakers: "84,3 juta",
+      status: "Aktif",
+      vocabularyCount: 2500,
+      phrasesCount: 800,
+      folkloreCount: 45,
+      audioCount: 1200,
+    },
+    {
+      name: "Bahasa Sunda",
+      region: "Jawa Barat",
+      ethnic: "Sunda",
+      speakers: "42 juta",
+      status: "Aktif",
+      vocabularyCount: 1800,
+      phrasesCount: 600,
+      folkloreCount: 32,
+      audioCount: 950,
+    },
+    {
+      name: "Bahasa Batak Toba",
+      region: "Sumatera Utara",
+      ethnic: "Batak",
+      speakers: "2 juta",
+      status: "Terancam Punah",
+      vocabularyCount: 1200,
+      phrasesCount: 400,
+      folkloreCount: 28,
+      audioCount: 600,
+    },
+    {
+      name: "Bahasa Bali",
+      region: "Bali",
+      ethnic: "Bali",
+      speakers: "3,3 juta",
+      status: "Aktif",
+      vocabularyCount: 1500,
+      phrasesCount: 500,
+      folkloreCount: 38,
+      audioCount: 750,
+    },
+    {
+      name: "Bahasa Minangkabau",
+      region: "Sumatera Barat",
+      ethnic: "Minangkabau",
+      speakers: "5,5 juta",
+      status: "Aktif",
+      vocabularyCount: 1600,
+      phrasesCount: 550,
+      folkloreCount: 30,
+      audioCount: 800,
+    },
+    {
+      name: "Bahasa Bugis",
+      region: "Sulawesi Selatan",
+      ethnic: "Bugis",
+      speakers: "5 juta",
+      status: "Terancam Punah",
+      vocabularyCount: 1100,
+      phrasesCount: 380,
+      folkloreCount: 25,
+      audioCount: 550,
+    },
+    {
+      name: "Bahasa Sasak",
+      region: "Nusa Tenggara Barat",
+      ethnic: "Sasak",
+      speakers: "2,7 juta",
+      status: "Aktif",
+      vocabularyCount: 900,
+      phrasesCount: 300,
+      folkloreCount: 18,
+      audioCount: 450,
+    },
+    {
+      name: "Bahasa Dayak Ngaju",
+      region: "Kalimantan Tengah",
+      ethnic: "Dayak",
+      speakers: "900 ribu",
+      status: "Terancam Punah",
+      vocabularyCount: 750,
+      phrasesCount: 250,
+      folkloreCount: 15,
+      audioCount: 380,
+    },
+    {
+      name: "Bahasa Toraja",
+      region: "Sulawesi Selatan",
+      ethnic: "Toraja",
+      speakers: "1,2 juta",
+      status: "Terancam Punah",
+      vocabularyCount: 850,
+      phrasesCount: 280,
+      folkloreCount: 20,
+      audioCount: 420,
+    },
+  ];
+
+  const filteredLanguages = languageArchive.filter((lang) => {
+    const matchesSearch = lang.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         lang.region.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesRegion = regionFilter === "all" || lang.region.includes(regionFilter);
+    const matchesEthnic = ethnicFilter === "all" || lang.ethnic === ethnicFilter;
+    const matchesStatus = statusFilter === "all" || lang.status === statusFilter;
+    
+    return matchesSearch && matchesRegion && matchesEthnic && matchesStatus;
+  });
 
   const regions = [
     {
@@ -224,53 +344,107 @@ const Explore = () => {
           </Card>
         </section>
 
-        {/* Regions Grid */}
+        {/* Search and Filters */}
         <section className="mb-16">
-          <div className="mb-8 flex items-center gap-2">
-            <MapPin className="h-6 w-6 text-primary" />
-            <h2 className="text-2xl font-bold text-foreground">Bahasa per Wilayah</h2>
+          <Card className="border-border shadow-soft">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Search className="h-5 w-5 text-primary" />
+                Arsip Bahasa Interaktif
+              </CardTitle>
+              <CardDescription>
+                Cari dan filter bahasa daerah berdasarkan wilayah, suku, atau status
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder="Cari bahasa atau wilayah..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-foreground">
+                      Wilayah
+                    </label>
+                    <Select value={regionFilter} onValueChange={setRegionFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih Wilayah" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Semua Wilayah</SelectItem>
+                        <SelectItem value="Jawa">Jawa</SelectItem>
+                        <SelectItem value="Sumatera">Sumatera</SelectItem>
+                        <SelectItem value="Kalimantan">Kalimantan</SelectItem>
+                        <SelectItem value="Sulawesi">Sulawesi</SelectItem>
+                        <SelectItem value="Bali">Bali</SelectItem>
+                        <SelectItem value="Nusa Tenggara">Nusa Tenggara</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-foreground">
+                      Suku
+                    </label>
+                    <Select value={ethnicFilter} onValueChange={setEthnicFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih Suku" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Semua Suku</SelectItem>
+                        <SelectItem value="Jawa">Jawa</SelectItem>
+                        <SelectItem value="Sunda">Sunda</SelectItem>
+                        <SelectItem value="Batak">Batak</SelectItem>
+                        <SelectItem value="Bali">Bali</SelectItem>
+                        <SelectItem value="Minangkabau">Minangkabau</SelectItem>
+                        <SelectItem value="Bugis">Bugis</SelectItem>
+                        <SelectItem value="Dayak">Dayak</SelectItem>
+                        <SelectItem value="Toraja">Toraja</SelectItem>
+                        <SelectItem value="Sasak">Sasak</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-foreground">
+                      Status
+                    </label>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Semua Status</SelectItem>
+                        <SelectItem value="Aktif">Aktif</SelectItem>
+                        <SelectItem value="Terancam Punah">Terancam Punah</SelectItem>
+                        <SelectItem value="Punah">Punah</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Language Archive Results */}
+        <section className="mb-16">
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-foreground">
+              Hasil Pencarian ({filteredLanguages.length})
+            </h2>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {regions.map((region, index) => (
+            {filteredLanguages.map((language, index) => (
               <Card key={index} className="border-border shadow-soft transition-all hover:shadow-warm">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    {region.name}
-                    <Badge variant="secondary">{region.languages} bahasa</Badge>
-                  </CardTitle>
-                  <CardDescription className="flex items-center gap-1 text-red-600 dark:text-red-400">
-                    <AlertCircle className="h-4 w-4" />
-                    {region.endangered} terancam punah
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-3 text-sm font-medium text-muted-foreground">
-                    Bahasa Utama:
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {region.highlighted.map((lang, i) => (
-                      <Badge key={i} variant="outline" className="border-primary/20">
-                        {lang}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Featured Languages */}
-        <section className="mb-16">
-          <div className="mb-8 flex items-center gap-2">
-            <BookOpen className="h-6 w-6 text-primary" />
-            <h2 className="text-2xl font-bold text-foreground">Bahasa Unggulan</h2>
-          </div>
-
-          <div className="grid gap-6 lg:grid-cols-3">
-            {featuredLanguages.map((language, index) => (
-              <Card key={index} className="border-border shadow-soft">
                 <CardHeader>
                   <div className="mb-2 flex items-start justify-between">
                     <CardTitle className="text-xl">{language.name}</CardTitle>
@@ -279,55 +453,71 @@ const Explore = () => {
                     </Badge>
                   </div>
                   <CardDescription className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    {language.speakers} penutur
+                    <MapPin className="h-4 w-4" />
+                    {language.region}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="mb-3">
-                    <span className="text-sm font-medium text-muted-foreground">Aksara: </span>
-                    <span className="text-sm text-foreground">{language.script}</span>
+                  <div className="mb-4 space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Suku:</span>
+                      <span className="font-medium text-foreground">{language.ethnic}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Penutur:</span>
+                      <span className="font-medium text-foreground">{language.speakers}</span>
+                    </div>
                   </div>
-                  <p className="mb-4 text-sm text-muted-foreground">
-                    {language.description}
-                  </p>
-                  <Button variant="outline" className="w-full">
-                    Pelajari Lebih Lanjut
-                  </Button>
+
+                  <div className="mb-4 grid grid-cols-2 gap-2 rounded-lg bg-muted/30 p-3">
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-primary">{language.vocabularyCount}</div>
+                      <div className="text-xs text-muted-foreground">Kosakata</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-primary">{language.phrasesCount}</div>
+                      <div className="text-xs text-muted-foreground">Frasa</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-primary">{language.folkloreCount}</div>
+                      <div className="text-xs text-muted-foreground">Cerita</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-primary">{language.audioCount}</div>
+                      <div className="text-xs text-muted-foreground">Audio</div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1" size="sm">
+                      <Volume2 className="mr-1 h-4 w-4" />
+                      Dengar
+                    </Button>
+                    <Button 
+                      className="flex-1" 
+                      size="sm"
+                      onClick={() => navigate(`/explore/${encodeURIComponent(language.name)}`, { state: { language } })}
+                    >
+                      <FileText className="mr-1 h-4 w-4" />
+                      Detail
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+
+          {filteredLanguages.length === 0 && (
+            <Card className="border-border">
+              <CardContent className="py-12 text-center">
+                <p className="text-muted-foreground">
+                  Tidak ada bahasa yang sesuai dengan filter Anda. Coba ubah kriteria pencarian.
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </section>
 
-        {/* Statistics */}
-        <section>
-          <Card className="border-border bg-gradient-warm shadow-soft">
-            <CardContent className="p-8 md:p-12">
-              <h2 className="mb-6 text-2xl font-bold text-foreground">
-                Fakta Bahasa Daerah Indonesia
-              </h2>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div>
-                  <div className="mb-4 text-3xl font-bold text-primary">700+</div>
-                  <p className="text-muted-foreground">
-                    Bahasa daerah yang tersebar di seluruh Indonesia, menjadikannya 
-                    salah satu negara dengan keberagaman linguistik tertinggi di dunia
-                  </p>
-                </div>
-                <div>
-                  <div className="mb-4 text-3xl font-bold text-red-600 dark:text-red-400">
-                    146
-                  </div>
-                  <p className="text-muted-foreground">
-                    Bahasa yang terancam punah menurut UNESCO, membutuhkan upaya 
-                    pelestarian segera untuk generasi mendatang
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
       </div>
     </div>
   );

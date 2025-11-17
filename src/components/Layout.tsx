@@ -12,7 +12,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     { to: "/learn", label: "Belajar" },
     { to: "/explore", label: "Eksplor" },
     { to: "/contribute", label: "Kontribusi" },
-    { to: "/blog", label: "Blog" },
     { to: "/contact", label: "Kontak" },
   ];
 
