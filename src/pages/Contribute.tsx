@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Mic, FileText, BookOpen, Share2, Award, Sparkles, Upload } from "lucide-react";
 import { useState } from "react";
 
@@ -106,20 +107,19 @@ const Contribute = () => {
           </div>
         </section>
 
-        {/* Upload Forms */}
-        {selectedContribution && (
-          <section className="mb-16">
-            <Card className="border-border shadow-warm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Upload className="h-5 w-5 text-primary" />
-                  Form Kontribusi: {selectedContribution}
-                </CardTitle>
-                <CardDescription>
-                  Isi formulir di bawah ini untuk mengirimkan kontribusi Anda
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+        {/* Upload Forms Modal */}
+        <Dialog open={!!selectedContribution} onOpenChange={(open) => !open && setSelectedContribution(null)}>
+          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Upload className="h-5 w-5 text-primary" />
+                Form Kontribusi: {selectedContribution}
+              </DialogTitle>
+              <DialogDescription>
+                Isi formulir di bawah ini untuk mengirimkan kontribusi Anda
+              </DialogDescription>
+            </DialogHeader>
+            <div className="mt-4">
                 <div className="space-y-6">
                   {/* Common fields */}
                   <div className="space-y-2">
@@ -281,22 +281,18 @@ const Contribute = () => {
                     />
                   </div>
 
-                  <div className="flex gap-4">
-                    <Button className="flex-1">
-                      Kirim Kontribusi
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setSelectedContribution(null)}
-                    >
+                  <div className="flex gap-3">
+                    <Button type="button" variant="outline" className="flex-1" onClick={() => setSelectedContribution(null)}>
                       Batal
+                    </Button>
+                    <Button type="submit" className="flex-1">
+                      Kirim Kontribusi
                     </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </section>
-        )}
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Leaderboard */}
         <section className="mb-16">

@@ -40,12 +40,12 @@ const LanguageDetail = () => {
 
   // Sample vocabulary data
   const vocabulary = [
-    { word: "Halo", translation: "Hello", pronunciation: "ha-lo", category: "Greeting" },
-    { word: "Terima kasih", translation: "Thank you", pronunciation: "te-ri-ma ka-sih", category: "Greeting" },
-    { word: "Selamat pagi", translation: "Good morning", pronunciation: "se-la-mat pa-gi", category: "Greeting" },
-    { word: "Air", translation: "Water", pronunciation: "a-ir", category: "Nature" },
-    { word: "Makan", translation: "Eat", pronunciation: "ma-kan", category: "Action" },
-    { word: "Rumah", translation: "House", pronunciation: "ru-mah", category: "Place" },
+    { word: "Halo", translation: "Hello", pronunciation: "ha-lo", category: "Greeting", example: "Halo, apa kabar?" },
+    { word: "Terima kasih", translation: "Thank you", pronunciation: "te-ri-ma ka-sih", category: "Greeting", example: "Terima kasih atas bantuannya." },
+    { word: "Selamat pagi", translation: "Good morning", pronunciation: "se-la-mat pa-gi", category: "Greeting", example: "Selamat pagi, semoga harimu menyenangkan." },
+    { word: "Air", translation: "Water", pronunciation: "a-ir", category: "Nature", example: "Saya ingin minum air." },
+    { word: "Makan", translation: "Eat", pronunciation: "ma-kan", category: "Action", example: "Mari kita makan bersama." },
+    { word: "Rumah", translation: "House", pronunciation: "ru-mah", category: "Place", example: "Rumah saya di dekat pasar." },
   ];
 
   // Sample folklore data
@@ -146,9 +146,12 @@ const LanguageDetail = () => {
                     <CardDescription>{item.translation}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="mb-3 space-y-1">
+                    <div className="mb-3 space-y-2">
                       <div className="text-sm text-muted-foreground">
                         Pengucapan: <span className="font-medium text-foreground">{item.pronunciation}</span>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Contoh: <span className="font-medium text-foreground italic">{item.example}</span>
                       </div>
                       <Badge variant="secondary" className="text-xs">
                         {item.category}

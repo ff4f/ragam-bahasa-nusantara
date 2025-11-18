@@ -11,6 +11,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     { to: "/about", label: "Tentang" },
     { to: "/learn", label: "Belajar" },
     { to: "/explore", label: "Eksplor" },
+    { to: "/dictionary", label: "Kamus" },
     { to: "/contribute", label: "Kontribusi" },
     { to: "/contact", label: "Kontak" },
   ];
@@ -36,9 +37,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 {link.label}
               </NavLink>
             ))}
-            <Button size="sm" className="bg-gradient-hero">
-              Gabung Komunitas
-            </Button>
+            <NavLink to="/auth">
+              <Button size="sm" className="bg-gradient-hero">
+                Masuk
+              </Button>
+            </NavLink>
           </div>
 
           {/* Mobile Menu Button */}
@@ -69,9 +72,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   {link.label}
                 </NavLink>
               ))}
-              <Button className="mt-2 w-full bg-gradient-hero">
-                Gabung Komunitas
-              </Button>
+              <NavLink to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                <Button className="mt-2 w-full bg-gradient-hero">
+                  Masuk
+                </Button>
+              </NavLink>
             </div>
           </div>
         )}

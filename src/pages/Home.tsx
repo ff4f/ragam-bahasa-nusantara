@@ -102,6 +102,40 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Word of the Day Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
+            <CardContent className="p-8">
+              <div className="text-center">
+                <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-primary">
+                  Kata Hari Ini
+                </h2>
+                <div className="mb-4 text-4xl font-bold text-foreground md:text-5xl">
+                  Sugeng
+                </div>
+                <p className="mb-2 text-lg text-muted-foreground">
+                  (Bahasa Jawa)
+                </p>
+                <div className="mx-auto mb-4 max-w-md border-t border-border pt-4">
+                  <p className="mb-2 text-foreground">
+                    <span className="font-semibold">Arti:</span> Selamat
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-semibold">Contoh:</span> "Sugeng enjing" - Selamat pagi
+                  </p>
+                </div>
+                <Link to="/learn">
+                  <Button variant="outline" size="sm">
+                    Pelajari Lebih Banyak
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">

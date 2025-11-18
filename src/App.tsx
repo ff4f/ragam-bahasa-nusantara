@@ -9,8 +9,10 @@ import About from "./pages/About";
 import Learn from "./pages/Learn";
 import Explore from "./pages/Explore";
 import LanguageDetail from "./pages/LanguageDetail";
+import Dictionary from "./pages/Dictionary";
 import Contribute from "./pages/Contribute";
 import Contact from "./pages/Contact";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,8 +30,10 @@ const App = () => (
             <Route path="/learn" element={<Learn />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/explore/:languageName" element={<LanguageDetail />} />
+            <Route path="/dictionary" element={<Dictionary />} />
             <Route path="/contribute" element={<Contribute />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
