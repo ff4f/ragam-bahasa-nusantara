@@ -9,7 +9,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const navLinks = [
     { to: "/", label: "Beranda" },
     { to: "/about", label: "Tentang" },
-    { to: "/learn", label: "Belajar" },
+    // { to: "/learn", label: "Belajar" },
     { to: "/explore", label: "Eksplor" },
     { to: "/dictionary", label: "Kamus" },
     { to: "/contribute", label: "Kontribusi" },

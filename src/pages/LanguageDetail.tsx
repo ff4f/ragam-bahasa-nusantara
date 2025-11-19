@@ -1,9 +1,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Users, Volume2, BookOpen, ArrowLeft } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip";
+import { MapPin, Users, Volume2, ArrowLeft, BadgeCheck, Flag } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getStatusColor, capitalize } from "@/lib/utils";
+import { statusList } from "@/lib/constants";
+import { vocabulary } from "@/lib/dummy";
 
 const LanguageDetail = () => {
   const location = useLocation();
@@ -24,48 +27,6 @@ const LanguageDetail = () => {
       </div>
     );
   }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Aktif":
-        return "bg-green-500/10 text-green-700 dark:text-green-400";
-      case "Terancam Punah":
-        return "bg-red-500/10 text-red-700 dark:text-red-400";
-      case "Punah":
-        return "bg-gray-500/10 text-gray-700 dark:text-gray-400";
-      default:
-        return "bg-muted text-muted-foreground";
-    }
-  };
-
-  // Sample vocabulary data
-  const vocabulary = [
-    { word: "Halo", translation: "Hello", pronunciation: "ha-lo", category: "Greeting", example: "Halo, apa kabar?" },
-    { word: "Terima kasih", translation: "Thank you", pronunciation: "te-ri-ma ka-sih", category: "Greeting", example: "Terima kasih atas bantuannya." },
-    { word: "Selamat pagi", translation: "Good morning", pronunciation: "se-la-mat pa-gi", category: "Greeting", example: "Selamat pagi, semoga harimu menyenangkan." },
-    { word: "Air", translation: "Water", pronunciation: "a-ir", category: "Nature", example: "Saya ingin minum air." },
-    { word: "Makan", translation: "Eat", pronunciation: "ma-kan", category: "Action", example: "Mari kita makan bersama." },
-    { word: "Rumah", translation: "House", pronunciation: "ru-mah", category: "Place", example: "Rumah saya di dekat pasar." },
-  ];
-
-  // Sample folklore data
-  const folklore = [
-    {
-      title: "Cerita Rakyat 1",
-      summary: "Kisah tentang kepahlawanan seorang pemuda yang menyelamatkan desanya dari bencana.",
-      duration: "15 menit",
-    },
-    {
-      title: "Cerita Rakyat 2",
-      summary: "Legenda tentang asal-usul nama daerah dan makna budayanya.",
-      duration: "12 menit",
-    },
-    {
-      title: "Cerita Rakyat 3",
-      summary: "Dongeng tradisional yang mengajarkan nilai-nilai kehidupan kepada generasi muda.",
-      duration: "10 menit",
-    },
-  ];
 
   return (
     <div className="py-16">
@@ -97,12 +58,12 @@ const LanguageDetail = () => {
               </div>
             </div>
             <Badge className={getStatusColor(language.status)}>
-              {language.status}
+              {statusList.find(item => item.id === language.status)?.name || ""}
             </Badge>
           </div>
 
           {/* Statistics Cards */}
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-3">
             <Card className="border-border">
               <CardContent className="pt-6 text-center">
                 <div className="text-3xl font-bold text-primary">{language.vocabularyCount}</div>
@@ -111,92 +72,87 @@ const LanguageDetail = () => {
             </Card>
             <Card className="border-border">
               <CardContent className="pt-6 text-center">
-                <div className="text-3xl font-bold text-primary">{language.phrasesCount}</div>
-                <div className="text-sm text-muted-foreground">Frasa</div>
-              </CardContent>
-            </Card>
-            <Card className="border-border">
-              <CardContent className="pt-6 text-center">
-                <div className="text-3xl font-bold text-primary">{language.folkloreCount}</div>
-                <div className="text-sm text-muted-foreground">Cerita Rakyat</div>
-              </CardContent>
-            </Card>
-            <Card className="border-border">
-              <CardContent className="pt-6 text-center">
                 <div className="text-3xl font-bold text-primary">{language.audioCount}</div>
                 <div className="text-sm text-muted-foreground">Rekaman Audio</div>
+              </CardContent>
+            </Card>
+            <Card className="border-border">
+              <CardContent className="pt-6 text-center">
+                <div className="text-3xl font-bold text-primary">{language.contributorCount}</div>
+                <div className="text-sm text-muted-foreground">Jumlah Kontributor</div>
               </CardContent>
             </Card>
           </div>
         </div>
 
-        {/* Content Tabs */}
-        <Tabs defaultValue="vocabulary" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:w-auto">
-            <TabsTrigger value="vocabulary">Kosakata</TabsTrigger>
-            <TabsTrigger value="folklore">Cerita Rakyat</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="vocabulary" className="mt-6">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {vocabulary.map((item, index) => (
-                <Card key={index} className="border-border">
-                  <CardHeader>
-                    <CardTitle className="text-xl">{item.word}</CardTitle>
-                    <CardDescription>{item.translation}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-3 space-y-2">
-                      <div className="text-sm text-muted-foreground">
-                        Pengucapan: <span className="font-medium text-foreground">{item.pronunciation}</span>
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Contoh: <span className="font-medium text-foreground italic">{item.example}</span>
-                      </div>
-                      <Badge variant="secondary" className="text-xs">
-                        {item.category}
-                      </Badge>
-                    </div>
-                    <Button variant="outline" size="sm" className="w-full">
-                      <Volume2 className="mr-2 h-4 w-4" />
-                      Dengar Pengucapan
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="folklore" className="mt-6">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {folklore.map((story, index) => (
-                <Card key={index} className="border-border">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <BookOpen className="h-5 w-5 text-primary" />
-                      {story.title}
+        {/* Content */}
+        <h2 className="mb-4 text-2xl font-bold text-foreground">Kosakata</h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {vocabulary.map((item, index) => (
+            <Card key={index} className="border-border relative">
+              <CardHeader>
+                <div className="flex justify-between">
+                  <div className="flex items-center gap-1">
+                    <CardTitle className="text-xl">
+                      {capitalize(item.word)}
                     </CardTitle>
-                    <CardDescription>{story.summary}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-3 text-sm text-muted-foreground">
-                      Durasi: {story.duration}
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <Volume2 className="mr-2 h-4 w-4" />
-                        Dengar
+                    <Tooltip label="Dengar Kosakata">
+                      <Button
+                        variant="ghost"
+                        className="h-6 w-6 p-2"
+                        onClick={() => {
+                          const utterance = new SpeechSynthesisUtterance(item.word);
+                          window.speechSynthesis.speak(utterance);
+                        }}
+                      >
+                        <Volume2 />
                       </Button>
-                      <Button size="sm" className="flex-1">
-                        Baca
+                    </Tooltip>
+                    {item.verified ? (
+                      <Tooltip label="Terverifikasi">
+                        <BadgeCheck className="text-[#1f8493ff]"/>
+                      </Tooltip>
+                    ) : null}
+                  </div>
+                  <div className="flex gap-1">
+                    <Tooltip label="Laporkan">
+                      <Button
+                        variant="ghost"
+                        className="h-6 w-6 p-2"
+                      >
+                        <Flag/>
                       </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+                    </Tooltip>
+                  </div>
+                </div>
+                <CardDescription>{capitalize(item.translation)}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-3 space-y-2">
+                  <div className="text-sm text-muted-foreground">
+                    Tingkatan: <span className="font-medium text-foreground">{capitalize(item.level)}</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Contoh: <span className="font-medium text-foreground italic">{item.example}</span>
+                    <span className="ext-foreground italic"> - {item.exampleTranslation}</span>
+                    <Tooltip label="Dengar Contoh Kalimat">
+                      <Button
+                        variant="ghost"
+                        className="ml-1 h-6 w-6 p-0"
+                        onClick={() => {
+                          const utterance = new SpeechSynthesisUtterance(item.example);
+                          window.speechSynthesis.speak(utterance);
+                        }}
+                      >
+                        <Volume2 />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );

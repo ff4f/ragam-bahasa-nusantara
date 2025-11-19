@@ -58,13 +58,6 @@ const Learn = () => {
       completed: true,
       icon: Volume2,
     },
-    {
-      title: "Kuis Cerita Rakyat",
-      description: "Jawab pertanyaan tentang legenda lokal",
-      points: 100,
-      completed: false,
-      icon: BookOpen,
-    },
   ];
 
   const achievements = [

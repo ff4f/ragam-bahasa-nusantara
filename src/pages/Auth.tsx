@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 
 const Auth = () => {
@@ -71,6 +72,18 @@ const Auth = () => {
             
             <TabsContent value="signup">
               <form onSubmit={handleSignup} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="role">Peran</Label>
+                  <Select>
+                    <SelectTrigger id="role">
+                      <SelectValue placeholder="Pilih peran yang diinginkan" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="contributor">Contributor</SelectItem>
+                      <SelectItem value="validator">Validator</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-name">Nama Lengkap</Label>
                   <Input

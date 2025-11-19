@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Mail, MapPin, Phone, MessageCircle } from "lucide-react";
 
 const Contact = () => {
+  const navigate = useNavigate();
   const contactInfo = [
     {
       icon: Mail,
@@ -129,7 +131,7 @@ const Contact = () => {
                 <p className="mb-4 text-sm text-primary-foreground/90">
                   Terhubung dengan ribuan pelestari bahasa dari seluruh Nusantara
                 </p>
-                <Button className="w-full bg-secondary hover:bg-secondary/90">
+                <Button className="w-full bg-secondary hover:bg-secondary/90" onClick={() => navigate("/auth")}>
                   Gabung Sekarang
                 </Button>
               </CardContent>

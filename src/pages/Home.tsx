@@ -41,8 +41,8 @@ const Home = () => {
   const stats = [
     { value: "700+", label: "Bahasa Daerah" },
     { value: "10K+", label: "Kontributor Aktif" },
+    { value: "100K+", label: "Kosakata" },
     { value: "50K+", label: "Rekaman Suara" },
-    { value: "100+", label: "Cerita Rakyat" },
   ];
 
   return (
