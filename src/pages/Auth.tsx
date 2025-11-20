@@ -1,27 +1,49 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { getMockUser } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/use-user";
 
 const Auth = () => {
+  const navigate = useNavigate();
+  const { user, updateProfile } = useUser();
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [navigate]);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Login functionality will require backend
-    console.log("Login:", { email, password });
+    // Mock login - in production this would call backend API
+    const mockUser = getMockUser("contributor");
+    mockUser.email = email;
+    mockUser.name = name || "Demo User";
+    updateProfile(mockUser);
+    toast({ title: "Berhasil masuk!" });
+    navigate("/");
   };
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
-    // Signup functionality will require backend
-    console.log("Signup:", { name, email, password });
+    // Mock signup - in production this would call backend API
+    const mockUser = getMockUser("contributor");
+    mockUser.email = email;
+    mockUser.name = name;
+    updateProfile(mockUser);
+    toast({ title: "Akun berhasil dibuat!" });
+    navigate("/");
   };
 
   return (

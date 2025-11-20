@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import Header from "@/components/Header";
 import { Mail, MapPin, Phone, MessageCircle } from "lucide-react";
 
 const Contact = () => {
@@ -39,15 +40,10 @@ const Contact = () => {
     <div className="py-16">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-foreground md:text-5xl">
-            Hubungi Kami
-          </h1>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-            Punya pertanyaan, saran, atau ingin berkolaborasi? 
-            Kami senang mendengar dari Anda!
-          </p>
-        </div>
+        <Header
+          title="Hubungi Kami"
+          description="Punya pertanyaan, saran, atau ingin berkolaborasi? Kami senang mendengar dari Anda!"
+        />
 
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Contact Form */}

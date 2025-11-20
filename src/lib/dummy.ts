@@ -125,7 +125,7 @@ export const vocabulary = [
 // sample language archive detail
 export const languageArchive = [
   {
-    id: 1,
+    id: "1",
     name: "Bahasa Jawa",
     region: "Jawa Tengah, Jawa Timur",
     regionId: ["33", "35"],
@@ -137,7 +137,7 @@ export const languageArchive = [
     contributorCount: 300,
   },
   {
-    id: 2,
+    id: "2",
     name: "Bahasa Sunda",
     region: "Jawa Barat",
     regionId: ["32"],
@@ -149,7 +149,7 @@ export const languageArchive = [
     contributorCount: 200,
   },
   {
-    id: 3,
+    id: "3",
     name: "Bahasa Batak Toba",
     region: "Sumatera Utara",
     regionId: ["12"],
@@ -161,7 +161,7 @@ export const languageArchive = [
     contributorCount: 140,
   },
   {
-    id: 4,
+    id: "4",
     name: "Bahasa Bali",
     region: "Bali",
     regionId: ["51"],
@@ -173,7 +173,7 @@ export const languageArchive = [
     contributorCount: 150,
   },
   {
-    id: 5,
+    id: "5",
     name: "Bahasa Minangkabau",
     region: "Sumatera Barat",
     regionId: ["13"],
@@ -185,7 +185,7 @@ export const languageArchive = [
     contributorCount: 200,
   },
   {
-    id: 6,
+    id: "6",
     name: "Bahasa Bugis",
     region: "Sulawesi Selatan",
     regionId: ["73"],
@@ -197,7 +197,7 @@ export const languageArchive = [
     contributorCount: 100,
   },
   {
-    id: 7,
+    id: "7",
     name: "Bahasa Sasak",
     region: "Nusa Tenggara Barat",
     regionId: ["52"],
@@ -209,7 +209,7 @@ export const languageArchive = [
     contributorCount: 120,
   },
   {
-    id: 8,
+    id: "8",
     name: "Bahasa Dayak Ngaju",
     region: "Kalimantan Tengah",
     regionId: ["62"],
@@ -221,7 +221,7 @@ export const languageArchive = [
     contributorCount: 50,
   },
   {
-    id: 9,
+    id: "9",
     name: "Bahasa Toraja",
     region: "Sulawesi Selatan",
     regionId: ["73"],
@@ -236,9 +236,109 @@ export const languageArchive = [
 
 // sample leaderboard data
 export const leaderboard = [
-  { rank: 1, name: "Ibu Siti Nurhaliza", region: "Jawa Tengah", contributions: 342 },
-  { rank: 2, name: "Bapak Ahmad Dahlan", region: "Sumatera Barat", contributions: 298 },
-  { rank: 3, name: "Ni Luh Ketut Ayu", region: "Bali", contributions: 276 },
-  { rank: 4, name: "Raden Mas Wijaya", region: "Jawa Barat", contributions: 254 },
-  { rank: 5, name: "Andi Mappasessu", region: "Sulawesi Selatan", contributions: 231 },
+  { rank: 1, name: "Ibu Siti Nurhaliza", region: "Jawa Tengah", contributions: 342, xp: 3420 },
+  { rank: 2, name: "Bapak Ahmad Dahlan", region: "Sumatera Barat", contributions: 298, xp: 2980 },
+  { rank: 3, name: "Ni Luh Ketut Ayu", region: "Bali", contributions: 276, xp: 2760 },
+  { rank: 4, name: "Raden Mas Wijaya", region: "Jawa Barat", contributions: 254, xp: 2540 },
+  { rank: 5, name: "Andi Mappasessu", region: "Sulawesi Selatan", contributions: 231, xp: 2310 },
+];
+
+// sample missions data
+export const mockMissions = [
+  {
+    id: '1',
+    title: '5 Kata Dasar Daerahmu',
+    description: 'Kontributor diminta menambahkan 5 kosakata dasar dari bahasa daerahnya, lengkap dengan arti dan contoh kalimat.',
+    reward_xp: 25,
+    type: 'contributor',
+    difficulty: 'easy'
+  },
+  {
+    id: '2',
+    title: 'Rekam 3 Kalimat dengan Dialek Aslimu',
+    description: 'Pengguna merekam 3 kalimat natural menggunakan logat/dialek daerah tertentu.',
+    reward_xp: 30,
+    type: 'contributor',
+    difficulty: 'easy'
+  },
+  {
+    id: '3',
+    title: 'Validator Pemula: Cek 10 Data',
+    description: 'User yang sudah lolos kualifikasi validator harus melakukan 10 validasi pertama.',
+    reward_xp: 20,
+    type: 'validator',
+    difficulty: 'medium'
+  },
+  {
+    id: '4',
+    title: '3 Kosakata Terverifikasi',
+    description: 'Buat 3 kosakata baru dan tunggu hingga terverifikasi oleh validator.',
+    reward_xp: 100,
+    type: 'contributor',
+    difficulty: 'hard'
+  },
+  {
+    id: '5',
+    title: '3 Bahasa Daerah Berbeda',
+    description: 'Buat kosakata di 3 bahasa daerah yang berbeda.',
+    reward_xp: 75,
+    type: 'contributor',
+    difficulty: 'medium'
+  }
+];
+
+// sample recordings data
+export const mockRecordings = [
+  {
+    id: '1',
+    user_id: 'user1',
+    mission_id: '1',
+    audio_url: '/audio/sample1.mp3',
+    transcript_ai: 'Ing ngarsa sung tuladha, ing madya mangun karsa, tut wuri handayani',
+    transcript_human: '',
+    status: 'pending',
+    created_at: '2025-01-15T10:30:00Z',
+    dialect: 'Bahasa Jawa'
+  },
+  {
+    id: '2',
+    user_id: 'user2',
+    mission_id: '2',
+    audio_url: '/audio/sample2.mp3',
+    transcript_ai: 'Apa kabar saudara? Bagaimana keadaan keluarga di rumah?',
+    transcript_human: '',
+    status: 'pending',
+    created_at: '2025-01-15T11:45:00Z',
+    dialect: 'Bahasa Sunda'
+  },
+  {
+    id: '3',
+    user_id: 'user3',
+    mission_id: '3',
+    audio_url: '/audio/sample3.mp3',
+    transcript_ai: 'Amai, lapo kau di siko? Mari mangayau di uma.',
+    transcript_human: 'Amai, lapo kau di siko? Mari mangayau di uma.',
+    status: 'approved',
+    validator_id: 'validator1',
+    created_at: '2025-01-14T09:20:00Z',
+    dialect: 'Bahasa Dayak'
+  }
+];
+
+// sample province data
+export const provinceList = [
+  { value: 1, label: "Aceh" },
+  { value: 2, label: "Sumatera Barat" },
+  { value: 3, label: "Jawa Tengah" },
+  { value: 4, label: "Jawa Timur" },
+  { value: 5, label: "Bali" },
+];
+
+// sample region data
+export const regionList = [
+  { value: 1, label: "Purbalingga" },
+  { value: 2, label: "Batam" },
+  { value: 3, label: "Sleman" },
+  { value: 4, label: "Bantul" },
+  { value: 5, label: "Pekanbaru" },
 ];

@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Header from "@/components/Header";
 import { ArrowLeftRight, Volume2 } from "lucide-react";
 
 const Dictionary = () => {
@@ -52,12 +53,10 @@ const Dictionary = () => {
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Kamus Bahasa Daerah</h1>
-          <p className="text-lg text-muted-foreground">
-            Terjemahkan teks antara Bahasa Indonesia dan bahasa daerah
-          </p>
-        </div>
+        <Header
+          title="Kamus Bahasa Daerah"
+          description="Terjemahkan teks antara Bahasa Indonesia dan bahasa daerah"
+        />
 
         <Card>
           <CardHeader>

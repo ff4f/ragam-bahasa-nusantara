@@ -1,20 +1,50 @@
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Menu, X, User as UserIcon, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { navLinks } from "@/lib/constants";
+import { useUser } from "@/hooks/use-user";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [menus, setMenus] = useState(navLinks);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { user: userContext, logout } = useUser();
 
-  const navLinks = [
-    { to: "/", label: "Beranda" },
-    { to: "/about", label: "Tentang" },
-    // { to: "/learn", label: "Belajar" },
-    { to: "/explore", label: "Eksplor" },
-    { to: "/dictionary", label: "Kamus" },
-    { to: "/contribute", label: "Kontribusi" },
-    { to: "/contact", label: "Kontak" },
-  ];
+  const handleLogout = () => {
+    logout();
+    setUser(null);
+    navigate("/");
+    toast({ title: "Berhasil keluar!" })
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  useEffect(() => {
+    setUser(userContext);
+    if (userContext) setMenus(navLinks);
+    else setMenus(navLinks.filter(item => item.to !== "/missions"));
+  }, [userContext]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -27,7 +57,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
           {/* Desktop Navigation */}
           <div className="hidden items-center space-x-6 md:flex">
-            {navLinks.map((link) => (
+            {menus.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
@@ -37,11 +67,41 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 {link.label}
               </NavLink>
             ))}
-            <NavLink to="/auth">
-              <Button size="sm" className="bg-gradient-hero">
-                Masuk
-              </Button>
-            </NavLink>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src="" />
+                      <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.name}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate("/profile")}>
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    <span>Profil</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Keluar</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <NavLink to="/auth">
+                <Button size="sm" className="bg-gradient-hero">
+                  Masuk
+                </Button>
+              </NavLink>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -61,7 +121,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         {mobileMenuOpen && (
           <div className="border-t border-border bg-background md:hidden">
             <div className="container mx-auto space-y-1 px-4 py-4">
-              {navLinks.map((link) => (
+              {menus.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
@@ -72,11 +132,46 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   {link.label}
                 </NavLink>
               ))}
-              <NavLink to="/auth" onClick={() => setMobileMenuOpen(false)}>
-                <Button className="mt-2 w-full bg-gradient-hero">
-                  Masuk
-                </Button>
-              </NavLink>
+              {user ? (
+                <>
+                  <div className="border-t border-border pt-4">
+                    <div className="mb-3 flex items-center gap-3 px-4">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src="" />
+                        <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
+                      </div>
+                    </div>
+                    <NavLink
+                      to="/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      <UserIcon className="mr-2 inline-block h-4 w-4" />
+                      Profil
+                    </NavLink>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full rounded-lg px-4 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      <LogOut className="mr-2 inline-block h-4 w-4" />
+                      Keluar
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <NavLink to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                  <Button className="mt-2 w-full bg-gradient-hero">
+                    Masuk
+                  </Button>
+                </NavLink>
+              )}
             </div>
           </div>
         )}

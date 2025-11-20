@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Header from "@/components/Header";
 import { Volume2, BookOpen, Star, TrendingUp, Award, Trophy, Target, Zap } from "lucide-react";
 import { useState } from "react";
 
@@ -140,15 +141,10 @@ const Learn = () => {
     <div className="py-16">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-foreground md:text-5xl">
-            Belajar Bahasa Daerah
-          </h1>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-            Mulai perjalanan Anda mempelajari bahasa daerah Indonesia dengan metode interaktif 
-            dan audio dari penutur asli
-          </p>
-        </div>
+        <Header
+          title="Belajar Bahasa Daerah"
+          description="Mulai perjalanan Anda mempelajari bahasa daerah Indonesia dengan metode interaktif dan audio dari penutur asli"
+        />
 
         {/* Popular Languages */}
         <section className="mb-16">

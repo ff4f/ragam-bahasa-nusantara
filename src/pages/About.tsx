@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import Header from "@/components/Header";
 import { Target, Eye, Users, Sparkles } from "lucide-react";
 
 const About = () => {
@@ -29,15 +30,10 @@ const About = () => {
     <div className="py-16">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="mb-16 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-foreground md:text-5xl">
-            Tentang RANA
-          </h1>
-          <p className="mx-auto max-w-3xl text-lg text-muted-foreground">
-            Ragam Bahasa Nusantara - Platform digital yang berdedikasi untuk melestarikan kekayaan bahasa daerah Indonesia 
-            melalui teknologi AI, pembelajaran interaktif, dan kekuatan komunitas
-          </p>
-        </div>
+        <Header
+          title="Tentang RANA"
+          description="Ragam Bahasa Nusantara - Platform digital yang berdedikasi untuk melestarikan kekayaan bahasa daerah Indonesia melalui teknologi AI, pembelajaran interaktif, dan kekuatan komunitas"
+        />
 
         {/* Story Section */}
         <section className="mb-16">

@@ -1,17 +1,29 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
-import { MapPin, Users, Volume2, ArrowLeft, BadgeCheck, Flag } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MapPin, Users, Volume2, ArrowLeft, BadgeCheck, Flag, Search } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getStatusColor, capitalize } from "@/lib/utils";
-import { statusList } from "@/lib/constants";
+import { statusList, verifiedStatusList } from "@/lib/constants";
 import { vocabulary } from "@/lib/dummy";
 
 const LanguageDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const language = location.state?.language;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const filteredVocabulary = vocabulary.filter((vocab) => {
+    const matchesSearch = vocab.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          vocab.translation.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "all" || vocab.verified === !!(statusFilter === "verified");
+    return matchesSearch && matchesStatus;
+  });
 
   if (!language) {
     return (
@@ -79,7 +91,7 @@ const LanguageDetail = () => {
             <Card className="border-border">
               <CardContent className="pt-6 text-center">
                 <div className="text-3xl font-bold text-primary">{language.contributorCount}</div>
-                <div className="text-sm text-muted-foreground">Jumlah Kontributor</div>
+                <div className="text-sm text-muted-foreground">Kontributor</div>
               </CardContent>
             </Card>
           </div>
@@ -87,8 +99,36 @@ const LanguageDetail = () => {
 
         {/* Content */}
         <h2 className="mb-4 text-2xl font-bold text-foreground">Kosakata</h2>
+
+        {/* Search and Filter */}
+        <Card className="border-border shadow-soft mb-4">
+          <CardContent className="pt-6">
+            <div className="space-y-4 md:space-y-0 md:flex md:gap-4">
+              <div className="relative flex-[2]">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Cari kosakata atau artinya..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <div className="flex-1">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {verifiedStatusList.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {vocabulary.map((item, index) => (
+          {filteredVocabulary.map((item, index) => (
             <Card key={index} className="border-border relative">
               <CardHeader>
                 <div className="flex justify-between">

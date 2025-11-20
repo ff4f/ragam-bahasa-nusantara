@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Header from '@/components/Header';
 import { MapPin, Search, Info } from "lucide-react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import geoJson from "../assets/indonesia-province-38.json";
@@ -42,15 +43,10 @@ const Explore = () => {
     <div className="py-16">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-foreground md:text-5xl">
-            Eksplor Bahasa Nusantara
-          </h1>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-            Jelajahi keberagaman luar biasa dari lebih dari 700 bahasa daerah 
-            yang tersebar di seluruh kepulauan Indonesia
-          </p>
-        </div>
+        <Header
+          title="Eksplor Bahasa Nusantara"
+          description="Jelajahi keberagaman luar biasa dari lebih dari 700 bahasa daerah yang tersebar di seluruh kepulauan Indonesia"
+        />
 
         {/* Map Section */}
         <section className="mb-8">
@@ -68,7 +64,7 @@ const Explore = () => {
                   geographies.map((geo) => {
                     const province = geo.properties.province_bps_name;
                     return (
-                      <Tooltip label={province}>
+                      <Tooltip label={province} key={geo.rsmKey}>
                         <Geography
                           geography={geo}
                           style={{
@@ -104,7 +100,7 @@ const Explore = () => {
           </Card>
         </section>
 
-        {/* Search and Filters */}
+        {/* Search and Filter */}
         <section className="mb-8">
           <Card className="border-border shadow-soft">
             <CardContent className="pt-6">
@@ -124,7 +120,7 @@ const Explore = () => {
                       <SelectValue placeholder="Pilih Status" />
                     </SelectTrigger>
                     <SelectContent>
-                      {statusList.map(item => <SelectItem value={item.id}>{item.name}</SelectItem>)}
+                      {statusList.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
