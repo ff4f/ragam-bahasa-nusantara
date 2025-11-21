@@ -65,12 +65,12 @@ const Home = () => {
               bahasa daerah Indonesia agar tetap hidup di era digital.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Link to="/learn">
+              <Link to="/explore">
                 <Button size="lg" className="w-full bg-secondary hover:bg-secondary/90 sm:w-auto">
-                  Mulai Belajar
+                  Eksplor Bahasa
                 </Button>
               </Link>
-              <Link to="/contact">
+              <Link to="/contribute">
                 <Button 
                   size="lg" 
                   variant="outline" 

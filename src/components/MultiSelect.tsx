@@ -10,6 +10,7 @@ interface MultiSelectProps {
   value: string[];
   onChange: (newValue: string[]) => void;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export default function MultiSelect({
@@ -19,6 +20,7 @@ export default function MultiSelect({
   value,
   onChange,
   placeholder = "Select options...",
+  disabled,
 }: MultiSelectProps) {
   const [panelWidth, setPanelWidth] = useState<number>(0);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -36,15 +38,16 @@ export default function MultiSelect({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="block w-full focus:outline-none" ref={triggerRef}>
+      <DropdownMenuTrigger disabled={disabled} className="block w-full focus:outline-none" ref={triggerRef}>
         <div className="relative">
           <Input
             placeholder={placeholder}
             className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 focus:bg-accent focus:text-accent-foreground"
-            value={value.length > 0
+            value={value?.length > 0
               ? options.filter(o => value.includes(o[optionValue])).map(o => o[optionLabel]).join(", ")
               : placeholder}
             readOnly
+            disabled={disabled}
           />
           <ChevronDown className="h-4 w-4 opacity-50 absolute top-[50%] translate-y-[-50%] right-3" />
         </div>

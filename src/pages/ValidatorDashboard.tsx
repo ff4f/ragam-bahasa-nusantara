@@ -1,23 +1,111 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Header from '@/components/Header';
-import { CheckCircle2, XCircle, Play, Volume2, TrendingUp, Award } from 'lucide-react';
+import DataTable from '@/components/DataTable';
+import FormContribution from '@/components/FormContribution';
+import { Tooltip } from '@/components/ui/tooltip';
+import { CheckCircle2, XCircle, FileAudio, FileText, BookOpen, Languages, FileSearch } from 'lucide-react';
 import { mockRecordings } from '@/lib/dummy';
+import { INITIAL_FORM_CONTRIBUTION } from '@/lib/constants';
+import { validateForm } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
+import moment from "moment";
+
+const columnsValidations = ({ setSelectedContribution, setFormData }) => [
+  {
+    id: "text",
+    name: "Kosakata",
+    render: ({ value }) => <span className="font-medium">{value}</span>
+  },
+  {
+    id: "languageName",
+    name: "Bahasa",
+  },
+  {
+    id: "user_name",
+    name: "Dibuat Oleh",
+  },
+  {
+    id: "created_at",
+    name: "Tanggal Dibuat",
+    render: ({ value }) => <span>{moment(value).format("DD/MM/YYYY")}</span>,
+  },
+  {
+    id: "action",
+    name: "Aksi",
+    render: ({ row }) => (
+      <Tooltip label="Tinjau">
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => {
+            setFormData(row);
+            setSelectedContribution(true);
+          }}
+        >
+          <FileSearch className="text-primary" style={{ width: "1.5rem", height: "1.5rem" }} />
+        </Button>
+      </Tooltip>
+    ),
+  },
+];
+
+const columnsHistory = [
+  {
+    id: "text",
+    name: "Kosakata",
+    render: ({ value }) => <span className="font-medium">{value}</span>
+  },
+  {
+    id: "languageName",
+    name: "Bahasa",
+  },
+  {
+    id: "user_name",
+    name: "Dibuat Oleh",
+  },
+  {
+    id: "validated_at",
+    name: "Tanggal Terverifikasi",
+    render: ({ value }) => <span>{moment(value).format("DD/MM/YYYY")}</span>,
+  },
+  {
+    id: "notes",
+    name: "Catatan",
+  },
+];
 
 const ValidatorDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useUser();
-  const [selectedRecording, setSelectedRecording] = useState<string | null>(null);
-  const [editedTranscript, setEditedTranscript] = useState('');
-  const [recordings, setRecordings] = useState(mockRecordings.filter(r => r.status === 'pending'));
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedContribution, setSelectedContribution] = useState(false);
+  const [formData, setFormData] = useState(INITIAL_FORM_CONTRIBUTION);
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const itemsPerPage = 5;
+
+  // Separate pending and validated recordings
+  const pendingRecordings = mockRecordings.filter(r => r.status === 'pending');
+  const validatedRecordings = mockRecordings.filter(r => r.status === 'approved' || r.status === 'rejected');
+  
+  // Pagination for pending recordings
+  const totalPages = Math.ceil(pendingRecordings.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedRecordings = pendingRecordings.slice(startIndex, startIndex + itemsPerPage);
+
+  // Pagination for validated recordings
+  const totalPagesValidated = Math.ceil(validatedRecordings.length / itemsPerPage);
+
+  // Stats calculations
+  const totalValidated = validatedRecordings.length;
+  const totalPending = pendingRecordings.length;
+  const totalRecordings = mockRecordings.length;
+  const percentageValidated = totalRecordings > 0 ? Math.round((totalValidated / totalRecordings) * 100) : 0;
 
   if (!user || (user.role !== 'validator' && user.role !== 'admin')) {
     return (
@@ -34,63 +122,62 @@ const ValidatorDashboard = () => {
     );
   }
 
-  const handleSelectRecording = (recordingId: string) => {
-    setSelectedRecording(recordingId);
-    const recording = recordings.find(r => r.id === recordingId);
-    if (recording) {
-      setEditedTranscript(recording.transcript_ai);
+  const getContributionTypeIcon = (type: string) => {
+    switch (type) {
+      case 'voice': return <FileAudio className="h-4 w-4" />;
+      case 'vocabulary': return <FileText className="h-4 w-4" />;
+      case 'folktale': return <BookOpen className="h-4 w-4" />;
+      case 'translation': return <Languages className="h-4 w-4" />;
+      default: return <FileText className="h-4 w-4" />;
     }
   };
 
-  const handleApprove = () => {
-    if (!selectedRecording) return;
-    
-    setRecordings(prev => prev.filter(r => r.id !== selectedRecording));
-    setSelectedRecording(null);
-    setEditedTranscript('');
-    
-    toast({
-      title: 'Rekaman Disetujui',
-      description: 'Rekaman telah disetujui dan ditambahkan ke dataset.',
-    });
+  const getContributionTypeLabel = (type: string) => {
+    const labels = {
+      voice: 'Rekam Suara',
+      vocabulary: 'Kosakata',
+      folktale: 'Cerita Rakyat',
+      translation: 'Terjemahan'
+    };
+    return labels[type as keyof typeof labels] || type;
   };
 
-  const handleReject = () => {
-    if (!selectedRecording) return;
-    
-    setRecordings(prev => prev.filter(r => r.id !== selectedRecording));
-    setSelectedRecording(null);
-    setEditedTranscript('');
-    
-    toast({
-      title: 'Rekaman Ditolak',
-      description: 'Rekaman telah ditolak dan dihapus dari antrian.',
-      variant: 'destructive',
-    });
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm(formData)) {
+      toast({ title: "Silahkan lengkapi field kontribusi yang diperlukan!" });
+      return;
+    };
+    setReviewLoading(true);
 
-  const selectedRecordingData = recordings.find(r => r.id === selectedRecording);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    toast({ title: "Kontribusi berhasil dikirim! Terima kasih atas partisipasi Anda." });
+    
+    setReviewLoading(false);
+  };
 
   return (
     <div className="py-16">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <Header
-          title="Dashboard Validator"
-          description="Validasi dan koreksi transkripsi rekaman dari kontributor"
+          title="Dashboard Validasi"
+          description="Validasi dan verifikasi kontribusi dari para kontributor"
         />
 
-        {/* Stats */}
+        {/* 1. Summary Stats */}
         <div className="grid gap-6 md:grid-cols-3 mb-8">
           <Card>
             <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Volume2 className="h-5 w-5 text-primary" />
-                </div>
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{recordings.length}</p>
-                  <p className="text-sm text-muted-foreground">Antrian Validasi</p>
+                  <p className="text-sm text-muted-foreground mb-1">Total Validasi Selesai</p>
+                  <p className="text-3xl font-bold text-foreground">{totalValidated}</p>
+                </div>
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <CheckCircle2 className="h-6 w-6 text-primary" />
                 </div>
               </div>
             </CardContent>
@@ -98,13 +185,13 @@ const ValidatorDashboard = () => {
 
           <Card>
             <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-secondary/10 flex items-center justify-center">
-                  <CheckCircle2 className="h-5 w-5 text-secondary" />
-                </div>
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{user.validationCount || 0}</p>
-                  <p className="text-sm text-muted-foreground">Total Validasi</p>
+                  <p className="text-sm text-muted-foreground mb-1">Validasi Menunggu</p>
+                  <p className="text-3xl font-bold text-foreground">{totalPending}</p>
+                </div>
+                <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center">
+                  <XCircle className="h-6 w-6 text-accent" />
                 </div>
               </div>
             </CardContent>
@@ -112,174 +199,74 @@ const ValidatorDashboard = () => {
 
           <Card>
             <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center">
-                  <TrendingUp className="h-5 w-5 text-accent" />
-                </div>
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{user.accuracy || 0}%</p>
-                  <p className="text-sm text-muted-foreground">Akurasi</p>
+                  <p className="text-sm text-muted-foreground mb-1">Persentase Tervalidasi</p>
+                  <p className="text-3xl font-bold text-foreground">{percentageValidated}%</p>
+                </div>
+                <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <span className="text-lg font-bold text-secondary">{percentageValidated}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Recordings Queue */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Antrian Rekaman</CardTitle>
-              <CardDescription>
-                Pilih rekaman untuk divalidasi
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="border rounded-md">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Dialek</TableHead>
-                      <TableHead>Tanggal</TableHead>
-                      <TableHead>Aksi</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {recordings.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={3} className="text-center text-muted-foreground">
-                          Tidak ada rekaman dalam antrian
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      recordings.map((recording) => (
-                        <TableRow key={recording.id}>
-                          <TableCell>{recording.dialect}</TableCell>
-                          <TableCell className="text-sm text-muted-foreground">
-                            {new Date(recording.created_at).toLocaleDateString('id-ID')}
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              size="sm"
-                              variant={selectedRecording === recording.id ? 'default' : 'outline'}
-                              onClick={() => handleSelectRecording(recording.id)}
-                            >
-                              <Play className="h-3 w-3 mr-1" />
-                              {selectedRecording === recording.id ? 'Dipilih' : 'Pilih'}
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
+        {/* 2. Task Table */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Daftar Tugas Validasi</CardTitle>
+            <CardDescription>
+              Pilih kontribusi untuk divalidasi dan verifikasi
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DataTable
+              columns={columnsValidations({ setSelectedContribution, setFormData })}
+              rows={paginatedRecordings}
+              totalPages={totalPages}
+            />
+          </CardContent>
+        </Card>
 
-          {/* Validation Panel */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Panel Validasi</CardTitle>
-              <CardDescription>
-                Dengarkan audio dan koreksi transkripsi jika diperlukan
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {!selectedRecordingData ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  Pilih rekaman dari antrian untuk mulai validasi
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {/* Audio Player */}
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Audio Rekaman
-                    </label>
-                    <div className="border rounded-md p-4 bg-muted/30">
-                      <div className="flex items-center justify-center gap-4">
-                        <Button size="icon" variant="outline">
-                          <Play className="h-4 w-4" />
-                        </Button>
-                        <div className="flex-1 h-2 bg-muted rounded-full">
-                          <div className="h-full bg-primary rounded-full" style={{ width: '0%' }} />
-                        </div>
-                        <span className="text-sm text-muted-foreground">0:00</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-2 text-center">
-                        Audio demo - Klik play untuk mendengar
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* AI Transcript */}
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Transkripsi AI
-                      <Badge variant="outline" className="ml-2">Auto-generated</Badge>
-                    </label>
-                    <div className="border rounded-md p-3 bg-muted/30">
-                      <p className="text-sm text-foreground">{selectedRecordingData.transcript_ai}</p>
-                    </div>
-                  </div>
-
-                  {/* Human Correction */}
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Koreksi Manual
-                    </label>
-                    <Textarea
-                      value={editedTranscript}
-                      onChange={(e) => setEditedTranscript(e.target.value)}
-                      className="min-h-[100px]"
-                      placeholder="Edit transkripsi jika ada kesalahan..."
-                    />
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2 pt-4">
-                    <Button
-                      onClick={handleApprove}
-                      className="flex-1"
-                    >
-                      <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Setuju
-                    </Button>
-                    <Button
-                      onClick={handleReject}
-                      variant="destructive"
-                      className="flex-1"
-                    >
-                      <XCircle className="mr-2 h-4 w-4" />
-                      Tolak
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Achievement Badge */}
-        <Card className="mt-8">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="h-16 w-16 rounded-full bg-gradient-hero flex items-center justify-center">
-                <Award className="h-8 w-8 text-primary-foreground" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-foreground mb-1">
-                  Validator Terpercaya
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Terima kasih atas kontribusi Anda dalam menjaga kualitas dataset RANA
-                </p>
-              </div>
-            </div>
+        {/* 3. Validation History */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Riwayat Validasi</CardTitle>
+            <CardDescription>
+              Daftar kontribusi yang sudah Anda verifikasi
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DataTable
+              columns={columnsHistory}
+              rows={validatedRecordings}
+              totalPages={totalPagesValidated}
+            />
           </CardContent>
         </Card>
       </div>
+
+      {/* Forms Modal */}
+      <Dialog open={!!selectedContribution} onOpenChange={(open) => !open && setSelectedContribution(false)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              Tinjau Kontribusi:
+            </DialogTitle>
+            <DialogDescription>
+              Anda bisa meninjau, dan memverifikasi kontribusi berikut
+            </DialogDescription>
+          </DialogHeader>
+          <FormContribution
+            formData={formData}
+            setFormData={setFormData}
+            handleSubmit={handleSubmit}
+            loading={reviewLoading}
+            isReview
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

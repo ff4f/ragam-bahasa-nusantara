@@ -1,52 +1,75 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Header from "./Header";
-import MultiSelect from "./MultiSelect";
-import { Award, Upload, Loader2 } from "lucide-react";
+import FormContribution from "./FormContribution";
+import DataTable from "./DataTable";
+import { Award, Pencil } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
-import { provinceList, regionList, languageArchive, leaderboard } from "@/lib/dummy";
+import { leaderboard } from "@/lib/dummy";
+import { INITIAL_FORM_CONTRIBUTION } from "@/lib/constants";
+import { validateForm } from "@/lib/utils";
+import { mockRecordings } from "@/lib/dummy";
+import moment from "moment";
+
+const columnsHistory = ({ setFormDataModal, setOpenEditModal }) => [
+  {
+    id: "text",
+    name: "Kosakata",
+    render: ({ value }) => <span className="font-medium">{value}</span>
+  },
+  {
+    id: "languageName",
+    name: "Bahasa",
+  },
+  {
+    id: "created_at",
+    name: "Tanggal Dibuat",
+    render: ({ value }) => <span>{moment(value).format("DD/MM/YYYY")}</span>
+  },
+  {
+    id: "action",
+    name: "Aksi",
+    render: ({ row }) => (
+      <Tooltip label="Ubah">
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => {
+            setFormDataModal(row);
+            setOpenEditModal(true);
+          }}
+        >
+          <Pencil className="text-primary" />
+        </Button>
+      </Tooltip>
+    ),
+  },
+];
 
 const ContributeLoggedIn = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user: userContext } = useUser();
+  
   const [user, setUser] = useState(userContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState(INITIAL_FORM_CONTRIBUTION);
 
-  const [formData, setFormData] = useState({
-    province: [],
-    region: [],
-    language: "",
-    ethnic: "",
-    dialect: "",
-    text: "",
-    textTranslation: "",
-    sentence: "",
-    sentenceTranslation: "",
-    textAudio: "",
-    sentenceAudio: "",
-    notes: "",
-  });
+  // edit modal
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [formDataModal, setFormDataModal] = useState(INITIAL_FORM_CONTRIBUTION);
+  const [editLoading, setEditLoading] = useState(false);
 
-  const validateForm = () => {
-    const { province, language, text, textTranslation, sentence, sentenceTranslation, textAudio, sentenceAudio } = formData;
-    return province.length > 0 && language && text && textTranslation && sentence && sentenceTranslation && textAudio && sentenceAudio;
-  };
-
-  const handleFile = (e: any, type: string) => {
-    setFormData({ ...formData, [type]: e.target.files[0] });
-  };
+  const totalPages = Math.ceil(mockRecordings.length / 5);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) {
+    if (!validateForm(formData)) {
       toast({ title: "Silahkan lengkapi field kontribusi yang diperlukan!" });
       return;
     };
@@ -58,21 +81,26 @@ const ContributeLoggedIn = () => {
     toast({ title: "Kontribusi berhasil dikirim! Terima kasih atas partisipasi Anda." });
     
     // Reset form
-    setFormData({
-      province: [],
-      region: [],
-      language: "",
-      ethnic: "",
-      dialect: "",
-      text: "",
-      textTranslation: "",
-      sentence: "",
-      sentenceTranslation: "",
-      textAudio: "",
-      sentenceAudio: "",
-      notes: "",
-    });
+    setFormData(INITIAL_FORM_CONTRIBUTION);
     setIsSubmitting(false);
+  };
+
+  const handleSubmitEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm(formDataModal)) {
+      toast({ title: "Silahkan lengkapi field kontribusi yang diperlukan!" });
+      return;
+    };
+    setEditLoading(true);
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    toast({ title: "Kontribusi berhasil diubah! Terima kasih atas partisipasi Anda." });
+    
+    // Reset form
+    setFormDataModal(INITIAL_FORM_CONTRIBUTION);
+    setEditLoading(false);
   };
 
   useEffect(() => {
@@ -103,204 +131,12 @@ const ContributeLoggedIn = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Province & Region */}
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="province">Provinsi *</Label>
-                      <MultiSelect
-                        placeholder="Pilih provinsi"
-                        options={provinceList}
-                        value={formData.province}
-                        onChange={(value) =>
-                          setFormData({ ...formData, province: value })
-                        }
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="region">Asal Daerah</Label>
-                      <MultiSelect
-                        placeholder="Pilih asal daerah"
-                        options={regionList}
-                        value={formData.region}
-                        onChange={(value) =>
-                          setFormData({ ...formData, region: value })
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  {/* Language & Ethnic */}
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="language">Bahasa Daerah *</Label>
-                      <Select
-                        value={formData.language}
-                        onValueChange={(value) =>
-                          setFormData({ ...formData, language: value })
-                        }
-                        required
-                      >
-                        <SelectTrigger id="language">
-                          <SelectValue placeholder="Pilih bahasa" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {languageArchive.map((lang) => (
-                            <SelectItem key={lang.id} value={lang.id}>
-                              {lang.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="ethnic">Suku</Label>
-                      <Input
-                        id="ethnic"
-                        placeholder="Contoh: Jawa, Sunda"
-                        value={formData.ethnic}
-                        onChange={(e) =>
-                          setFormData({ ...formData, ethnic: e.target.value })
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  {/* Dialect */}
-                  <div className="space-y-2">
-                    <Label htmlFor="dialect">Dialek Spesifik</Label>
-                    <Input
-                      id="dialect"
-                      placeholder="Contoh: Jawa Ngapak, Sunda Priangan"
-                      value={formData.dialect}
-                      onChange={(e) =>
-                        setFormData({ ...formData, dialect: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  {/* Vocabulary & its Translation */}
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="text">
-                        Kosakata *
-                      </Label>
-                      <Input
-                        id="text"
-                        placeholder="Masukkan kata dalam bahasa daerah"
-                        value={formData.text}
-                        onChange={(e) =>
-                          setFormData({ ...formData, text: e.target.value })
-                        }
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="textTranslation">
-                        Terjemahan Kosakata *
-                      </Label>
-                      <Input
-                        id="textTranslation"
-                        placeholder="Terjemahan kosakata dalam bahasa indonesia"
-                        value={formData.textTranslation}
-                        onChange={(e) =>
-                          setFormData({ ...formData, textTranslation: e.target.value })
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  {/* Sentence & its Translation */}
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="sentence">
-                        Contoh Kalimat *
-                      </Label>
-                      <Input
-                        id="sentence"
-                        placeholder="Masukkan contoh kalimat dalam bahasa daerah"
-                        value={formData.sentence}
-                        onChange={(e) =>
-                          setFormData({ ...formData, sentence: e.target.value })
-                        }
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="sentenceTranslation">
-                        Terjemahan Contoh Kalimat *
-                      </Label>
-                      <Input
-                        id="sentenceTranslation"
-                        placeholder="Terjemahan contoh kalimat dalam bahasa indonesia"
-                        value={formData.sentenceTranslation}
-                        onChange={(e) =>
-                          setFormData({ ...formData, sentenceTranslation: e.target.value })
-                        }
-                      />
-                    </div>
-                  </div>                  
-
-                  {/* Audio Recording for Text */}
-                  <div className="space-y-2">
-                    <Label>Rekam Audio Kosakata *</Label>
-                    <Input
-                      id="textAudio"
-                      type="file"
-                      accept="audio/*"
-                      className="cursor-pointer"
-                      onChange={(e) => handleFile(e, "textAudio")}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Format: MP3, WAV, M4A (Maks. 10MB)
-                    </p>
-                  </div>
-
-                  {/* Audio Recording for Sentence */}
-                  <div className="space-y-2">
-                    <Label>Rekam Audio Contoh Kalimat *</Label>
-                    <Input
-                      id="sentenceAudio"
-                      type="file"
-                      accept="audio/*"
-                      className="cursor-pointer"
-                      onChange={(e) => handleFile(e, "sentenceAudio")}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Format: MP3, WAV, M4A (Maks. 10MB)
-                    </p>
-                  </div>               
-
-                  {/* Notes */}
-                  <div className="space-y-2">
-                    <Label htmlFor="notes">Catatan Tambahan</Label>
-                    <Textarea
-                      id="notes"
-                      placeholder="Tambahkan catatan atau konteks untuk kontribusi Anda"
-                      value={formData.notes}
-                      onChange={(e) =>
-                        setFormData({ ...formData, notes: e.target.value })
-                      }
-                      rows={3}
-                    />
-                  </div>
-
-                  <Button type="submit" className="w-full" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Mengirim...
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="mr-2 h-4 w-4" />
-                        Kirim Kontribusi
-                      </>
-                    )}
-                  </Button>
-                </form>
+                <FormContribution
+                  formData={formData}
+                  setFormData={setFormData}
+                  handleSubmit={handleSubmit}
+                  loading={isSubmitting}
+                />
               </CardContent>
             </Card>
           </div>
@@ -320,6 +156,10 @@ const ContributeLoggedIn = () => {
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Total XP</span>
                     <span className="font-bold text-primary">{user.xp}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Level</span>
+                    <span className="font-medium">{user.level}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Badge</span>
@@ -360,9 +200,44 @@ const ContributeLoggedIn = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* History */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Riwayat Kontribusi</CardTitle>
+                <CardDescription>Daftar kontribusi yang sudah Anda buat</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <DataTable
+                  columns={columnsHistory({ setFormDataModal, setOpenEditModal })}
+                  rows={mockRecordings}
+                  totalPages={totalPages}
+                />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      <Dialog open={!!openEditModal} onOpenChange={(open) => !open && setOpenEditModal(false)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              Ubah Kontribusi:
+            </DialogTitle>
+            <DialogDescription>
+              Anda bisa mengubah kontribusi yang telah dibuat
+            </DialogDescription>
+          </DialogHeader>
+          <FormContribution
+            formData={formDataModal}
+            setFormData={setFormDataModal}
+            handleSubmit={handleSubmitEdit}
+            loading={editLoading}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -16,6 +16,8 @@ export interface User {
   validationCount: number;
   accuracy: number;
   avatar?: string;
+  level: number;
+  nextXp: number;
 }
 
 interface UserContextType {

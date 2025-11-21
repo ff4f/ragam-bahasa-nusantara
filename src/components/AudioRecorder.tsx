@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Mic, Square, Play, Trash2 } from 'lucide-react';
@@ -5,9 +6,12 @@ import { useAudioRecorder } from '@/hooks/use-audio-recorder';
 
 interface AudioRecorderProps {
   onSave?: (audioURL: string) => void;
+  showButtonSave?: boolean;
+  reset?: boolean;
+  disabled?: boolean;
 }
 
-export const AudioRecorder = ({ onSave }: AudioRecorderProps) => {
+export const AudioRecorder = ({ onSave, showButtonSave, reset, disabled }: AudioRecorderProps) => {
   const { isRecording, audioURL, recordingTime, startRecording, stopRecording, resetRecording } = useAudioRecorder();
 
   const formatTime = (seconds: number) => {
@@ -23,17 +27,27 @@ export const AudioRecorder = ({ onSave }: AudioRecorderProps) => {
     }
   };
 
+  useEffect(() => {
+    if (!showButtonSave) onSave(audioURL);
+  }, [audioURL]);
+
+  useEffect(() => {
+    if (reset) resetRecording();
+  }, [reset]);
+
   return (
-    <Card>
+    <Card className="bg-transparent">
       <CardContent className="p-6">
         <div className="flex flex-col items-center space-y-4">
           {/* Recording controls */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-center gap-4 w-full">
             {!isRecording && !audioURL && (
               <Button
+                type="button"
                 size="lg"
                 onClick={startRecording}
                 className="h-16 w-16 rounded-full"
+                disabled={disabled}
               >
                 <Mic className="h-6 w-6" />
               </Button>
@@ -54,6 +68,7 @@ export const AudioRecorder = ({ onSave }: AudioRecorderProps) => {
                   variant="destructive"
                   onClick={stopRecording}
                   className="h-16 w-16 rounded-full"
+                  disabled={disabled}
                 >
                   <Square className="h-6 w-6" />
                 </Button>
@@ -61,14 +76,16 @@ export const AudioRecorder = ({ onSave }: AudioRecorderProps) => {
             )}
 
             {audioURL && !isRecording && (
-              <div className="flex flex-col items-center gap-4 w-full">
-                <audio src={audioURL} controls className="w-full max-w-md" />
+              <div className="flex flex-col items-center gap-4 w-full min-w-80">
+                <audio src={audioURL} controls className="w-full" />
                 <div className="flex gap-2">
-                  <Button onClick={handleSave} size="sm">
-                    <Play className="mr-2 h-4 w-4" />
-                    Simpan Rekaman
-                  </Button>
-                  <Button onClick={resetRecording} variant="outline" size="sm">
+                  {showButtonSave && onSave && (
+                    <Button onClick={handleSave} size="sm" disabled={disabled}>
+                      <Play className="mr-2 h-4 w-4" />
+                      Simpan Rekaman
+                    </Button>
+                  )}
+                  <Button onClick={resetRecording} variant="outline" size="sm" disabled={disabled}>
                     <Trash2 className="mr-2 h-4 w-4" />
                     Hapus
                   </Button>

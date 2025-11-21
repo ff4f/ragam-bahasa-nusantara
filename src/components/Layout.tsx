@@ -42,8 +42,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     setUser(userContext);
-    if (userContext) setMenus(navLinks);
-    else setMenus(navLinks.filter(item => item.to !== "/missions"));
+    const specialMenuConditions = {
+      "/missions": userContext?.role === "contributor",
+      "/contribute": !userContext || userContext?.role === "contributor",
+      "/validate": userContext?.role === "validator",
+    };
+    setMenus(navLinks.map(item => ({
+      ...item,
+      show: specialMenuConditions[item.to] ?? item.show
+    })));
   }, [userContext]);
 
   return (
@@ -57,7 +64,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
           {/* Desktop Navigation */}
           <div className="hidden items-center space-x-6 md:flex">
-            {menus.map((link) => (
+            {menus.map((link) => link.show && (
               <NavLink
                 key={link.to}
                 to={link.to}

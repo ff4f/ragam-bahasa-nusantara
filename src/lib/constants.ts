@@ -3,14 +3,15 @@ import { Mic, FileText, Flag, BadgeCheck } from "lucide-react";
 export const STORAGE_USER_KEY = 'rana_user';
 
 export const navLinks = [
-  { to: "/", label: "Beranda" },
-  { to: "/about", label: "Tentang" },
-  // { to: "/learn", label: "Belajar" },
-  { to: "/explore", label: "Eksplor" },
-  { to: "/dictionary", label: "Kamus" },
-  { to: "/missions", label: "Misi" },
-  { to: "/contribute", label: "Kontribusi" },
-  { to: "/contact", label: "Kontak" },
+  { to: "/", label: "Beranda", show: true },
+  { to: "/about", label: "Tentang", show: true },
+  // { to: "/learn", label: "Belajar", show: true },
+  { to: "/explore", label: "Eksplor", show: true },
+  { to: "/dictionary", label: "Kamus", show: true },
+  { to: "/missions", label: "Misi", show: false },
+  { to: "/contribute", label: "Kontribusi", show: true },
+  { to: "/validate", label: "Validasi", show: false },
+  { to: "/contact", label: "Kontak", show: true },
 ];
 
 export const statusList = [
@@ -51,3 +52,18 @@ export const contributionTypes = [
     benefits: ["Flagging konten bermasalah", "Koreksi makna atau penulisan"],
   },
 ];
+
+export const INITIAL_FORM_CONTRIBUTION = {
+  province: [],
+  region: [],
+  language: "",
+  ethnic: "",
+  dialect: "",
+  text: "",
+  textTranslation: "",
+  sentence: "",
+  sentenceTranslation: "",
+  textAudio: "",
+  sentenceAudio: "",
+  notes: "",
+};

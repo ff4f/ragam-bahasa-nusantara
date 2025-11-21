@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +14,7 @@ const Auth = () => {
   const navigate = useNavigate();
   const { user, updateProfile } = useUser();
   const { toast } = useToast();
+  const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -27,9 +28,12 @@ const Auth = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Mock login - in production this would call backend API
-    const mockUser = getMockUser("contributor");
+    const mockUser = getMockUser(email);
+    if (!mockUser) {
+      toast({ title: "Akun tidak terdaftar" });
+      return;
+    }
     mockUser.email = email;
-    mockUser.name = name || "Demo User";
     updateProfile(mockUser);
     toast({ title: "Berhasil masuk!" });
     navigate("/");
@@ -38,7 +42,7 @@ const Auth = () => {
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
     // Mock signup - in production this would call backend API
-    const mockUser = getMockUser("contributor");
+    const mockUser = getMockUser(`${role}@gmail.com`);
     mockUser.email = email;
     mockUser.name = name;
     updateProfile(mockUser);
@@ -96,7 +100,7 @@ const Auth = () => {
               <form onSubmit={handleSignup} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="role">Peran</Label>
-                  <Select>
+                  <Select value={role} onValueChange={(value) => setRole(value)}>
                     <SelectTrigger id="role">
                       <SelectValue placeholder="Pilih peran yang diinginkan" />
                     </SelectTrigger>

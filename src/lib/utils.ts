@@ -21,17 +21,39 @@ export const capitalize = (sentence: string, firstWordOnly?: boolean) => {
     .join(" ");
 };
 
-export const getMockUser = (role = 'contributor') => {
-  return {
-    id: `user_${Date.now()}`,
-    name: 'Demo User',
-    email: 'demo@rana.id',
-    role,
-    xp: role === 'contributor' ? 250 : 0,
-    badges: role === 'contributor' ? ['Pemula', 'Kontributor Aktif'] : [],
-    validationCount: role === 'validator' ? 127 : 0,
-    accuracy: role === 'validator' ? 94.5 : 0,
-    avatar: "",
+export const getMockUser = (email: string) => {
+  const users = {
+    "validator@gmail.com": {
+      id: `validator_${Date.now()}`,
+      name: 'Validator User',
+      email,
+      role: 'validator',
+      xp: 0,
+      badges: [],
+      validationCount: 127,
+      accuracy: 94.5,
+      avatar: "",
+      level: 1,
+      nextXp: 100,
+    },
+    "contributor@gmail.com": {
+      id: `contributor_${Date.now()}`,
+      name: 'Contributor User',
+      email,
+      role: 'contributor',
+      xp: 250,
+      badges: ['Pemula', 'Kontributor Aktif'],
+      validationCount: 0,
+      accuracy: 0,
+      avatar: "",
+      level: 2,
+      nextXp: 300,
+    },
   };
+  return users[email];
 };
 
+export const validateForm = (formData: any) => {
+  const { province, language, text, textTranslation, sentence, sentenceTranslation, textAudio, sentenceAudio } = formData;
+  return province.length > 0 && language && text && textTranslation && sentence && sentenceTranslation && textAudio && sentenceAudio;
+};

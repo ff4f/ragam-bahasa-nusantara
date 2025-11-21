@@ -4,19 +4,36 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MapPin, Users, Volume2, ArrowLeft, BadgeCheck, Flag, Search } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { MapPin, Users, Volume2, ArrowLeft, BadgeCheck, EllipsisVertical, Search } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getStatusColor, capitalize } from "@/lib/utils";
-import { statusList, verifiedStatusList } from "@/lib/constants";
+import { getStatusColor, capitalize, validateForm } from "@/lib/utils";
+import { statusList, verifiedStatusList, INITIAL_FORM_CONTRIBUTION } from "@/lib/constants";
 import { vocabulary } from "@/lib/dummy";
+import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/use-user";
+import FormContribution from "@/components/FormContribution";
 
 const LanguageDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { user } = useUser();
   const language = location.state?.language;
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+
+  // edit modal
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [formDataModal, setFormDataModal] = useState<any>(INITIAL_FORM_CONTRIBUTION);
+  const [editLoading, setEditLoading] = useState(false);
 
   const filteredVocabulary = vocabulary.filter((vocab) => {
     const matchesSearch = vocab.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -39,6 +56,23 @@ const LanguageDetail = () => {
       </div>
     );
   }
+
+  const handleSubmitEdit = async () => {
+    if (!validateForm(formDataModal)) {
+      toast({ title: "Silahkan lengkapi field kontribusi yang diperlukan!" });
+      return;
+    };
+    setEditLoading(true);
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    toast({ title: "Kontribusi berhasil diubah! Terima kasih atas partisipasi Anda." });
+    
+    // Reset form
+    setFormDataModal(INITIAL_FORM_CONTRIBUTION);
+    setEditLoading(false);
+  };
 
   return (
     <div className="py-16">
@@ -154,16 +188,25 @@ const LanguageDetail = () => {
                       </Tooltip>
                     ) : null}
                   </div>
-                  <div className="flex gap-1">
-                    <Tooltip label="Laporkan">
-                      <Button
-                        variant="ghost"
-                        className="h-6 w-6 p-2"
-                      >
-                        <Flag/>
-                      </Button>
-                    </Tooltip>
-                  </div>
+
+                  {item.created_by === user?.email && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="rounded-[50%] h-6 w-6 p-4"
+                        >
+                          <EllipsisVertical style={{ width: "1.2rem", height: "1.2rem" }}/>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => {
+                          setFormDataModal(item);
+                          setOpenEditModal(true);
+                        }}>Ubah</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
                 <CardDescription>{capitalize(item.translation)}</CardDescription>
               </CardHeader>
@@ -194,6 +237,26 @@ const LanguageDetail = () => {
           ))}
         </div>
       </div>
+
+      {/* Edit Modal */}
+      <Dialog open={!!openEditModal} onOpenChange={(open) => !open && setOpenEditModal(false)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              Ubah Kontribusi:
+            </DialogTitle>
+            <DialogDescription>
+              Anda bisa mengubah kontribusi yang telah dibuat
+            </DialogDescription>
+          </DialogHeader>
+          <FormContribution
+            formData={formDataModal}
+            setFormData={setFormDataModal}
+            handleSubmit={handleSubmitEdit}
+            loading={editLoading}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
