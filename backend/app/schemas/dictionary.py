@@ -20,9 +20,20 @@ class DictionaryResponse(DictionaryBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
+    
+    # Interaction counts
+    like_count: int = 0
+    comment_count: int = 0
+    is_liked: bool = False # For current user context
 
     class Config:
         from_attributes = True
+
+class DictionaryResponsePaginated(BaseModel):
+    items: List[DictionaryResponse]
+    total: int
+    page: int
+    limit: int
 
 class TranslateRequest(BaseModel):
     text: str

@@ -20,6 +20,7 @@ import { statusList, verifiedStatusList, INITIAL_FORM_CONTRIBUTION } from "@/lib
 import { vocabulary, comments } from "@/lib/dummy";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
+import { dictionaryService } from "@/services/dictionary.service";
 import FormContribution from "@/components/FormContribution";
 
 const LanguageDetail = () => {
@@ -31,6 +32,7 @@ const LanguageDetail = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [vocabs, setVocabs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // edit modal
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -66,36 +68,76 @@ const LanguageDetail = () => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     toast({ title: "Kontribusi berhasil diubah! Terima kasih atas partisipasi Anda." });
-    
+
     // Reset form
     setFormDataModal(INITIAL_FORM_CONTRIBUTION);
     setEditLoading(false);
   };
 
-  const handleLike = (id: any) => {
-    setVocabs(vocabs.map(item => ({
-      ...item,
-      liked: item.id === id ? !item?.liked : item?.liked,
-      like: item.id === id ? (!item?.liked ? (item.like || 0) + 1 : (item.like || 0) - 1) : item.like,
-    })));
+  const [selectedVocabId, setSelectedVocabId] = useState<number | null>(null);
+
+  const handleLike = async (id: any) => {
+    if (!user) return;
+    try {
+      const result = await dictionaryService.toggleLike(id);
+      setVocabs(vocabs.map(item => ({
+        ...item,
+        liked: item.id === id ? result.liked : item.liked,
+        like: item.id === id ? result.total_likes : item.like,
+      })));
+    } catch (error) {
+      toast({ title: "Gagal menyukai konten", variant: "destructive" });
+    }
   };
 
   useEffect(() => {
-    const filteredVocabulary = vocabulary.filter((vocab) => {
-      const matchesSearch = vocab.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            vocab.translation.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesStatus = statusFilter === "all" || vocab.verified === !!(statusFilter === "verified");
-      return matchesSearch && matchesStatus;
-    });
-    setVocabs(filteredVocabulary);
-  }, [vocabulary, searchQuery, statusFilter]);
+    const fetchVocabulary = async () => {
+      if (language.id === "10") { // Bahasa Jawa Banyumasan
+        setLoading(true);
+        try {
+          const response = await dictionaryService.search(searchQuery, "jv_ngapak");
+          // Transform API response to match UI format
+          const mappedVocabs = response.items.map((item: any) => ({
+            id: item.id,
+            word: item.target_text,
+            translation: item.source_text,
+            level: item.dialect || "Umum", // Use dialect as level/category for now
+            example: item.example_target || "-",
+            exampleTranslation: item.example_source || "-",
+            verified: true, // Assume seeded data is verified
+            like: item.like_count || 0,
+            comment: item.comment_count || 0,
+            liked: item.is_liked || false,
+            created_by: "system"
+          }));
+          setVocabs(mappedVocabs);
+        } catch (error) {
+          console.error("Failed to fetch vocabulary:", error);
+          toast({ title: "Gagal memuat data kosakata", variant: "destructive" });
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        // Fallback to dummy data for other languages
+        const filteredVocabulary = vocabulary.filter((vocab) => {
+          const matchesSearch = vocab.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            vocab.translation.toLowerCase().includes(searchQuery.toLowerCase());
+          const matchesStatus = statusFilter === "all" || vocab.verified === !!(statusFilter === "verified");
+          return matchesSearch && matchesStatus;
+        });
+        setVocabs(filteredVocabulary);
+      }
+    };
+
+    fetchVocabulary();
+  }, [language, searchQuery, statusFilter]);
 
   return (
     <div className="py-16">
       <div className="container mx-auto px-4">
         {/* Back Button */}
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           className="mb-6"
           onClick={() => navigate('/explore')}
         >
@@ -200,7 +242,7 @@ const LanguageDetail = () => {
                     </Tooltip>
                     {item.verified ? (
                       <Tooltip label="Terverifikasi">
-                        <BadgeCheck className="text-[#1f8493ff]"/>
+                        <BadgeCheck className="text-[#1f8493ff]" />
                       </Tooltip>
                     ) : null}
                   </div>
@@ -212,7 +254,7 @@ const LanguageDetail = () => {
                           variant="ghost"
                           className="rounded-[50%] h-6 w-6 p-4"
                         >
-                          <EllipsisVertical style={{ width: "1.2rem", height: "1.2rem" }}/>
+                          <EllipsisVertical style={{ width: "1.2rem", height: "1.2rem" }} />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
@@ -245,10 +287,13 @@ const LanguageDetail = () => {
                     <Button
                       variant="ghost"
                       className="rounded-[50%] h-6 w-6 p-4"
-                      onClick={() => setOpenCommentModal(true)}
+                      onClick={() => {
+                        setSelectedVocabId(item.id);
+                        setOpenCommentModal(true);
+                      }}
                       disabled={!user && item.comment <= 0}
                     >
-                      <MessageCircle style={{ width: "1.2rem", height: "1.2rem" }}/>
+                      <MessageCircle style={{ width: "1.2rem", height: "1.2rem" }} />
                     </Button>
                   </Tooltip>
                 </div>
@@ -261,7 +306,7 @@ const LanguageDetail = () => {
                       onClick={() => handleLike(item.id)}
                       disabled={!user}
                     >
-                      <Heart className={item?.liked ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
+                      <Heart className={item?.liked ? "text-primary fill-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }} />
                     </Button>
                   </Tooltip>
                 </div>
@@ -294,9 +339,12 @@ const LanguageDetail = () => {
       {/* Comments Modal */}
       <CommentsDialog
         open={openCommentModal}
-        handleClose={() => setOpenCommentModal(false)}
+        handleClose={() => {
+          setOpenCommentModal(false);
+          setSelectedVocabId(null);
+        }}
         user={user}
-        comments={comments}
+        dictionaryId={selectedVocabId}
       />
     </div>
   );

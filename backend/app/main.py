@@ -5,8 +5,9 @@ import time
 
 from .config import settings
 from .database import init_db, SessionLocal
-from .routers import auth_router, user_router, contact_router, dictionary_router
+from .routers import auth_router, user_router, contact_router, dictionary_router, interaction_router
 from .utils.seeder import seed_dictionaries
+from .utils.seed_csv import seed_ngapak
 
 # Create FastAPI application
 app = FastAPI(
@@ -29,6 +30,7 @@ async def startup_event():
     db = SessionLocal()
     try:
         seed_dictionaries(db)
+        seed_ngapak() # Seed from CSV
     finally:
         db.close()
     
@@ -38,7 +40,7 @@ async def startup_event():
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=settings.cors_origins_list,  # Use property to convert string to list
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -60,6 +62,7 @@ app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(contact_router)
 app.include_router(dictionary_router)
+app.include_router(interaction_router)
 
 
 # Root endpoint

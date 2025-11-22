@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
-from typing import Optional
+from typing import Union
+import json
 
 
 class Settings(BaseSettings):
@@ -13,8 +14,18 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
-    # CORS Settings
-    CORS_ORIGINS: list[str] = ["*"]  # Allow all origins for now
+    # CORS Settings - can be string or list
+    CORS_ORIGINS: str = "*"
+    
+    @property
+    def cors_origins_list(self) -> list[str]:
+        """Convert CORS_ORIGINS to list"""
+        if isinstance(self.CORS_ORIGINS, str):
+            if self.CORS_ORIGINS == "*":
+                return ["*"]
+            # Try comma-separated
+            return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
+        return self.CORS_ORIGINS
     
     # Application
     PROJECT_NAME: str = "Ragam Bahasa Nusantara API"

@@ -4,8 +4,10 @@ from sqlalchemy.orm import sessionmaker
 from .config import settings
 
 # Create database engine
-# Railway provides mysql:// but we need mysql+pymysql:// for the pymysql driver
-database_url = settings.DATABASE_URL.replace("mysql://", "mysql+pymysql://")
+# Ensure proper driver (mysql+pymysql://) for Railway and local
+database_url = settings.DATABASE_URL
+if database_url.startswith("mysql://") and not database_url.startswith("mysql+pymysql://"):
+    database_url = database_url.replace("mysql://", "mysql+pymysql://", 1)
 
 engine = create_engine(
     database_url,

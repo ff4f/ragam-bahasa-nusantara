@@ -11,6 +11,19 @@ export interface DictionaryEntry {
     category?: string;
     dialect?: string;
     region?: string;
+    like_count?: number;
+    comment_count?: number;
+    is_liked?: boolean;
+}
+
+export interface Comment {
+    id: number;
+    content: string;
+    user_id: number;
+    dictionary_id: number;
+    created_at: string;
+    user_name: string;
+    parent_id?: number;
 }
 
 export interface TranslateResponse {
@@ -33,6 +46,36 @@ export const dictionaryService = {
 
     seed: async () => {
         const response = await apiClient.post('/api/dictionary/seed');
+        return response.data;
+    },
+
+    search: async (query: string = "", targetLang: string = "", page: number = 1, limit: number = 50) => {
+        const response = await apiClient.get('/api/dictionary/search', {
+            params: {
+                q: query,
+                target_lang: targetLang,
+                page,
+                limit
+            }
+        });
+        return response.data;
+    },
+
+    getComments: async (dictionaryId: number) => {
+        const response = await apiClient.get<Comment[]>(`/api/interactions/dictionary/${dictionaryId}/comments`);
+        return response.data;
+    },
+
+    addComment: async (dictionaryId: number, content: string, parentId?: number) => {
+        const response = await apiClient.post<Comment>(`/api/interactions/dictionary/${dictionaryId}/comments`, {
+            content,
+            parent_id: parentId
+        });
+        return response.data;
+    },
+
+    toggleLike: async (dictionaryId: number) => {
+        const response = await apiClient.post<{ liked: boolean, total_likes: number }>(`/api/interactions/dictionary/${dictionaryId}/like`);
         return response.data;
     }
 };

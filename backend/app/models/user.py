@@ -24,5 +24,10 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
     
+    # Relationships
+    from sqlalchemy.orm import relationship
+    comments = relationship("Comment", back_populates="user")
+    likes = relationship("DictionaryLike", back_populates="user")
+    
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}', role='{self.role}')>"

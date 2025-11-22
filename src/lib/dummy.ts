@@ -203,13 +203,25 @@ export const languageArchive = [
     contributorCount: 300,
   },
   {
+    id: "10",
+    name: "Bahasa Jawa Banyumasan",
+    region: "Jawa Tengah",
+    regionId: ["33"],
+    ethnic: "Jawa",
+    speakers: "12 juta",
+    status: "recorded",
+    vocabularyCount: 500,
+    audioCount: 200,
+    contributorCount: 50,
+  },
+  {
     id: "2",
     name: "Bahasa Sunda",
     region: "Jawa Barat",
     regionId: ["32"],
     ethnic: "Sunda",
     speakers: "42 juta",
-    status: "recorded",
+    status: "not_recorded",
     vocabularyCount: 1800,
     audioCount: 950,
     contributorCount: 200,
@@ -233,7 +245,7 @@ export const languageArchive = [
     regionId: ["51"],
     ethnic: "Bali",
     speakers: "3,3 juta",
-    status: "recorded",
+    status: "not_recorded",
     vocabularyCount: 1500,
     audioCount: 750,
     contributorCount: 150,
@@ -245,7 +257,7 @@ export const languageArchive = [
     regionId: ["13"],
     ethnic: "Minangkabau",
     speakers: "5,5 juta",
-    status: "recorded",
+    status: "not_recorded",
     vocabularyCount: 1600,
     audioCount: 800,
     contributorCount: 200,
@@ -269,7 +281,7 @@ export const languageArchive = [
     regionId: ["52"],
     ethnic: "Sasak",
     speakers: "2,7 juta",
-    status: "recorded",
+    status: "not_recorded",
     vocabularyCount: 900,
     audioCount: 450,
     contributorCount: 120,
@@ -515,7 +527,7 @@ export const provinceList = [
   { value: 3, label: "Jawa Tengah" },
   { value: 4, label: "Jawa Timur" },
   { value: 5, label: "Bali" },
-  { value: 6, label: "Daerah Istimewa Yogyakarta"}
+  { value: 6, label: "Daerah Istimewa Yogyakarta" }
 ];
 
 // sample region data

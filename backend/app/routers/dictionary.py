@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from ..database import get_db
 from ..models.dictionary import Dictionary
-from ..schemas.dictionary import DictionaryCreate, DictionaryResponse, TranslateRequest, TranslateResponse
+from ..schemas.dictionary import DictionaryCreate, DictionaryResponse, TranslateRequest, TranslateResponse, DictionaryResponsePaginated
 from ..dependencies import get_current_active_user
 from ..models.user import User
 
@@ -98,12 +98,13 @@ async def translate_text(
     )
 
 @router.get("/", response_model=List[DictionaryResponse])
+@router.get("/search", response_model=DictionaryResponsePaginated) # Add search endpoint alias
 async def get_dictionaries(
     skip: int = 0,
     limit: int = 100,
     source_lang: Optional[str] = None,
     target_lang: Optional[str] = None,
-    search: Optional[str] = None,
+    q: Optional[str] = None, # Change 'search' to 'q' to match frontend
     db: Session = Depends(get_db)
 ):
     """
@@ -115,16 +116,19 @@ async def get_dictionaries(
         query = query.filter(Dictionary.source_lang == source_lang)
     if target_lang:
         query = query.filter(Dictionary.target_lang == target_lang)
-    if search:
-        search_term = f"%{search}%"
+    if q:
+        search_term = f"%{q}%"
         query = query.filter(
             or_(
                 Dictionary.source_text.ilike(search_term),
                 Dictionary.target_text.ilike(search_term)
             )
         )
+    
+    total = query.count()
+    items = query.offset(skip).limit(limit).all()
 
-    return query.offset(skip).limit(limit).all()
+    return {"items": items, "total": total, "page": (skip // limit) + 1, "limit": limit}
 
 @router.post("/seed", status_code=status.HTTP_201_CREATED)
 async def seed_dictionary(

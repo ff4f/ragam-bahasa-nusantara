@@ -20,3 +20,23 @@ class Dictionary(Base):
     
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationships
+    from sqlalchemy.orm import relationship
+    comments = relationship("Comment", back_populates="dictionary", cascade="all, delete-orphan")
+    likes = relationship("DictionaryLike", back_populates="dictionary", cascade="all, delete-orphan")
+
+    @property
+    def like_count(self):
+        return len(self.likes)
+
+    @property
+    def comment_count(self):
+        return len(self.comments)
+    
+    @property
+    def is_liked(self):
+        # This is tricky because it depends on the current user.
+        # For now, return False. The frontend might need to fetch this separately 
+        # or we handle it in the router by attaching it to the object.
+        return False
