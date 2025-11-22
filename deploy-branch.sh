@@ -55,7 +55,7 @@ echo ""
 echo -e "${YELLOW}Step 4: Deploy${NC}"
 echo "What do you want to deploy?"
 echo "1) Backend only"
-echo "2) Frontend only"
+echo "2) Frontend only"  
 echo "3) Both backend and frontend"
 read -p "Enter choice (1/2/3): " deploy_choice
 
@@ -63,21 +63,45 @@ case $deploy_choice in
     1)
         echo -e "${YELLOW}Deploying backend from branch: ${CURRENT_BRANCH}${NC}"
         cd backend
+        echo "Running: railway up"
         railway up
         cd ..
         ;;
     2)
         echo -e "${YELLOW}Deploying frontend from branch: ${CURRENT_BRANCH}${NC}"
+        echo "Running: railway up"
         railway up
         ;;
     3)
         echo -e "${YELLOW}Deploying both services from branch: ${CURRENT_BRANCH}${NC}"
+        
+        # Deploy backend
         echo "Deploying backend..."
         cd backend
         railway up
+        BACKEND_STATUS=$?
         cd ..
+        
+        if [ $BACKEND_STATUS -eq 0 ]; then
+            echo -e "${GREEN}✅ Backend deployed successfully${NC}"
+        else
+            echo -e "${RED}❌ Backend deployment failed${NC}"
+            echo "Check logs: railway logs"
+        fi
+        
+        echo ""
+        
+        # Deploy frontend
         echo "Deploying frontend..."
         railway up
+        FRONTEND_STATUS=$?
+        
+        if [ $FRONTEND_STATUS -eq 0 ]; then
+            echo -e "${GREEN}✅ Frontend deployed successfully${NC}"
+        else
+            echo -e "${RED}❌ Frontend deployment failed${NC}"
+            echo "Check logs: railway logs"
+        fi
         ;;
 esac
 

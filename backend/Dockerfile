@@ -23,7 +23,7 @@ RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
 # Copy application code
-COPY ./app /app/app
+COPY app /app/app
 
 # Expose port
 EXPOSE 8069

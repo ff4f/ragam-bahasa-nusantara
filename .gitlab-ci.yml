@@ -28,13 +28,12 @@ deploy:railway:
   before_script:
     - npm install -g @railway/cli
   script:
-    - echo "Deploying to Railway from branch: $CI_COMMIT_BRANCH"
+    - echo "Deploying to Railway from branch $CI_COMMIT_BRANCH"
     - railway link $RAILWAY_PROJECT_ID
-    - railway up --service backend
-    - railway up --service frontend
+    - railway up
   only:
     - main
-    - feature/integrated  # Add your branch here
+    - feature/integrated
   environment:
     name: production
     url: $RAILWAY_APP_URL
@@ -46,7 +45,7 @@ deploy:any-branch:
   before_script:
     - npm install -g @railway/cli
   script:
-    - echo "Manual deployment from branch: $CI_COMMIT_BRANCH"
+    - echo "Manual deployment from branch $CI_COMMIT_BRANCH"
     - railway link $RAILWAY_PROJECT_ID
     - railway up
   when: manual
@@ -61,9 +60,9 @@ deploy:backend:
   before_script:
     - npm install -g @railway/cli
   script:
-    - echo "Deploying backend from branch: $CI_COMMIT_BRANCH"
+    - echo "Deploying backend from branch $CI_COMMIT_BRANCH"
     - railway link $RAILWAY_PROJECT_ID
-    - railway up --service backend
+    - railway up
   only:
     - main
     - feature/integrated  # Add your branch here
@@ -77,9 +76,9 @@ deploy:frontend:
   before_script:
     - npm install -g @railway/cli
   script:
-    - echo "Deploying frontend from branch: $CI_COMMIT_BRANCH"
+    - echo "Deploying frontend from branch $CI_COMMIT_BRANCH"
     - railway link $RAILWAY_PROJECT_ID
-    - railway up --service frontend
+    - railway up
   only:
     - main
     - feature/integrated  # Add your branch here
