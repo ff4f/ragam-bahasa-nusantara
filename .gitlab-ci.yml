@@ -30,6 +30,8 @@ test:backend:
 mirror:github:
   stage: mirror
   image: alpine:latest
+  variables:
+    GIT_DEPTH: 0
   script:
     - echo "Mirroring branch $CI_COMMIT_BRANCH to GitHub..."
     - apk add --no-cache git
