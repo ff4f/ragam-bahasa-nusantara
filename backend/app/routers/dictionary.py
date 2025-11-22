@@ -11,49 +11,83 @@ from ..models.user import User
 
 router = APIRouter(prefix="/api/dictionary", tags=["Dictionary"])
 
+import difflib
+
 @router.post("/translate", response_model=TranslateResponse)
 async def translate_text(
     request: TranslateRequest,
     db: Session = Depends(get_db)
 ):
     """
-    Translate text from source language to target language.
-    Currently supports word-by-word and phrase lookup.
+    Translate text with Level 2 Intelligence (Fuzzy Matching).
+    1. Exact Match
+    2. Fuzzy Phrase Match (Typo tolerance)
+    3. Word-by-word Exact & Fuzzy Match
     """
-    # 1. Try to find exact phrase match
-    exact_match = db.query(Dictionary).filter(
-        Dictionary.source_text == request.text.lower(),
+    input_text = request.text.lower().strip()
+    
+    # Get all dictionary entries for this language pair
+    # Note: For small datasets (<10k), fetching all is fast and allows powerful python-side fuzzy matching.
+    # For large datasets, we would use SQL Full Text Search or specialized search engines (Elasticsearch).
+    all_entries = db.query(Dictionary).filter(
         Dictionary.source_lang == request.source_lang,
         Dictionary.target_lang == request.target_lang
-    ).first()
+    ).all()
+    
+    # Create lookup maps
+    source_map = {entry.source_text.lower(): entry for entry in all_entries}
+    all_sources = list(source_map.keys())
 
-    if exact_match:
+    # --- LEVEL 1: EXACT MATCH ---
+    if input_text in source_map:
+        match = source_map[input_text]
         return TranslateResponse(
             original_text=request.text,
-            translated_text=exact_match.target_text,
+            translated_text=match.target_text,
             source_lang=request.source_lang,
             target_lang=request.target_lang,
-            matches=[exact_match]
+            matches=[match]
         )
 
-    # 2. If no exact match, try word-by-word translation
-    words = request.text.lower().split()
+    # --- LEVEL 2: FUZZY PHRASE MATCH ---
+    # Handle typos in full phrases (e.g. "trimakasih" -> "terima kasih")
+    # cutoff=0.85 means 85% similarity required for phrases
+    fuzzy_phrase = difflib.get_close_matches(input_text, all_sources, n=1, cutoff=0.85)
+    
+    if fuzzy_phrase:
+        match = source_map[fuzzy_phrase[0]]
+        return TranslateResponse(
+            original_text=request.text,
+            translated_text=match.target_text,
+            source_lang=request.source_lang,
+            target_lang=request.target_lang,
+            matches=[match]
+        )
+
+    # --- LEVEL 1 & 2 HYBRID: WORD-BY-WORD ---
+    words = input_text.split()
     translated_words = []
     matches = []
 
     for word in words:
-        # Find translation for each word
-        word_match = db.query(Dictionary).filter(
-            Dictionary.source_text == word,
-            Dictionary.source_lang == request.source_lang,
-            Dictionary.target_lang == request.target_lang
-        ).first()
-
-        if word_match:
-            translated_words.append(word_match.target_text)
-            matches.append(word_match)
+        # A. Exact Word Match
+        if word in source_map:
+            entry = source_map[word]
+            translated_words.append(entry.target_text)
+            matches.append(entry)
+            continue
+            
+        # B. Fuzzy Word Match (Typo tolerance)
+        # cutoff=0.75 means 75% similarity required for single words (more lenient)
+        fuzzy_word = difflib.get_close_matches(word, all_sources, n=1, cutoff=0.75)
+        
+        if fuzzy_word:
+            entry = source_map[fuzzy_word[0]]
+            translated_words.append(entry.target_text)
+            matches.append(entry)
         else:
-            translated_words.append(word) # Keep original if no translation found
+            # No match found, keep original word
+            translated_words.append(word)
 
     return TranslateResponse(
         original_text=request.text,
