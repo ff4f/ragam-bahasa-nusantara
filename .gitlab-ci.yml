@@ -43,8 +43,6 @@ mirror:github:
   only:
     - main
     - feature/integrated
-  tags:
-    - docker
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 🚀 DEPLOY: Railway (Optional - via CLI)
