@@ -1,11 +1,6 @@
 stages:
   - test
   - mirror
-  - deploy
-
-variables:
-  DOCKER_DRIVER: overlay2
-  RAILWAY_STATIC_URL: "https://railway.app"
 
 # Test stage (optional but recommended)
 test:backend:
@@ -44,29 +39,5 @@ mirror:github:
     - main
     - feature/integrated
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# 🚀 DEPLOY: Railway (Optional - via CLI)
-# Note: Railway will auto-deploy from GitHub anyway
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-# Deploy to Railway via CLI (manual trigger)
-deploy:railway-cli:
-  stage: deploy
-  image: node:18-alpine
-  before_script:
-    - npm install -g @railway/cli
-  script:
-    - echo "Deploying to Railway from branch $CI_COMMIT_BRANCH"
-    - railway link $RAILWAY_PROJECT_ID
-    - railway up
-  when: manual
-  only:
-    - main
-    - feature/integrated
-  environment:
-    name: production
-    url: $RAILWAY_APP_URL
-
-# Note: Railway auto-deploy job
-# Railway will automatically deploy when GitHub is updated
-# No manual Railway CLI deployment needed!
+# Railway will automatically deploy when GitHub is updated via mirror job above
+# No manual deployment needed!

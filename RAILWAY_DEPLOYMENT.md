@@ -1,277 +1,306 @@
-# Railway Deployment Guide - GitLab CI/CD Integration
+# 🚀 Railway Deployment Guide (Native Buildpack - No Docker)
 
-## 🚀 Solusi: Deploy dari GitLab ke Railway
+## 📋 Overview
 
-Karena Railway native support GitHub tapi project kamu di GitLab, ada 2 solusi:
+Project kamu siap deploy ke Railway dengan native buildpack (tanpa Docker).
 
-### **Opsi 1: GitLab CI/CD + Railway CLI (Recommended)** ✅
+**Struktur:**
+- Backend: FastAPI (Python) di folder `backend/`
+- Frontend: React + Vite di root project
+- Database: MySQL (Railway managed)
 
-Menggunakan GitLab CI/CD pipeline untuk otomatis deploy ke Railway setiap ada push ke branch `main`.
+---
 
-#### Setup Steps:
+## ✅ Prerequisites
 
-##### 1. Install Railway CLI di Local (untuk setup awal)
+1. Code sudah di GitHub: `ff4f/ragam-bahasa-nusantara`
+2. Branch: `feature/integrated` (auto-update dari GitLab CI/CD)
+3. Railway account (login via GitHub)
 
-```bash
-npm install -g @railway/cli
-```
+---
 
-##### 2. Login ke Railway
+## 🔧 Deploy Backend (FastAPI)
 
-```bash
-railway login
-```
+### Step 1: Create Backend Service
 
-##### 3. Buat Project di Railway
+1. Go to: https://railway.app/new
+2. Click **"Deploy from GitHub repo"**
+3. Select: `ff4f/ragam-bahasa-nusantara`
+4. Branch: `feature/integrated`
 
-```bash
-# Di root directory project
-railway init
+### Step 2: Configure Backend
 
-# Link ke existing project (jika sudah ada)
-railway link
-```
+**Settings → Source:**
+- **Root Directory**: `backend`
 
-Atau buat manual di Railway dashboard: https://railway.app/new
+**Settings → Deploy:**
+- **Custom Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 
-##### 4. Setup Environment Variables di Railway
-
-Buka Railway dashboard → Project → Variables, tambahkan:
-
+**Settings → Variables:**
+Add these variables:
 ```env
-DATABASE_URL=mysql+pymysql://user:password@host:port/dbname
-SECRET_KEY=your-super-secret-key-here
+SECRET_KEY=your-secret-key-min-32-characters
+DATABASE_URL=${{MySQL.DATABASE_URL}}
+DEBUG=False
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
-DEBUG=False
-MYSQL_ROOT_PASSWORD=your-root-password
-MYSQL_DATABASE=ragam_bahasa_db
-MYSQL_USER=rana_user
-MYSQL_PASSWORD=secure_password
-PORT=8069
 ```
 
-##### 5. Setup GitLab CI/CD Variables
+### Step 3: Add MySQL Database
 
-Di GitLab: Project → Settings → CI/CD → Variables
+1. In same project, click **"New"** → **"Database"** → **"Add MySQL"**
+2. Railway auto-creates MySQL instance
+3. Variable `DATABASE_URL` auto-linked to backend
 
-Tambahkan variables berikut:
+### Step 4: Generate Public Domain
 
-| Variable Name | Value | Protected | Masked |
-|--------------|-------|-----------|--------|
-| `RAILWAY_TOKEN` | (dapatkan dari `railway login --browserless`) | ✅ | ✅ |
-| `RAILWAY_PROJECT_ID` | (dapatkan dari Railway dashboard atau `railway status`) | ✅ | ❌ |
-| `RAILWAY_APP_URL` | URL aplikasi Railway kamu | ❌ | ❌ |
+**Settings → Networking:**
+- Click **"Generate Domain"**
+- You'll get: `backend-production-xxxx.up.railway.app`
 
-**Cara mendapatkan Railway Token:**
-```bash
-railway login --browserless
-# Copy token yang muncul dan paste ke GitLab CI/CD Variables
+### Step 5: Deploy
+
+- Railway auto-detects Python via `requirements.txt`
+- Auto-installs dependencies
+- Starts with custom command
+- Done! ✅
+
+**Expected time:** 2-3 minutes
+
+---
+
+## 🎨 Deploy Frontend (React + Vite)
+
+### Step 1: Create Frontend Service
+
+1. In same project, click **"New"** → **"GitHub Repo"**
+2. Select same repo: `ff4f/ragam-bahasa-nusantara`  
+3. Branch: `feature/integrated`
+
+### Step 2: Configure Frontend
+
+**Settings → Source:**
+- **Root Directory**: `/` (leave empty or put `/`)
+
+**Railway auto-detects:**
+- Build command from `package.json`: `npm run build`
+- Output directory: `dist/`
+- Serve static files automatically
+
+### Step 3: Set Environment Variable (Optional)
+
+If frontend needs backend URL:
+
+**Settings → Variables:**
+```env
+VITE_API_URL=https://backend-production-xxxx.up.railway.app
 ```
 
-**Cara mendapatkan Project ID:**
-```bash
-railway status
-# Atau lihat di Railway dashboard → Project Settings
+*(Replace with your actual backend URL)*
+
+### Step 4: Generate Public Domain
+
+**Settings → Networking:**
+- Click **"Generate Domain"**
+- You'll get: `frontend-production-yyyy.up.railway.app`
+
+### Step 5: Deploy
+
+- Railway auto-detects Vite
+- Auto-builds
+- Serves static files
+- Done! ✅
+
+**Expected time:** 3-4 minutes
+
+---
+
+## 🔗 Connect Frontend to Backend
+
+Update frontend code to use backend URL:
+
+```typescript
+// src/services/api.ts (or wherever you configure axios)
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8069';
 ```
 
-##### 6. Push ke GitLab
+Then redeploy frontend.
 
-File `.gitlab-ci.yml` sudah dibuat. Sekarang tinggal:
+---
 
-```bash
-git add .
-git commit -m "Add Railway deployment configuration"
-git push origin main
+## 🎯 Project Structure in Railway
+
+After setup, you'll have:
+
 ```
-
-GitLab CI/CD akan otomatis:
-1. Run tests (jika ada)
-2. Deploy backend ke Railway
-3. Deploy frontend ke Railway
-
-##### 7. Setup MySQL di Railway
-
-Railway punya MySQL plugin yang bisa langsung dipasang:
-
-```bash
-# Di Railway dashboard
-railway add mysql
-
-# Atau via CLI
-railway add
-# Pilih MySQL dari daftar
-```
-
-Railway akan auto-generate `DATABASE_URL` environment variable.
-
-##### 8. Update Backend Dockerfile untuk Railway
-
-Backend Dockerfile sudah OK, tapi perlu pastikan menggunakan `$PORT` dari Railway:
-
-```dockerfile
-# Sudah benar di Dockerfile kamu
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8069"]
-```
-
-Tapi Railway expect environment variable `$PORT`, jadi kita perlu update di `railway.json`:
-
-```json
-{
-  "deploy": {
-    "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
-  }
-}
+📦 Railway Project: ragam-bahasa-nusantara
+  ├─ 🐍 backend (FastAPI)
+  │   ├─ URL: backend-production-xxxx.up.railway.app
+  │   └─ Port: $PORT (auto-assigned)
+  │
+  ├─ ⚛️ frontend (React + Vite)
+  │   └─ URL: frontend-production-yyyy.up.railway.app
+  │
+  └─ 🗄️ MySQL
+      └─ Auto-linked to backend
 ```
 
 ---
 
-### **Opsi 2: GitLab Mirror → GitHub → Railway**
+## 🔄 Auto-Deploy Workflow
 
-Jika kamu lebih suka menggunakan Railway's native GitHub integration:
+GitLab CI/CD already configured:
 
-#### Setup Steps:
-
-##### 1. Buat Repository di GitHub
-
-Buat repo kosong di GitHub (contoh: `ragam-bahasa-nusantara-mirror`)
-
-##### 2. Setup GitLab CI/CD untuk Mirror ke GitHub
-
-Buat file `.gitlab-ci.yml`:
-
-```yaml
-stages:
-  - mirror
-
-mirror:
-  stage: mirror
-  image: alpine/git
-  script:
-    - git remote add github https://$GITHUB_TOKEN@github.com/username/ragam-bahasa-nusantara-mirror.git
-    - git push github main --force
-  only:
-    - main
+```
+1. Push code ke GitLab
+   ↓
+2. GitLab CI/CD mirrors to GitHub
+   ↓
+3. Railway detects GitHub update
+   ↓
+4. Railway auto-rebuilds & redeploys
+   ↓
+5. Live! 🎉
 ```
 
-##### 3. Setup GitLab CI/CD Variables
-
-Di GitLab → Settings → CI/CD → Variables:
-
-| Variable Name | Value | Protected | Masked |
-|--------------|-------|-----------|--------|
-| `GITHUB_TOKEN` | GitHub Personal Access Token | ✅ | ✅ |
-
-**Cara buat GitHub Token:**
-1. GitHub → Settings → Developer settings → Personal access tokens → Generate new token
-2. Berikan scope: `repo` (Full control of private repositories)
-3. Copy token dan paste ke GitLab
-
-##### 4. Connect Railway ke GitHub Repo
-
-1. Buka Railway dashboard
-2. New Project → Deploy from GitHub repo
-3. Pilih `ragam-bahasa-nusantara-mirror`
-4. Railway akan auto-detect Dockerfile dan deploy
+**You just push to GitLab, everything else is automatic!**
 
 ---
 
-## 📋 Monitoring & Troubleshooting
+## 🛠️ Troubleshooting
 
-### Check Deployment Status
+### Backend Issues
 
-**GitLab CI/CD:**
-```
-GitLab → Project → CI/CD → Pipelines
-```
+**Problem:** Build fails
+- **Check:** `requirements.txt` is valid
+- **Check:** Start command is correct
+- **Fix:** View build logs for specific error
 
-**Railway:**
-```bash
-railway status
-railway logs
-```
+**Problem:** App crashes after deploy
+- **Check:** Environment variables are set
+- **Check:** `DATABASE_URL` is linked to MySQL
+- **Fix:** View deploy logs
 
-**Railway Dashboard:**
-```
-https://railway.app/project/[your-project-id]
-```
+**Problem:** Can't connect to database
+- **Check:** MySQL service is running
+- **Check:** `DATABASE_URL` variable exists
+- **Fix:** Restart backend service
 
-### Common Issues
+### Frontend Issues
 
-#### 1. Railway Token Invalid
+**Problem:** Build fails
+- **Check:** `package.json` and `package-lock.json` are committed
+- **Check:** Node version compatible
+- **Fix:** Check build logs
 
-```bash
-# Re-login dan dapatkan token baru
-railway login --browserless
-# Update RAILWAY_TOKEN di GitLab CI/CD Variables
-```
+**Problem:** Blank page after deploy
+- **Check:** Build output directory is `dist/`
+- **Check:** `index.html` exists in `dist/`
+- **Fix:** Redeploy
 
-#### 2. Build Failed
+**Problem:** Can't reach backend API
+- **Check:** `VITE_API_URL` is set correctly
+- **Check:** Backend is running
+- **Check:** CORS is configured in backend
+- **Fix:** Update CORS settings:
 
-```bash
-# Check logs di Railway dashboard atau
-railway logs
-```
+```python
+# backend/app/main.py
+from fastapi.middleware.cors import CORSMiddleware
 
-#### 3. Database Connection Failed
-
-Pastikan `DATABASE_URL` sudah benar:
-```bash
-railway variables
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://frontend-production-yyyy.up.railway.app"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 ```
 
 ---
 
-## 🎯 Rekomendasi
+## 📊 Monitoring
 
-**Gunakan Opsi 1 (GitLab CI/CD + Railway CLI)** karena:
-- ✅ Lebih simple, tidak perlu maintain 2 repos
-- ✅ Full control atas deployment process
-- ✅ GitLab tetap jadi single source of truth
-- ✅ Bisa customize deployment steps
-- ✅ Bisa deploy specific services
+**Check Deployment Status:**
+- Railway Dashboard → Click service → **Deployments**
 
-**Gunakan Opsi 2 (Mirror to GitHub)** jika:
-- Kamu lebih suka Railway's native GitHub integration
-- Ingin leverage Railway's auto-detect features
-- Tidak masalah punya duplicate repo di GitHub
+**View Logs:**
+- Click deployment → **View Logs**
+- Types: Build Logs, Deploy Logs, Application Logs
 
----
-
-## 📚 Resources
-
-- [Railway CLI Documentation](https://docs.railway.app/develop/cli)
-- [GitLab CI/CD Documentation](https://docs.gitlab.com/ee/ci/)
-- [Railway Environment Variables](https://docs.railway.app/develop/variables)
-- [Railway Docker Deployment](https://docs.railway.app/deploy/dockerfiles)
+**Check Metrics:**
+- Service → **Metrics**
+- CPU, Memory, Network usage
 
 ---
 
-## ✅ Checklist Deployment
+## 🔐 Security Checklist
 
-- [ ] Install Railway CLI
-- [ ] Login ke Railway
-- [ ] Buat/link Railway project
-- [ ] Setup environment variables di Railway
-- [ ] Setup GitLab CI/CD variables (`RAILWAY_TOKEN`, `RAILWAY_PROJECT_ID`)
-- [ ] Push `.gitlab-ci.yml` ke GitLab
-- [ ] Setup MySQL di Railway
-- [ ] Test deployment via GitLab pipeline
-- [ ] Verify aplikasi running di Railway
-- [ ] Setup custom domain (optional)
+- [ ] `SECRET_KEY` is strong & unique (min 32 chars)
+- [ ] `DEBUG=False` in production
+- [ ] Database password is strong
+- [ ] CORS configured properly
+- [ ] Environment variables are set (not hardcoded)
 
 ---
 
-## 🔄 Workflow Summary
+## 💰 Cost Estimate
 
-```
-GitLab Push → GitLab CI/CD → Railway CLI → Railway Deploy → Live! 🎉
-```
+**Railway Free Tier:**
+- $5 credit/month
+- Enough for small projects
 
-**Setiap push ke `main` branch:**
-1. GitLab CI/CD trigger
-2. Run tests (optional)
-3. Railway CLI deploy services
-4. Railway build Docker images
-5. Railway deploy containers
-6. Aplikasi live!
+**This setup:**
+- Backend: ~$2-3/month
+- Frontend: ~$1-2/month
+- MySQL: ~$1/month
+- **Total: ~$4-6/month** (within free tier!)
+
+---
+
+## ✅ Success Checklist
+
+### Pre-Deploy:
+- [ ] Code pushed to GitLab
+- [ ] GitLab CI/CD mirror working
+- [ ] Code in GitHub
+- [ ] Railway account ready
+
+### Backend:
+- [ ] Service created
+- [ ] Root Directory: `backend`
+- [ ] Start command set
+- [ ] Variables configured
+- [ ] MySQL added
+- [ ] Domain generated
+- [ ] Health check: `/health` returns 200
+
+### Frontend:
+- [ ] Service created
+- [ ] Root Directory: `/`
+- [ ] Build success
+- [ ] Static files served
+- [ ] Domain generated
+- [ ] Can reach backend API
+
+### Integration:
+- [ ] Frontend can call backend
+- [ ] Database connected
+- [ ] Auto-deploy working
+- [ ] All features functional
+
+---
+
+## 🎉 You're Done!
+
+Congratulations! Your application is now deployed on Railway with:
+- ✅ Auto-deploy from GitLab → GitHub → Railway
+- ✅ Fast native builds (no Docker overhead)
+- ✅ Scalable infrastructure
+- ✅ Easy monitoring & logs
+
+---
+
+**Questions or issues?** Check Railway logs or documentation: https://docs.railway.app
+
+**Good luck! 🚀**
