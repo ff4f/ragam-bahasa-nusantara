@@ -3,6 +3,7 @@ import { Dialog, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Tooltip } from "@/components/ui/tooltip";
 import { Heart, MessageCircle, X } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 
@@ -67,23 +68,27 @@ const CommentsDialog = ({ comments, open, handleClose }: CommentsDialogProps) =>
                     <p>{comment.comment}</p>
                     <div className="flex gap-1">
                       <div className="flex items-center">
-                        <Button
-                          variant="ghost"
-                          className="rounded-[50%] h-6 w-6 p-4"
-                          onClick={() => handleLike(comment.id)}
-                        >
-                          <Heart className={comment?.liked ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
-                        </Button>
+                        <Tooltip label="Suka">
+                          <Button
+                            variant="ghost"
+                            className="rounded-[50%] h-6 w-6 p-4"
+                            onClick={() => handleLike(comment.id)}
+                          >
+                            <Heart className={comment?.liked ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
+                          </Button>
+                        </Tooltip>
                         <span className="text-xs text-muted-foreground">{comment.likes}</span>
                       </div>
                       <div className="flex items-center">
-                        <Button
-                          variant="ghost"
-                          className="rounded-[50%] h-6 w-6 p-4"
-                          onClick={() => handleReply(comment.id)}
-                        >
-                          <MessageCircle className={comment?.openReplies ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
-                        </Button>
+                        <Tooltip label="Komentar">
+                          <Button
+                            variant="ghost"
+                            className="rounded-[50%] h-6 w-6 p-4"
+                            onClick={() => handleReply(comment.id)}
+                          >
+                            <MessageCircle className={comment?.openReplies ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
+                          </Button>
+                        </Tooltip>
                         <span className="text-xs text-muted-foreground">{comment.replies?.length || 0}</span>
                       </div>
                     </div>
@@ -102,13 +107,15 @@ const CommentsDialog = ({ comments, open, handleClose }: CommentsDialogProps) =>
                               <p>{reply.comment}</p>
                               <div className="flex gap-1">
                                 <div className="flex items-center">
-                                  <Button
-                                    variant="ghost"
-                                    className="rounded-[50%] h-6 w-6 p-4"
-                                    onClick={() => handleLikeReply(comment.id, reply.id)}
-                                  >
-                                    <Heart className={reply?.liked ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
-                                  </Button>
+                                  <Tooltip label="Suka">
+                                    <Button
+                                      variant="ghost"
+                                      className="rounded-[50%] h-6 w-6 p-4"
+                                      onClick={() => handleLikeReply(comment.id, reply.id)}
+                                    >
+                                      <Heart className={reply?.liked ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
+                                    </Button>
+                                  </Tooltip>
                                   <span className="text-xs text-muted-foreground">{reply.likes}</span>
                                 </div>
                               </div>

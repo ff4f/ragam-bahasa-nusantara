@@ -241,23 +241,27 @@ const LanguageDetail = () => {
               <div className="absolute bottom-6 right-6 flex items-end gap-2">
                 <div className="flex items-center">
                   <span className="text-xs text-muted-foreground">{item.comment || 0}</span>
-                  <Button
-                    variant="ghost"
-                    className="rounded-[50%] h-6 w-6 p-4"
-                    onClick={() => setOpenCommentModal(true)}
-                  >
-                    <MessageCircle style={{ width: "1.2rem", height: "1.2rem" }}/>
-                  </Button>
+                  <Tooltip label="Komentar">
+                    <Button
+                      variant="ghost"
+                      className="rounded-[50%] h-6 w-6 p-4"
+                      onClick={() => setOpenCommentModal(true)}
+                    >
+                      <MessageCircle style={{ width: "1.2rem", height: "1.2rem" }}/>
+                    </Button>
+                  </Tooltip>
                 </div>
                 <div className="flex items-center">
                   <span className="text-xs text-muted-foreground">{item.like || 0}</span>
-                  <Button
-                    variant="ghost"
-                    className="rounded-[50%] h-6 w-6 p-4"
-                    onClick={() => handleLike(item.id)}
-                  >
-                    <Heart className={item?.liked ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
-                  </Button>
+                  <Tooltip label="Suka">
+                    <Button
+                      variant="ghost"
+                      className="rounded-[50%] h-6 w-6 p-4"
+                      onClick={() => handleLike(item.id)}
+                    >
+                      <Heart className={item?.liked ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
+                    </Button>
+                  </Tooltip>
                 </div>
               </div>
             </Card>
