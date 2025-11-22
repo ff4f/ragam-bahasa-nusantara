@@ -36,7 +36,7 @@ mirror:github:
     - git config --global user.name "GitLab CI"
   script:
     - echo "Mirroring branch $CI_COMMIT_BRANCH to GitHub..."
-    - git remote add github https://${GITHUB_TOKEN}@github.com/${GITHUB_REPO}.git 2>/dev/null || true
+    - git remote add github https://${GITHUB_TOKEN}@github.com/ff4f/ragam-bahasa-nusantara.git 2>/dev/null || true
     - git push github HEAD:$CI_COMMIT_BRANCH --force
     - echo "✅ Successfully mirrored to GitHub!"
   only:
