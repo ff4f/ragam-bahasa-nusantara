@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # CORS Settings
-    CORS_ORIGINS: str = "*"  # Will be set via env var in production
+    CORS_ORIGINS: list[str] = ["*"]  # Allow all origins for now
     
     # Application
     PROJECT_NAME: str = "Ragam Bahasa Nusantara API"
