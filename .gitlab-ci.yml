@@ -38,7 +38,7 @@ mirror:github:
     - echo "Mirroring branch $CI_COMMIT_BRANCH to GitHub..."
     - if [ -z "$GITHUB_TOKEN" ]; then echo "❌ ERROR: GITHUB_TOKEN is empty! This usually means the branch is not protected but the variable is."; exit 1; fi
     - git remote add github https://${GITHUB_TOKEN}@github.com/ff4f/ragam-bahasa-nusantara.git 2>/dev/null || true
-    - git push github HEAD:$CI_COMMIT_BRANCH --force
+    - git push github HEAD:refs/heads/$CI_COMMIT_BRANCH --force
     - echo "✅ Successfully mirrored to GitHub!"
   only:
     - main
