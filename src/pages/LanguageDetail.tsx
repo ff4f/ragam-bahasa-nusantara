@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,11 +12,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { MapPin, Users, Volume2, ArrowLeft, BadgeCheck, EllipsisVertical, Search } from "lucide-react";
+import CommentsDialog from "@/components/CommentsDialog";
+import { MapPin, Users, Volume2, ArrowLeft, BadgeCheck, EllipsisVertical, Search, Heart, MessageCircle } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getStatusColor, capitalize, validateForm } from "@/lib/utils";
 import { statusList, verifiedStatusList, INITIAL_FORM_CONTRIBUTION } from "@/lib/constants";
-import { vocabulary } from "@/lib/dummy";
+import { vocabulary, comments } from "@/lib/dummy";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import FormContribution from "@/components/FormContribution";
@@ -29,18 +30,15 @@ const LanguageDetail = () => {
   const language = location.state?.language;
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [vocabs, setVocabs] = useState<any[]>([]);
 
   // edit modal
   const [openEditModal, setOpenEditModal] = useState(false);
   const [formDataModal, setFormDataModal] = useState<any>(INITIAL_FORM_CONTRIBUTION);
   const [editLoading, setEditLoading] = useState(false);
 
-  const filteredVocabulary = vocabulary.filter((vocab) => {
-    const matchesSearch = vocab.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          vocab.translation.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || vocab.verified === !!(statusFilter === "verified");
-    return matchesSearch && matchesStatus;
-  });
+  // comment modal
+  const [openCommentModal, setOpenCommentModal] = useState(false);
 
   if (!language) {
     return (
@@ -73,6 +71,24 @@ const LanguageDetail = () => {
     setFormDataModal(INITIAL_FORM_CONTRIBUTION);
     setEditLoading(false);
   };
+
+  const handleLike = (id: any) => {
+    setVocabs(vocabs.map(item => ({
+      ...item,
+      liked: item.id === id ? !item?.liked : item?.liked,
+      like: item.id === id ? (!item?.liked ? (item.like || 0) + 1 : (item.like || 0) - 1) : item.like,
+    })));
+  };
+
+  useEffect(() => {
+    const filteredVocabulary = vocabulary.filter((vocab) => {
+      const matchesSearch = vocab.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            vocab.translation.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === "all" || vocab.verified === !!(statusFilter === "verified");
+      return matchesSearch && matchesStatus;
+    });
+    setVocabs(filteredVocabulary);
+  }, [vocabulary, searchQuery, statusFilter]);
 
   return (
     <div className="py-16">
@@ -162,10 +178,10 @@ const LanguageDetail = () => {
         </Card>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredVocabulary.map((item, index) => (
+          {vocabs.map((item, index) => (
             <Card key={index} className="border-border relative">
               <CardHeader>
-                <div className="flex justify-between">
+                <div className="flex justify-between min-h-8">
                   <div className="flex items-center gap-1">
                     <CardTitle className="text-xl">
                       {capitalize(item.word)}
@@ -189,7 +205,7 @@ const LanguageDetail = () => {
                     ) : null}
                   </div>
 
-                  {item.created_by === user?.email && (
+                  {user && item.created_by === user.email && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -210,7 +226,7 @@ const LanguageDetail = () => {
                 </div>
                 <CardDescription>{capitalize(item.translation)}</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pb-12">
                 <div className="mb-3 space-y-2">
                   <div className="text-sm text-muted-foreground">
                     Tingkatan: <span className="font-medium text-foreground">{capitalize(item.level)}</span>
@@ -218,21 +234,32 @@ const LanguageDetail = () => {
                   <div className="text-sm text-muted-foreground">
                     Contoh: <span className="font-medium text-foreground italic">{item.example}</span>
                     <span className="ext-foreground italic"> - {item.exampleTranslation}</span>
-                    <Tooltip label="Dengar Contoh Kalimat">
-                      <Button
-                        variant="ghost"
-                        className="ml-1 h-6 w-6 p-0"
-                        onClick={() => {
-                          const utterance = new SpeechSynthesisUtterance(item.example);
-                          window.speechSynthesis.speak(utterance);
-                        }}
-                      >
-                        <Volume2 />
-                      </Button>
-                    </Tooltip>
                   </div>
                 </div>
               </CardContent>
+
+              <div className="absolute bottom-6 right-6 flex items-end gap-2">
+                <div className="flex items-center">
+                  <span className="text-xs text-muted-foreground">{item.comment || 0}</span>
+                  <Button
+                    variant="ghost"
+                    className="rounded-[50%] h-6 w-6 p-4"
+                    onClick={() => setOpenCommentModal(true)}
+                  >
+                    <MessageCircle style={{ width: "1.2rem", height: "1.2rem" }}/>
+                  </Button>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-xs text-muted-foreground">{item.like || 0}</span>
+                  <Button
+                    variant="ghost"
+                    className="rounded-[50%] h-6 w-6 p-4"
+                    onClick={() => handleLike(item.id)}
+                  >
+                    <Heart className={item?.liked ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
+                  </Button>
+                </div>
+              </div>
             </Card>
           ))}
         </div>
@@ -257,6 +284,14 @@ const LanguageDetail = () => {
           />
         </DialogContent>
       </Dialog>
+
+      {/* Comments Modal */}
+      <CommentsDialog
+        open={openCommentModal}
+        handleClose={() => setOpenCommentModal(false)}
+        user={user}
+        comments={comments}
+      />
     </div>
   );
 };

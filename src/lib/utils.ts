@@ -31,6 +31,7 @@ export const getMockUser = (email: string) => {
       xp: 0,
       badges: [],
       validationCount: 127,
+      notValidatedCount: 50,
       accuracy: 94.5,
       avatar: "",
       level: 1,
@@ -54,6 +55,15 @@ export const getMockUser = (email: string) => {
 };
 
 export const validateForm = (formData: any) => {
-  const { province, language, text, textTranslation, sentence, sentenceTranslation, textAudio, sentenceAudio } = formData;
-  return province.length > 0 && language && text && textTranslation && sentence && sentenceTranslation && textAudio && sentenceAudio;
+  const { province, language, text, textTranslation } = formData;
+  return province.length > 0 && language && text && textTranslation;
+};
+
+export const getInitials = (name: string) => {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 };

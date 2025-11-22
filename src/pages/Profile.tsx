@@ -152,45 +152,58 @@ const Profile = () => {
                 <CardTitle>Statistik</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">XP</span>
-                  <span className="text-2xl font-bold text-primary">{user.xp}</span>
-                </div>
-                {user.role === "validator" && (
+                {user.role === "validator" ? (
                   <>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Validasi</span>
-                      <span className="text-2xl font-bold">{user.validationCount || 0}</span>
+                      <span className="text-2xl font-medium">{user.validationCount || 0}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Akurasi</span>
-                      <span className="text-2xl font-bold">{user.accuracy || 0}%</span>
+                      <span className="text-sm text-muted-foreground">Belum Validasi</span>
+                      <span className="text-2xl font-medium">{user.notValidatedCount || 0}</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">XP</span>
+                      <span className="text-2xl font-bold text-primary">{user.xp}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Level</span>
+                      <span className="text-2xl font-medium">{user.level}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Badge</span>
+                      <span className="text-2xl font-medium">{user.badges.length}</span>
                     </div>
                   </>
                 )}
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="h-5 w-5" />
-                  Badge
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {user.badges.map((badge, index) => (
-                    <Badge key={index} variant="outline">
-                      {badge}
-                    </Badge>
-                  ))}
-                  {user.badges.length === 0 && (
-                    <p className="text-sm text-muted-foreground">Belum ada badge</p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            {user.role === "contributor" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="h-5 w-5" />
+                    Badge
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {user.badges.map((badge, index) => (
+                      <Badge key={index} variant="outline">
+                        {badge}
+                      </Badge>
+                    ))}
+                    {user.badges.length === 0 && (
+                      <p className="text-sm text-muted-foreground">Belum ada badge</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>

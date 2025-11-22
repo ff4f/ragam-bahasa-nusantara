@@ -34,6 +34,16 @@ const columnsHistory = ({ setFormDataModal, setOpenEditModal }) => [
   {
     id: "action",
     name: "Aksi",
+    actions: [
+      {
+        id: "edit",
+        label: "Ubah",
+        action: (row) => {
+          setFormDataModal(row);
+          setOpenEditModal(true);
+        },
+      },
+    ],
     render: ({ row }) => (
       <Tooltip label="Ubah">
         <Button

@@ -64,6 +64,5 @@ export const INITIAL_FORM_CONTRIBUTION = {
   sentence: "",
   sentenceTranslation: "",
   textAudio: "",
-  sentenceAudio: "",
   notes: "",
 };

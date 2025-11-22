@@ -1,13 +1,13 @@
 // sample vocabulary data
-export const vocabulary = [
+export const vocabulary: any = [
   {
+    id: 1,
     word: "mangan",
     translation: "makan",
     level: "ngoko",
     example: "Aku arep mangan saiki.",
     exampleTranslation: "Aku mau makan sekarang.",
     verified: true,
-    id: 'rec_001',
     user_id: 'user_001',
     user_name: 'Siti Nurhaliza',
     mission_id: 'mission_001',
@@ -29,120 +29,162 @@ export const vocabulary = [
     sentenceTranslation: 'Makan ini saja, lebih enak.',
     notes: 'Kata kerja',
     textAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
-    sentenceAudio: '',
     created_by: 'contributor@gmail.com',
+    like: 123,
+    comment: 1,
   },
   {
+    id: 2,
     word: "nedha",
     translation: "makan",
     level: "krama",
     example: "Kula badhe nedha rumiyin.",
     exampleTranslation: "Saya akan makan terlebih dahulu.",
     verified: false,
+    like: 12,
+    comment: 12,
   },
   {
+    id: 3,
     word: "turu",
     translation: "tidur",
     level: "ngoko",
     example: "Dheweke lagi turu ing kamare.",
     exampleTranslation: "Dia sedang tidur di kamarnya.",
     verified: true,
+    like: 33,
+    comment: 4,
   },
   {
+    id: 4,
     word: "tilem",
     translation: "tidur",
     level: "krama",
     example: "Bapak sampun tilem wiwit mau.",
     exampleTranslation: "Ayah sudah tidur sejak tadi.",
     verified: true,
+    like: 133,
+    comment: 0,
   },
   {
+    id: 5,
     word: "omah",
     translation: "rumah",
     level: "ngoko",
     example: "Iki omahku.",
     exampleTranslation: "Ini rumahku.",
     verified: true,
+    like: 1,
+    comment: 2,
   },
   {
+    id: 6,
     word: "gria",
     translation: "rumah",
     level: "krama",
     example: "Kula sowan ing gria panjenengan.",
     exampleTranslation: "Saya berkunjung ke rumah Anda.",
     verified: false,
+    comment: 0,
   },
   {
+    id: 7,
     word: "mlaku",
     translation: "berjalan",
     level: "ngoko",
     example: "Ayo mlaku menyang pasar.",
     exampleTranslation: "Ayo berjalan ke pasar.",
     verified: false,
+    like: 10,
+    comment: 0,
   },
   {
+    id: 8,
     word: "mlampah",
     translation: "berjalan",
     level: "krama",
     example: "Mboten kenging mlampah kesusu.",
     exampleTranslation: "Tidak boleh berjalan terburu-buru.",
     verified: false,
+    like: 1,
+    comment: 22,
   },
   {
+    id: 9,
     word: "kowe",
     translation: "kamu",
     level: "ngoko",
     example: "Kowe wis mangan durung?",
     exampleTranslation: "Kamu sudah makan belum?",
     verified: true,
+    like: 90,
+    comment: 1,
   },
   {
+    id: 10,
     word: "sampean",
     translation: "Anda",
     level: "madya",
     example: "Sampean arep lunga endi?",
     exampleTranslation: "Anda mau pergi ke mana?",
     verified: false,
+    like: 0,
+    comment: 1,
   },
   {
+    id: 11,
     word: "panjenengan",
     translation: "Anda",
     level: "krama",
     example: "Panjenengan badhe tindak pundi?",
     exampleTranslation: "Anda hendak pergi ke mana?",
     verified: true,
+    like: 1,
+    comment: 2,
   },
   {
+    id: 12,
     word: "adus",
     translation: "mandi",
     level: "ngoko",
     example: "Aku arep adus dhisik.",
     exampleTranslation: "Aku mau mandi dulu.",
     verified: true,
+    like: 1,
+    comment: 2,
   },
   {
+    id: 13,
     word: "siram",
     translation: "mandi",
     level: "krama",
     example: "Nenek nembe siram.",
     exampleTranslation: "Nenek baru saja mandi.",
     verified: false,
+    like: 11,
+    comment: 21,
   },
   {
+    id: 14,
     word: "lungguh",
     translation: "duduk",
     level: "krama",
     example: "Mangga lungguh rumiyin.",
     exampleTranslation: "Silakan duduk dulu.",
     verified: false,
+    like: 250,
+    comment: 2,
   },
   {
+    id: 15,
     word: "lunggak-lungguh",
     translation: "duduk (ngoko halus)",
     level: "madya",
     example: "Monggo lunggak-lungguh sek.",
     exampleTranslation: "Silakan duduk dulu.",
     verified: false,
+    like: 0,
+    comment: 0,
   }
 ];
 
@@ -341,7 +383,6 @@ export const mockRecordings = [
     sentenceTranslation: 'Makan ini saja, lebih enak.',
     notes: 'Kata kerja',
     textAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
-    sentenceAudio: '',
   },
   {
     id: 'rec_002',
@@ -366,7 +407,6 @@ export const mockRecordings = [
     sentenceTranslation: 'Makan ini saja, lebih enak.',
     notes: 'Kata kerja',
     textAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
-    sentenceAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
   },
   {
     id: 'rec_003',
@@ -391,7 +431,6 @@ export const mockRecordings = [
     sentenceTranslation: 'Makan ini saja, lebih enak.',
     notes: 'Kata kerja',
     textAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
-    sentenceAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
   },
   {
     id: 'rec_004',
@@ -417,7 +456,6 @@ export const mockRecordings = [
     sentenceTranslation: 'Makan ini saja, lebih enak.',
     notes: 'Kata kerja',
     textAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
-    sentenceAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
   },
   {
     id: 'rec_005',
@@ -443,7 +481,6 @@ export const mockRecordings = [
     sentenceTranslation: 'Makan ini saja, lebih enak.',
     notes: 'Kata kerja',
     textAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
-    sentenceAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
   },
   {
     id: 'rec_006',
@@ -468,7 +505,6 @@ export const mockRecordings = [
     sentenceTranslation: 'Makan ini saja, lebih enak.',
     notes: 'Kata kerja',
     textAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
-    sentenceAudio: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
   }
 ];
 
@@ -490,4 +526,148 @@ export const regionList = [
   { value: 4, label: "Bantul" },
   { value: 5, label: "Pekanbaru" },
   { value: 6, label: "Yogyakarta" },
+];
+
+// sample comment data
+export const comments = [
+  {
+    "id": "c1f7e3a1-74c3-4d6e-a6e0-1ae54a07f11b",
+    "photo": "https://randomuser.me/api/portraits/men/11.jpg",
+    "name": "Andi Pratama",
+    "date": "2025-02-10T14:32:00Z",
+    "comment": "Menurut saya arti kata ini sudah tepat, tetapi contoh kalimatnya bisa dibuat lebih natural.",
+    "likes": 12,
+    "replies": [
+      {
+        "id": "7fb8d2a3-0c83-4c44-8c06-97cf67c3e581",
+        "photo": "https://randomuser.me/api/portraits/women/21.jpg",
+        "name": "Siti Rahmawati",
+        "date": "2025-02-10T15:12:00Z",
+        "comment": "Betul, saya setuju. Saya bisa bantu buatkan contoh kalimat lain nanti.",
+        "likes": 5,
+        "replies": []
+      }
+    ]
+  },
+  {
+    "id": "b4e684b7-d4ac-4362-a784-f3f02d178e91",
+    "photo": "https://randomuser.me/api/portraits/women/14.jpg",
+    "name": "Maria Lestari",
+    "date": "2025-02-11T09:21:00Z",
+    "comment": "Kata ini umum dipakai di daerah saya, biasanya untuk percakapan sehari-hari.",
+    "likes": 8,
+    "replies": []
+  },
+  {
+    "id": "0e1c995e-07df-4d96-8c4f-f4b3d8fb5a88",
+    "photo": "https://randomuser.me/api/portraits/men/32.jpg",
+    "name": "Budi Santoso",
+    "date": "2025-02-11T10:02:00Z",
+    "comment": "Apakah kata ini termasuk ragam ngoko atau krama?",
+    "likes": 3,
+    "replies": [
+      {
+        "id": "3d8a241b-e2bd-4907-865c-15e22d5c5fa8",
+        "photo": "https://randomuser.me/api/portraits/men/45.jpg",
+        "name": "Ari Wibowo",
+        "date": "2025-02-11T10:30:00Z",
+        "comment": "Setahu saya ini ragam ngoko, tapi bisa dipakai di percakapan santai antar teman.",
+        "likes": 2,
+        "replies": []
+      }
+    ]
+  },
+  {
+    "id": "069cfc07-3cf2-4fc8-9ddb-2e7f0c6a49dd",
+    "photo": "https://randomuser.me/api/portraits/women/36.jpg",
+    "name": "Dewi Ayu",
+    "date": "2025-02-12T08:15:00Z",
+    "comment": "Saya baru tahu arti kata ini, terima kasih informasinya!",
+    "likes": 15,
+    "replies": []
+  },
+  {
+    "id": "ac58c0be-f831-4db6-a43a-06a1f43d4d8e",
+    "photo": "https://randomuser.me/api/portraits/men/19.jpg",
+    "name": "Rizky Maulana",
+    "date": "2025-02-12T12:44:00Z",
+    "comment": "Contoh kalimatnya kurang jelas konteksnya, mungkin bisa diperbaiki.",
+    "likes": 4,
+    "replies": [
+      {
+        "id": "6e1a8e1f-89d3-452e-a765-22565f59dbcc",
+        "photo": "https://randomuser.me/api/portraits/women/22.jpg",
+        "name": "Putri Agustina",
+        "date": "2025-02-12T13:01:00Z",
+        "comment": "Baik, saya coba revisi dan kirimkan contoh baru besok.",
+        "likes": 1,
+        "replies": []
+      }
+    ]
+  },
+  {
+    "id": "d75e4c7a-9de1-4cd4-9b26-70eb52d37df4",
+    "photo": "https://randomuser.me/api/portraits/men/55.jpg",
+    "name": "Fajar Nugroho",
+    "date": "2025-02-12T17:22:00Z",
+    "comment": "Ini kata yang sering saya dengar waktu kecil, jadi nostalgia.",
+    "likes": 19,
+    "replies": []
+  },
+  {
+    "id": "4f91d7b8-5e6e-49b0-b9dc-13c4f8dd4e70",
+    "photo": "https://randomuser.me/api/portraits/women/28.jpg",
+    "name": "Lina Komalasari",
+    "date": "2025-02-13T07:11:00Z",
+    "comment": "Apakah ada variasi pelafalan kata ini di daerah lain?",
+    "likes": 6,
+    "replies": [
+      {
+        "id": "834abebf-47d8-4b56-bd7c-79c4ddd2c3e2",
+        "photo": "https://randomuser.me/api/portraits/men/27.jpg",
+        "name": "Dimas Aditya",
+        "date": "2025-02-13T07:30:00Z",
+        "comment": "Ada beberapa. Di daerah saya huruf vokalnya sedikit berbeda.",
+        "likes": 3,
+        "replies": []
+      }
+    ]
+  },
+  {
+    "id": "d3409437-7afc-4edd-b2c4-f2e03d951740",
+    "photo": "https://randomuser.me/api/portraits/men/61.jpg",
+    "name": "Joko Widodo",
+    "date": "2025-02-13T10:55:00Z",
+    "comment": "Bagus sekali penjelasannya. Sangat bermanfaat!",
+    "likes": 22,
+    "replies": []
+  },
+  {
+    "id": "f8adf5bb-c5c3-4a8e-bc48-6381be942fc6",
+    "photo": "https://randomuser.me/api/portraits/women/33.jpg",
+    "name": "Nadia Safitri",
+    "date": "2025-02-13T12:02:00Z",
+    "comment": "Mungkin bisa ditambahkan audio cara pengucapannya.",
+    "likes": 14,
+    "replies": []
+  },
+  {
+    "id": "5bc117e5-0a2a-4f83-b8f6-4e6439086f88",
+    "photo": "https://randomuser.me/api/portraits/men/40.jpg",
+    "name": "Teguh Hartanto",
+    "date": "2025-02-14T09:45:00Z",
+    "comment": "Apakah kata ini masih dipakai pada generasi muda sekarang?",
+    "likes": 5,
+    "replies": [
+      {
+        "id": "9dcb061a-5c43-4af6-bfff-487282a61b8e",
+        "photo": "https://randomuser.me/api/portraits/women/40.jpg",
+        "name": "Rara Permata",
+        "date": "2025-02-14T10:10:00Z",
+        "comment": "Masih, tapi mulai jarang. Biasanya dipakai di lingkungan keluarga.",
+        "likes": 4,
+        "replies": []
+      }
+    ]
+  }
 ];
