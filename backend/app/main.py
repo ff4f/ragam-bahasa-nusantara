@@ -4,8 +4,9 @@ from fastapi.responses import JSONResponse
 import time
 
 from .config import settings
-from .database import init_db
-from .routers import auth_router, user_router, contact_router
+from .database import init_db, SessionLocal
+from .routers import auth_router, user_router, contact_router, dictionary_router
+from .utils.seeder import seed_dictionaries
 
 # Create FastAPI application
 app = FastAPI(
@@ -16,6 +17,19 @@ app = FastAPI(
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json"
 )
+
+# Startup event
+@app.on_event("startup")
+async def startup_event():
+    # Initialize database tables
+    init_db()
+    
+    # Seed initial data
+    db = SessionLocal()
+    try:
+        seed_dictionaries(db)
+    finally:
+        db.close()
 
 # Configure CORS
 app.add_middleware(
@@ -41,6 +55,7 @@ async def add_process_time_header(request: Request, call_next):
 app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(contact_router)
+app.include_router(dictionary_router)
 
 
 # Root endpoint

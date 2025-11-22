@@ -1,53 +1,94 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Header from "@/components/Header";
-import { ArrowLeftRight, Volume2 } from "lucide-react";
+import { ArrowLeftRight, Volume2, Database } from "lucide-react";
+import { dictionaryService } from "@/services/dictionary.service";
+import { useToast } from "@/hooks/use-toast";
 
 const Dictionary = () => {
+  const { toast } = useToast();
   const [sourceText, setSourceText] = useState("");
   const [targetText, setTargetText] = useState("");
   const [sourceLang, setSourceLang] = useState("id");
-  const [targetLang, setTargetLang] = useState("jv");
+  const [targetLang, setTargetLang] = useState("jv_ngapak");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
 
   const languages = [
     { code: "id", name: "Bahasa Indonesia" },
-    { code: "jv", name: "Bahasa Jawa" },
+    { code: "jv_ngapak", name: "Jawa Ngapak (Banyumasan)" },
+    { code: "jv", name: "Bahasa Jawa (Umum)" },
     { code: "sd", name: "Bahasa Sunda" },
-    { code: "ms", name: "Bahasa Minang" },
-    { code: "bg", name: "Bahasa Bugis" },
-    { code: "bl", name: "Bahasa Bali" },
   ];
 
-  const mockTranslations: Record<string, Record<string, string>> = {
-    "id-jv": {
-      "halo": "halo",
-      "selamat pagi": "sugeng enjing",
-      "terima kasih": "matur nuwun",
-      "apa kabar": "piye kabare",
-    },
-    "jv-id": {
-      "halo": "halo",
-      "sugeng enjing": "selamat pagi",
-      "matur nuwun": "terima kasih",
-      "piye kabare": "apa kabar",
-    },
+  const handleTranslate = async () => {
+    if (!sourceText.trim()) {
+      setTargetText("");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const result = await dictionaryService.translate(sourceText, sourceLang, targetLang);
+      setTargetText(result.translated_text);
+    } catch (error) {
+      console.error("Translation error:", error);
+      toast({
+        title: "Gagal menerjemahkan",
+        description: "Terjadi kesalahan saat menghubungi server",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleTranslate = () => {
-    const key = `${sourceLang}-${targetLang}`;
-    const lowerText = sourceText.toLowerCase().trim();
-    const translation = mockTranslations[key]?.[lowerText] || `[Terjemahan ${sourceText}]`;
-    setTargetText(translation);
-  };
+  // Debounce translation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (sourceText.trim()) {
+        handleTranslate();
+      }
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [sourceText, sourceLang, targetLang]);
 
   const handleSwapLanguages = () => {
     setSourceLang(targetLang);
     setTargetLang(sourceLang);
     setSourceText(targetText);
     setTargetText(sourceText);
+  };
+
+  const handleSeedData = async () => {
+    setIsSeeding(true);
+    try {
+      const result = await dictionaryService.seed();
+      toast({
+        title: "Database Diperbarui",
+        description: "Data kamus Ngapak berhasil ditambahkan!",
+      });
+    } catch (error: any) {
+      // Ignore if already seeded
+      if (error.response?.status === 400 || error.response?.status === 200) {
+        toast({
+          title: "Info",
+          description: "Database sudah berisi data.",
+        });
+      } else {
+        toast({
+          title: "Gagal Seed",
+          description: "Gagal mengisi database.",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsSeeding(false);
+    }
   };
 
   return (
@@ -58,11 +99,25 @@ const Dictionary = () => {
           description="Terjemahkan teks antara Bahasa Indonesia dan bahasa daerah"
         />
 
+        {/* Admin Tool (Temporary) */}
+        <div className="flex justify-end mb-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSeedData}
+            disabled={isSeeding}
+            className="gap-2"
+          >
+            <Database className="h-4 w-4" />
+            {isSeeding ? "Mengisi Data..." : "Isi Data Awal (Ngapak)"}
+          </Button>
+        </div>
+
         <Card>
           <CardHeader>
             <CardTitle>Translator</CardTitle>
             <CardDescription>
-              Masukkan teks yang ingin diterjemahkan
+              Ketik teks untuk menerjemahkan secara otomatis
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -124,7 +179,7 @@ const Dictionary = () => {
 
                 <div className="relative">
                   <Textarea
-                    placeholder="Terjemahan akan muncul di sini..."
+                    placeholder={isLoading ? "Menerjemahkan..." : "Terjemahan akan muncul di sini..."}
                     value={targetText}
                     readOnly
                     className="min-h-[200px] resize-none bg-muted"
@@ -161,10 +216,10 @@ const Dictionary = () => {
               </Button>
               <Button
                 onClick={handleTranslate}
-                disabled={!sourceText.trim()}
+                disabled={!sourceText.trim() || isLoading}
                 className="w-full sm:w-auto"
               >
-                Terjemahkan
+                {isLoading ? "Menerjemahkan..." : "Terjemahkan"}
               </Button>
             </div>
           </CardContent>
@@ -172,28 +227,34 @@ const Dictionary = () => {
 
         <Card className="mt-8">
           <CardHeader>
-            <CardTitle>Frasa Umum</CardTitle>
+            <CardTitle>Contoh Frasa (Ngapak)</CardTitle>
             <CardDescription>
-              Klik untuk menyalin ke translator
+              Klik untuk mencoba
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {Object.entries(mockTranslations["id-jv"] || {}).map(([id, jv]) => (
+              {[
+                { id: "apa kabar", jv: "piye kabare" },
+                { id: "terima kasih", jv: "kesuwun" },
+                { id: "saya mau makan", jv: "nyong arep madang" },
+                { id: "jangan lupa", jv: "aja kelalen" },
+                { id: "kamu mau ke mana", jv: "koe arep ngendi" },
+                { id: "saya tidak tahu", jv: "nyong ora ngerti" }
+              ].map((item) => (
                 <Button
-                  key={id}
+                  key={item.id}
                   variant="outline"
                   className="justify-start h-auto py-3 px-4"
                   onClick={() => {
-                    setSourceText(id);
+                    setSourceText(item.id);
                     setSourceLang("id");
-                    setTargetLang("jv");
-                    setTargetText(jv);
+                    setTargetLang("jv_ngapak");
                   }}
                 >
                   <div className="text-left">
-                    <div className="font-medium">{id}</div>
-                    <div className="text-sm text-muted-foreground">{jv}</div>
+                    <div className="font-medium">{item.id}</div>
+                    <div className="text-sm text-muted-foreground">{item.jv}</div>
                   </div>
                 </Button>
               ))}
