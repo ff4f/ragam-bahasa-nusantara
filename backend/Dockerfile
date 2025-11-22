@@ -28,5 +28,6 @@ COPY ./app /app/app
 # Expose port
 EXPOSE 8069
 
-# Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8069"]
+# Run the application with dynamic PORT support (defaults to 8069)
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8069}
+

@@ -18,9 +18,10 @@ app = FastAPI(
     openapi_url="/api/openapi.json"
 )
 
-# Startup event
+# Startup event - initialize database and seed data
 @app.on_event("startup")
 async def startup_event():
+    """Initialize database and seed data on application startup"""
     # Initialize database tables
     init_db()
     
@@ -30,6 +31,9 @@ async def startup_event():
         seed_dictionaries(db)
     finally:
         db.close()
+    
+    print(f"✅ {settings.PROJECT_NAME} v{settings.VERSION} started successfully!")
+    print(f"📚 API Documentation: /api/docs")
 
 # Configure CORS
 app.add_middleware(
@@ -78,14 +82,6 @@ async def health_check():
         "version": settings.VERSION
     }
 
-
-# Startup event - initialize database
-@app.on_event("startup")
-async def startup_event():
-    """Initialize database on application startup"""
-    init_db()
-    print(f"✅ {settings.PROJECT_NAME} v{settings.VERSION} started successfully!")
-    print(f"📚 API Documentation: /api/docs")
 
 
 # Shutdown event

@@ -41,3 +41,7 @@ backend/.venv/
 # Docker
 docker-compose.override.yml
 
+# Railway
+.railway/
+.railway.json
+railway.toml

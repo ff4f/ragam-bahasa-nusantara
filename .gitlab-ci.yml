@@ -1,0 +1,100 @@
+stages:
+  - test
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  RAILWAY_STATIC_URL: "https://railway.app"
+
+# Test stage (optional but recommended)
+test:backend:
+  stage: test
+  image: python:3.11-slim
+  before_script:
+    - cd backend
+    - pip install -r requirements.txt
+  script:
+    - echo "Running backend tests..."
+    # Add your test commands here
+    # - pytest tests/
+  only:
+    - merge_requests
+    - main
+
+# Deploy to Railway
+deploy:railway:
+  stage: deploy
+  image: node:18-alpine
+  before_script:
+    - npm install -g @railway/cli
+  script:
+    - echo "Deploying to Railway from branch: $CI_COMMIT_BRANCH"
+    - railway link $RAILWAY_PROJECT_ID
+    - railway up --service backend
+    - railway up --service frontend
+  only:
+    - main
+    - feature/integrated  # Add your branch here
+  environment:
+    name: production
+    url: $RAILWAY_APP_URL
+
+# Deploy from any branch (manual trigger)
+deploy:any-branch:
+  stage: deploy
+  image: node:18-alpine
+  before_script:
+    - npm install -g @railway/cli
+  script:
+    - echo "Manual deployment from branch: $CI_COMMIT_BRANCH"
+    - railway link $RAILWAY_PROJECT_ID
+    - railway up
+  when: manual
+  environment:
+    name: staging-$CI_COMMIT_REF_SLUG
+    on_stop: cleanup:deployment
+
+# Deploy specific services separately (alternative approach)
+deploy:backend:
+  stage: deploy
+  image: node:18-alpine
+  before_script:
+    - npm install -g @railway/cli
+  script:
+    - echo "Deploying backend from branch: $CI_COMMIT_BRANCH"
+    - railway link $RAILWAY_PROJECT_ID
+    - railway up --service backend
+  only:
+    - main
+    - feature/integrated  # Add your branch here
+  when: manual
+  environment:
+    name: production-backend
+
+deploy:frontend:
+  stage: deploy
+  image: node:18-alpine
+  before_script:
+    - npm install -g @railway/cli
+  script:
+    - echo "Deploying frontend from branch: $CI_COMMIT_BRANCH"
+    - railway link $RAILWAY_PROJECT_ID
+    - railway up --service frontend
+  only:
+    - main
+    - feature/integrated  # Add your branch here
+  when: manual
+  environment:
+    name: production-frontend
+
+# Cleanup deployment (for manual branch deployments)
+cleanup:deployment:
+  stage: deploy
+  image: node:18-alpine
+  script:
+    - echo "Cleanup can be triggered manually if needed"
+  when: manual
+  environment:
+    name: staging-$CI_COMMIT_REF_SLUG
+    action: stop
+

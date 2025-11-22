@@ -68,6 +68,53 @@ nano .env
 - `MYSQL_PASSWORD`
 - `SECRET_KEY` (make it long and random)
 
+## 🚀 Deployment
+
+### Deploy to Railway (Recommended for Production)
+
+This project supports deployment to Railway with CI/CD integration from GitLab or GitHub.
+
+#### Option 1: GitLab CI/CD → Railway (Recommended) ✅
+
+Automatically deploy from GitLab using CI/CD pipeline:
+
+1. **Quick Start:**
+   ```bash
+   # Run the interactive deployment script
+   ./deploy-railway.sh
+   ```
+
+2. **Manual Setup:**
+   - See detailed instructions in [`RAILWAY_DEPLOYMENT.md`](RAILWAY_DEPLOYMENT.md)
+   - Quick reference: [`GITLAB_RAILWAY_CHEATSHEET.md`](GITLAB_RAILWAY_CHEATSHEET.md)
+
+3. **Setup GitLab CI/CD Variables:**
+   - `RAILWAY_TOKEN` - Get from `railway login --browserless`
+   - `RAILWAY_PROJECT_ID` - From Railway dashboard
+   - `RAILWAY_APP_URL` - Your app URL
+
+4. **Deploy:**
+   ```bash
+   git push origin main  # Auto-deploys via GitLab CI/CD! 🎉
+   ```
+
+#### Option 2: GitHub Mirror → Railway
+
+Use Railway's native GitHub integration:
+
+1. Mirror your GitLab repo to GitHub (automated via GitLab CI/CD)
+2. Connect Railway to GitHub repository
+3. Railway auto-deploys on every push
+
+See [`RAILWAY_DEPLOYMENT.md`](RAILWAY_DEPLOYMENT.md) for complete setup instructions.
+
+#### Railway Configuration Files
+
+- `.gitlab-ci.yml` - GitLab CI/CD pipeline
+- `railway.json` - Railway deployment configuration
+- `.env.railway` - Environment variables template
+- `deploy-railway.sh` - Interactive deployment script
+
 ### 3. Start the Application
 
 ```bash
