@@ -4,8 +4,11 @@ from sqlalchemy.orm import sessionmaker
 from .config import settings
 
 # Create database engine
+# Railway provides mysql:// but we need mysql+pymysql:// for the pymysql driver
+database_url = settings.DATABASE_URL.replace("mysql://", "mysql+pymysql://")
+
 engine = create_engine(
-    settings.DATABASE_URL,
+    database_url,
     pool_pre_ping=True,  # Verify connections before using them
     pool_recycle=3600,   # Recycle connections after 1 hour
     echo=settings.DEBUG  # Log SQL queries in debug mode
