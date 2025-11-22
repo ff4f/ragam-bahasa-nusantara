@@ -33,17 +33,33 @@ const Profile = () => {
     });
   }, [navigate]);
 
-  const handleSave = () => {
-    if (user) {
-      const updatedUser = {
-        ...user,
+  const handleSave = async () => {
+    if (!user) return;
+
+    try {
+      // Call backend API to update profile
+      const userService = (await import("@/services/user.service")).default;
+      const updatedUser = await userService.updateProfile({
         name: formData.name,
         email: formData.email,
-      };
+      });
+
+      // Update local state and context
       updateProfile(updatedUser);
       setUser(updatedUser);
       setIsEditing(false);
-      toast({ title: "Profil berhasil diperbarui!" });
+
+      toast({
+        title: "Profil berhasil diperbarui!",
+        description: "Perubahan telah tersimpan ke database"
+      });
+    } catch (error: any) {
+      console.error("Update profile error:", error);
+      toast({
+        title: "Gagal memperbarui profil",
+        description: error.response?.data?.detail || "Terjadi kesalahan",
+        variant: "destructive"
+      });
     }
   };
 
@@ -67,6 +83,12 @@ const Profile = () => {
       .toUpperCase()
       .slice(0, 2);
   };
+
+  // Provide default values for optional fields
+  const userXp = user.xp ?? 0;
+  const userBadges = user.badges ?? [];
+  const userValidationCount = user.validationCount ?? 0;
+  const userAccuracy = user.accuracy ?? 0;
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -154,17 +176,17 @@ const Profile = () => {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">XP</span>
-                  <span className="text-2xl font-bold text-primary">{user.xp}</span>
+                  <span className="text-2xl font-bold text-primary">{userXp}</span>
                 </div>
                 {user.role === "validator" && (
                   <>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Validasi</span>
-                      <span className="text-2xl font-bold">{user.validationCount || 0}</span>
+                      <span className="text-2xl font-bold">{userValidationCount}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Akurasi</span>
-                      <span className="text-2xl font-bold">{user.accuracy || 0}%</span>
+                      <span className="text-2xl font-bold">{userAccuracy}%</span>
                     </div>
                   </>
                 )}
@@ -180,12 +202,12 @@ const Profile = () => {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {user.badges.map((badge, index) => (
+                  {userBadges.map((badge, index) => (
                     <Badge key={index} variant="outline">
                       {badge}
                     </Badge>
                   ))}
-                  {user.badges.length === 0 && (
+                  {userBadges.length === 0 && (
                     <p className="text-sm text-muted-foreground">Belum ada badge</p>
                   )}
                 </div>
@@ -199,3 +221,4 @@ const Profile = () => {
 };
 
 export default Profile;
+

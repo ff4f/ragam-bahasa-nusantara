@@ -1,14 +1,71 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/use-user";
 import Header from "@/components/Header";
 import { Mail, MapPin, Phone, MessageCircle } from "lucide-react";
 
 const Contact = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { user } = useUser();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Auto-fill name and email if user is logged in
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || "",
+        email: user.email || "",
+      }));
+    }
+  }, [user]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const contactService = (await import("@/services/contact.service")).default;
+      await contactService.submitContact(formData);
+
+      toast({
+        title: "Pesan terkirim!",
+        description: "Terima kasih telah menghubungi kami. Kami akan segera merespons.",
+      });
+
+      // Reset form except name and email if user is logged in
+      setFormData(prev => ({
+        name: user ? user.name : "",
+        email: user ? user.email : "",
+        subject: "",
+        message: "",
+      }));
+    } catch (error: any) {
+      console.error("Submit contact error:", error);
+      toast({
+        title: "Gagal mengirim pesan",
+        description: error.response?.data?.detail || "Terjadi kesalahan. Silakan coba lagi.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const contactInfo = [
     {
       icon: Mail,
@@ -56,21 +113,43 @@ const Contact = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="name">Nama Lengkap</Label>
-                      <Input id="name" placeholder="Masukkan nama Anda" />
+                      <Input
+                        id="name"
+                        placeholder="Masukkan nama Anda"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        disabled={isLoading}
+                        required
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" placeholder="nama@email.com" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="nama@email.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        disabled={isLoading}
+                        required
+                      />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="subject">Subjek</Label>
-                    <Input id="subject" placeholder="Tentang apa pesan Anda?" />
+                    <Input
+                      id="subject"
+                      placeholder="Tentang apa pesan Anda?"
+                      value={formData.subject}
+                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      disabled={isLoading}
+                      required
+                    />
                   </div>
 
                   <div className="space-y-2">
@@ -79,11 +158,15 @@ const Contact = () => {
                       id="message"
                       placeholder="Tuliskan pesan Anda di sini..."
                       className="min-h-[150px]"
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      disabled={isLoading}
+                      required
                     />
                   </div>
 
-                  <Button type="submit" className="w-full md:w-auto">
-                    Kirim Pesan
+                  <Button type="submit" className="w-full md:w-auto" disabled={isLoading}>
+                    {isLoading ? "Mengirim..." : "Kirim Pesan"}
                   </Button>
                 </form>
               </CardContent>

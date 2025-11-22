@@ -6,48 +6,105 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useNavigate } from "react-router-dom";
-import { getMockUser } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
+import authService from "@/services/auth.service";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, updateProfile } = useUser();
+  const { user, setUser } = useUser();
   const { toast } = useToast();
   const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
       navigate("/");
     }
-  }, [navigate]);
+  }, [user, navigate]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login - in production this would call backend API
-    const mockUser = getMockUser(email);
-    if (!mockUser) {
-      toast({ title: "Akun tidak terdaftar" });
-      return;
+    setIsLoading(true);
+
+    try {
+      // Call backend login API
+      await authService.login({ email, password });
+
+      // Get current user data
+      const userData = await authService.getCurrentUser();
+
+      // Update user context
+      setUser(userData);
+
+      toast({
+        title: "Berhasil masuk!",
+        description: `Selamat datang, ${userData.name}`
+      });
+
+      navigate("/");
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast({
+        title: "Login gagal",
+        description: error.response?.data?.detail || "Email atau password salah",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
     }
-    mockUser.email = email;
-    updateProfile(mockUser);
-    toast({ title: "Berhasil masuk!" });
-    navigate("/");
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock signup - in production this would call backend API
-    const mockUser = getMockUser(`${role}@gmail.com`);
-    mockUser.email = email;
-    mockUser.name = name;
-    updateProfile(mockUser);
-    toast({ title: "Akun berhasil dibuat!" });
-    navigate("/");
+
+    if (!role) {
+      toast({
+        title: "Pilih peran terlebih dahulu",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Call backend register API
+      const newUser = await authService.register({
+        email,
+        password,
+        name,
+        role: role as 'contributor' | 'validator'
+      });
+
+      // Auto login after registration
+      await authService.login({ email, password });
+
+      // Get current user data
+      const userData = await authService.getCurrentUser();
+
+      // Update user context
+      setUser(userData);
+
+      toast({
+        title: "Akun berhasil dibuat!",
+        description: `Selamat datang, ${newUser.name}`
+      });
+
+      navigate("/");
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      toast({
+        title: "Registrasi gagal",
+        description: error.response?.data?.detail || "Terjadi kesalahan saat membuat akun",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -65,7 +122,7 @@ const Auth = () => {
               <TabsTrigger value="login">Masuk</TabsTrigger>
               <TabsTrigger value="signup">Daftar</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
@@ -77,6 +134,7 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={isLoading}
                   />
                 </div>
                 <div className="space-y-2">
@@ -88,19 +146,20 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    disabled={isLoading}
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  Masuk
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Memproses..." : "Masuk"}
                 </Button>
               </form>
             </TabsContent>
-            
+
             <TabsContent value="signup">
               <form onSubmit={handleSignup} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="role">Peran</Label>
-                  <Select value={role} onValueChange={(value) => setRole(value)}>
+                  <Select value={role} onValueChange={(value) => setRole(value)} disabled={isLoading}>
                     <SelectTrigger id="role">
                       <SelectValue placeholder="Pilih peran yang diinginkan" />
                     </SelectTrigger>
@@ -119,6 +178,7 @@ const Auth = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
+                    disabled={isLoading}
                   />
                 </div>
                 <div className="space-y-2">
@@ -130,6 +190,7 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={isLoading}
                   />
                 </div>
                 <div className="space-y-2">
@@ -141,15 +202,17 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    minLength={6}
+                    disabled={isLoading}
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  Daftar
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Memproses..." : "Daftar"}
                 </Button>
               </form>
             </TabsContent>
           </Tabs>
-          
+
           <div className="mt-6 text-center text-sm text-muted-foreground">
             <Link to="/" className="hover:text-primary">
               Kembali ke Beranda
@@ -162,3 +225,4 @@ const Auth = () => {
 };
 
 export default Auth;
+

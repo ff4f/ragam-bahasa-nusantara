@@ -55,7 +55,7 @@ const ContributeLoggedIn = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user: userContext } = useUser();
-  
+
   const [user, setUser] = useState(userContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState(INITIAL_FORM_CONTRIBUTION);
@@ -79,7 +79,7 @@ const ContributeLoggedIn = () => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     toast({ title: "Kontribusi berhasil dikirim! Terima kasih atas partisipasi Anda." });
-    
+
     // Reset form
     setFormData(INITIAL_FORM_CONTRIBUTION);
     setIsSubmitting(false);
@@ -97,7 +97,7 @@ const ContributeLoggedIn = () => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     toast({ title: "Kontribusi berhasil diubah! Terima kasih atas partisipasi Anda." });
-    
+
     // Reset form
     setFormDataModal(INITIAL_FORM_CONTRIBUTION);
     setEditLoading(false);
@@ -155,15 +155,15 @@ const ContributeLoggedIn = () => {
                 <CardContent className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Total XP</span>
-                    <span className="font-bold text-primary">{user.xp}</span>
+                    <span className="font-bold text-primary">{user.xp ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Level</span>
-                    <span className="font-medium">{user.level}</span>
+                    <span className="font-medium">{user.level ?? 1}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Badge</span>
-                    <span className="font-medium">{user.badges.length}</span>
+                    <span className="font-medium">{user.badges?.length ?? 0}</span>
                   </div>
                 </CardContent>
               </Card>

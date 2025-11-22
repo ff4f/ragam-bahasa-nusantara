@@ -11,7 +11,12 @@ const Missions = () => {
   const navigate = useNavigate();
   const { user } = useUser();
   const completedMissions = mockMissions.filter(item => !!item.done).length || 0;
-  const nextXp = user?.nextXp || 100;
+
+  // Provide default values for user properties
+  const userXp = user?.xp ?? 0;
+  const userLevel = user?.level ?? 1;
+  const userBadges = user?.badges ?? [];
+  const nextXp = user?.nextXp ?? 100;
 
   if (!user) {
     return (
@@ -59,7 +64,7 @@ const Missions = () => {
                   <Trophy className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{user.xp}</p>
+                  <p className="text-2xl font-bold text-foreground">{userXp}</p>
                   <p className="text-sm text-muted-foreground">Total XP</p>
                 </div>
               </div>
@@ -73,7 +78,7 @@ const Missions = () => {
                   <ChartNoAxesCombined className="h-5 w-5 text-accent" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{user.level}</p>
+                  <p className="text-2xl font-bold text-foreground">{userLevel}</p>
                   <p className="text-sm text-muted-foreground">Level</p>
                 </div>
               </div>
@@ -101,7 +106,7 @@ const Missions = () => {
                   <CheckCircle2 className="h-5 w-5 text-secondary" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{user.badges.length}</p>
+                  <p className="text-2xl font-bold text-foreground">{userBadges.length}</p>
                   <p className="text-sm text-muted-foreground">Badge</p>
                 </div>
               </div>
@@ -130,9 +135,9 @@ const Missions = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm font-medium text-foreground">Progress ke Level Berikutnya</p>
-              <p className="text-sm text-muted-foreground">{user.xp} / {nextXp} XP</p>
+              <p className="text-sm text-muted-foreground">{userXp} / {nextXp} XP</p>
             </div>
-            <Progress value={(user.xp / nextXp) * 100} />
+            <Progress value={(userXp / nextXp) * 100} />
           </CardContent>
         </Card>
 
@@ -163,7 +168,7 @@ const Missions = () => {
                       </span>
                     </div>
                   </div>
-                  
+
                   <Button
                     className="w-full mt-4"
                     onClick={() => handleStartMission(mission)}
@@ -187,9 +192,9 @@ const Missions = () => {
         {/* Badges Section */}
         <div className="mt-12">
           <h2 className="text-2xl font-bold text-foreground mb-6">Badge Anda</h2>
-          {user?.badges?.length > 0 ? (
+          {userBadges.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-4">
-              {user.badges.map((badge, index) => (
+              {userBadges.map((badge, index) => (
                 <Card key={index}>
                   <CardContent className="p-4 text-center">
                     <div className="h-16 w-16 mx-auto mb-2 rounded-full bg-gradient-hero flex items-center justify-center">

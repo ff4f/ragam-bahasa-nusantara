@@ -1,0 +1,29 @@
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+from ..models.user import UserRole
+
+
+class UserLogin(BaseModel):
+    """Schema for user login request"""
+    email: EmailStr
+    password: str = Field(..., min_length=1)
+
+
+class UserRegister(BaseModel):
+    """Schema for user registration request"""
+    email: EmailStr
+    password: str = Field(..., min_length=6, max_length=100)
+    name: str = Field(..., min_length=1, max_length=255)
+    role: UserRole
+
+
+class Token(BaseModel):
+    """Schema for JWT token response"""
+    access_token: str
+    token_type: str = "bearer"
+
+
+class TokenData(BaseModel):
+    """Schema for decoded JWT token data"""
+    user_id: Optional[int] = None
+    email: Optional[str] = None

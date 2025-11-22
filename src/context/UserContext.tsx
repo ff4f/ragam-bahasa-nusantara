@@ -5,23 +5,29 @@ import {
   ReactNode,
 } from "react";
 import { STORAGE_USER_KEY } from "@/lib/constants";
+import authService from "@/services/auth.service";
 
 export interface User {
-  data: string;
-  name: string;
+  id: number;
   email: string;
-  role: string;
-  xp: number;
-  badges: any[];
-  validationCount: number;
-  accuracy: number;
+  name: string;
+  role: 'contributor' | 'validator';
+  is_active: boolean;
+  created_at: string;
+  // Legacy fields for compatibility with existing components
+  data?: string;
+  xp?: number;
+  badges?: any[];
+  validationCount?: number;
+  accuracy?: number;
   avatar?: string;
-  level: number;
-  nextXp: number;
+  level?: number;
+  nextXp?: number;
 }
 
 interface UserContextType {
   user: User | null;
+  setUser: (user: User | null) => void;
   logout: () => void;
   updateProfile: (data: Partial<User>) => void;
 }
@@ -31,16 +37,21 @@ export const UserContext = createContext<UserContextType | undefined>(undefined)
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
-  // Load saved user when app starts
+  // Load user from backend if token exists
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_USER_KEY);
-    if (saved) {
-      try {
-        setUser(JSON.parse(saved));
-      } catch {
-        localStorage.removeItem(STORAGE_USER_KEY);
+    const loadUser = async () => {
+      if (authService.isAuthenticated()) {
+        try {
+          const userData = await authService.getCurrentUser();
+          setUser(userData);
+        } catch (error) {
+          console.error("Failed to load user:", error);
+          authService.clearToken();
+        }
       }
-    }
+    };
+
+    loadUser();
   }, []);
 
   // Persist to localStorage whenever user changes
@@ -52,18 +63,27 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem(STORAGE_USER_KEY);
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setUser(null);
+      localStorage.removeItem(STORAGE_USER_KEY);
+    }
   };
 
-  const updateProfile = (data: User) => {
-    setUser(data);
-    localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(data));
+  const updateProfile = (data: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...data };
+      setUser(updatedUser);
+      localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(updatedUser));
+    }
   };
 
   return (
-    <UserContext.Provider value={{ user, logout, updateProfile }}>
+    <UserContext.Provider value={{ user, setUser, logout, updateProfile }}>
       {children}
     </UserContext.Provider>
   );
