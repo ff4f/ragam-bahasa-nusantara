@@ -29,15 +29,14 @@ test:backend:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 mirror:github:
   stage: mirror
-  image: alpine/git
+  image: alpine:latest
   before_script:
+    - apk add --no-cache git
     - git config --global user.email "ci@gitlab.com"
     - git config --global user.name "GitLab CI"
   script:
     - echo "Mirroring branch $CI_COMMIT_BRANCH to GitHub..."
-    # Add GitHub remote
     - git remote add github https://${GITHUB_TOKEN}@github.com/${GITHUB_REPO}.git 2>/dev/null || true
-    # Force push to GitHub
     - git push github HEAD:$CI_COMMIT_BRANCH --force
     - echo "✅ Successfully mirrored to GitHub!"
   only:
