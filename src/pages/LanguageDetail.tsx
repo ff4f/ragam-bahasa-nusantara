@@ -246,6 +246,7 @@ const LanguageDetail = () => {
                       variant="ghost"
                       className="rounded-[50%] h-6 w-6 p-4"
                       onClick={() => setOpenCommentModal(true)}
+                      disabled={!user && item.comment <= 0}
                     >
                       <MessageCircle style={{ width: "1.2rem", height: "1.2rem" }}/>
                     </Button>
@@ -258,6 +259,7 @@ const LanguageDetail = () => {
                       variant="ghost"
                       className="rounded-[50%] h-6 w-6 p-4"
                       onClick={() => handleLike(item.id)}
+                      disabled={!user}
                     >
                       <Heart className={item?.liked ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
                     </Button>
