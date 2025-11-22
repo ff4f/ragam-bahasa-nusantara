@@ -1,5 +1,6 @@
 stages:
   - test
+  - mirror
   - deploy
 
 variables:
@@ -20,9 +21,38 @@ test:backend:
   only:
     - merge_requests
     - main
+    - feature/integrated
 
-# Deploy to Railway
-deploy:railway:
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🔄 AUTO-MIRROR: GitLab → GitHub
+# This job automatically syncs GitLab to GitHub
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+mirror:github:
+  stage: mirror
+  image: alpine/git
+  before_script:
+    - git config --global user.email "ci@gitlab.com"
+    - git config --global user.name "GitLab CI"
+  script:
+    - echo "Mirroring branch $CI_COMMIT_BRANCH to GitHub..."
+    # Add GitHub remote
+    - git remote add github https://${GITHUB_TOKEN}@github.com/${GITHUB_REPO}.git 2>/dev/null || true
+    # Force push to GitHub
+    - git push github HEAD:$CI_COMMIT_BRANCH --force
+    - echo "✅ Successfully mirrored to GitHub!"
+  only:
+    - main
+    - feature/integrated
+  tags:
+    - docker
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🚀 DEPLOY: Railway (Optional - via CLI)
+# Note: Railway will auto-deploy from GitHub anyway
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Deploy to Railway via CLI (manual trigger)
+deploy:railway-cli:
   stage: deploy
   image: node:18-alpine
   before_script:
@@ -31,6 +61,7 @@ deploy:railway:
     - echo "Deploying to Railway from branch $CI_COMMIT_BRANCH"
     - railway link $RAILWAY_PROJECT_ID
     - railway up
+  when: manual
   only:
     - main
     - feature/integrated
@@ -38,62 +69,6 @@ deploy:railway:
     name: production
     url: $RAILWAY_APP_URL
 
-# Deploy from any branch (manual trigger)
-deploy:any-branch:
-  stage: deploy
-  image: node:18-alpine
-  before_script:
-    - npm install -g @railway/cli
-  script:
-    - echo "Manual deployment from branch $CI_COMMIT_BRANCH"
-    - railway link $RAILWAY_PROJECT_ID
-    - railway up
-  when: manual
-  environment:
-    name: staging-$CI_COMMIT_REF_SLUG
-    on_stop: cleanup:deployment
-
-# Deploy specific services separately (alternative approach)
-deploy:backend:
-  stage: deploy
-  image: node:18-alpine
-  before_script:
-    - npm install -g @railway/cli
-  script:
-    - echo "Deploying backend from branch $CI_COMMIT_BRANCH"
-    - railway link $RAILWAY_PROJECT_ID
-    - railway up
-  only:
-    - main
-    - feature/integrated  # Add your branch here
-  when: manual
-  environment:
-    name: production-backend
-
-deploy:frontend:
-  stage: deploy
-  image: node:18-alpine
-  before_script:
-    - npm install -g @railway/cli
-  script:
-    - echo "Deploying frontend from branch $CI_COMMIT_BRANCH"
-    - railway link $RAILWAY_PROJECT_ID
-    - railway up
-  only:
-    - main
-    - feature/integrated  # Add your branch here
-  when: manual
-  environment:
-    name: production-frontend
-
-# Cleanup deployment (for manual branch deployments)
-cleanup:deployment:
-  stage: deploy
-  image: node:18-alpine
-  script:
-    - echo "Cleanup can be triggered manually if needed"
-  when: manual
-  environment:
-    name: staging-$CI_COMMIT_REF_SLUG
-    action: stop
-
+# Note: Railway auto-deploy job
+# Railway will automatically deploy when GitHub is updated
+# No manual Railway CLI deployment needed!
