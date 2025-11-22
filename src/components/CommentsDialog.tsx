@@ -105,12 +105,13 @@ const CommentsDialog = ({ comments, user, open, handleClose }: CommentsDialogPro
         <DialogOverlay />
         <DialogPrimitive.Content
           className="max-h-[100%] fixed left-[50%] bottom-0 z-50 grid w-full max-w-lg translate-x-[-50%] gap-4 border bg-background px-6 pt-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-bottom rounded-tl-lg rounded-tr-lg"
+          onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <h1 className="text-center font-medium">Komentar</h1>
           {mappedComments?.length <= 0 ? (
             <p className="text-muted-foreground text-sm text-center my-4">Belum ada komentar</p>
           ) : (
-            <div className="overflow-auto max-h-[80vh] flex flex-col">
+            <div className="overflow-auto max-h-[75vh] flex flex-col">
               {mappedComments.map(comment => (
                 <div key={comment.id} className="flex gap-2 py-2">
                   <Avatar className="h-10 w-10">
@@ -120,7 +121,7 @@ const CommentsDialog = ({ comments, user, open, handleClose }: CommentsDialogPro
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
                       <p className="font-medium">{comment.name}</p>
-                      <span className="ml-2 text-xs text-muted-foreground">{moment(comment.date).fromNow()}</span>
+                      <span className="ml-2 text-xs text-muted-foreground text-right">{moment(comment.date).fromNow()}</span>
                     </div>
                     <p>{comment.comment}</p>
                     <div className="flex gap-1">
@@ -162,9 +163,9 @@ const CommentsDialog = ({ comments, user, open, handleClose }: CommentsDialogPro
                               <AvatarFallback>{getInitials(reply.name)}</AvatarFallback>
                             </Avatar>
                             <div className="flex-1">
-                              <div className="flex justify-between items-center">
-                                <p className="font-medium">{reply.name}</p>
-                                <span className="ml-2 text-xs text-muted-foreground">{moment(reply.date).fromNow()}</span>
+                              <div className="flex justify-between items-start">
+                                <p className="font-medium flex-1">{reply.name}</p>
+                                <span className="ml-2 text-xs text-muted-foreground text-right max-w-fit">{moment(reply.date).fromNow()}</span>
                               </div>
                               <p>{reply.comment}</p>
                               <div className="flex gap-1">
