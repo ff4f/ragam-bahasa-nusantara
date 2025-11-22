@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { Card, CardContent } from './ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from '@/components/ui/button';
+import { EllipsisVertical } from 'lucide-react';
 
 interface DataTableProps {
   columns: any[];
@@ -20,6 +29,7 @@ const DataTable = ({
   onChangePage,
 }: DataTableProps) => {
 
+  const actions = columns?.find(item => item.id === "action")?.actions;
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -28,7 +38,7 @@ const DataTable = ({
 
   return (
     <>
-      <div className="border rounded-lg overflow-hidden">
+      <div className="border rounded-lg overflow-hidden hidden sm:block">
         <Table>
           <TableHeader>
             <TableRow>
@@ -51,6 +61,38 @@ const DataTable = ({
             )}
           </TableBody>
         </Table>
+      </div>
+
+      <div className="flex flex-col gap-4 block sm:hidden">
+        {rows.map(row => (
+          <Card key={row.id}>
+            <CardContent className="pt-6 flex">
+              <div className="flex-1">
+                {columns.map(col => col.id !== "action" && (
+                  <div className="mb-2" key={col.id}>
+                    <p className="text-xs text-muted-foreground">{col.name}</p>
+                    <p className="text-sm font-medium">{row?.render?.({ value: row[col.id], row }) || row?.[col.id] || "-"}</p>
+                  </div>
+                ))}
+              </div>
+              {actions?.length > 0 && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="rounded-[50%] h-6 w-6 p-4"
+                    >
+                      <EllipsisVertical style={{ width: "1.2rem", height: "1.2rem" }}/>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {actions.map(act => <DropdownMenuItem key={act.id} onClick={() => act?.action?.(row)}>{act.label}</DropdownMenuItem>)}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {!disablePagination && totalPages > 1 && (

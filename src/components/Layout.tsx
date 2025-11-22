@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { navLinks } from "@/lib/constants";
+import { getInitials } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -29,15 +30,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     navigate("/");
     toast({ title: "Berhasil keluar!" })
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
   };
 
   useEffect(() => {
@@ -128,7 +120,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         {mobileMenuOpen && (
           <div className="border-t border-border bg-background md:hidden">
             <div className="container mx-auto space-y-1 px-4 py-4">
-              {menus.map((link) => (
+              {menus.map((link) => link.show && (
                 <NavLink
                   key={link.to}
                   to={link.to}

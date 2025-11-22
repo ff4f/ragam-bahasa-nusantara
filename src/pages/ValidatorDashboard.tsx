@@ -37,6 +37,16 @@ const columnsValidations = ({ setSelectedContribution, setFormData }) => [
   {
     id: "action",
     name: "Aksi",
+    actions: [
+      {
+        id: "review",
+        label: "Tinjau",
+        action: (row) => {
+          setFormData(row);
+          setSelectedContribution(true);
+        },
+      },
+    ],
     render: ({ row }) => (
       <Tooltip label="Tinjau">
         <Button

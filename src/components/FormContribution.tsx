@@ -25,10 +25,8 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [confirmation, setConfirmation] = useState(null);
   const [tabText, setTabText] = useState("upload");
-  const [tabSentence, setTabSentence] = useState("upload");
 
   const textAudioURL = tabText === "upload" && (formData?.textAudio && formData.textAudio instanceof Blob ? URL.createObjectURL(formData.textAudio) : formData?.textAudio);
-  const sentenceAudioURL = tabSentence === "upload" && (formData?.sentenceAudio && formData.sentenceAudio instanceof Blob ? URL.createObjectURL(formData.sentenceAudio) : formData?.sentenceAudio);
 
   const handleFile = (e: any, type: string) => {
     setFormData({ ...formData, [type]: e.target.files[0] });
@@ -38,10 +36,9 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
     setFormData({ ...formData, [type]: url });
   };
 
-  const handleChangeTab = (value: string, type: string) => {
-    setFormData({ ...formData, [type]: "" });
-    if (type === "textAudio") setTabText(value);
-    else setTabSentence(value);
+  const handleChangeTab = (value: string) => {
+    setFormData({ ...formData, textAudio: "" });
+    setTabText(value);
   };
 
   const handleConfirmation = (type: string) => {
@@ -172,7 +169,7 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="sentence">
-              Contoh Kalimat *
+              Contoh Kalimat
             </Label>
             <Input
               id="sentence"
@@ -187,7 +184,7 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
 
           <div className="space-y-2">
             <Label htmlFor="sentenceTranslation">
-              Terjemahan Contoh Kalimat *
+              Terjemahan Contoh Kalimat
             </Label>
             <Input
               id="sentenceTranslation"
@@ -203,11 +200,11 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
 
         {/* Audio Recording for Text */}
         <div className="space-y-2">
-          <Label>Audio Kosakata *</Label>
+          <Label>Audio Kosakata</Label>
           {isReview ? (
             formData?.textAudio ? <audio src={formData.textAudio} controls className="w-full" /> : <p className="text-muted-foreground text-center text-sm opacity-60">Tidak ada file yang di upload.</p>
           ) : (
-            <Tabs value={tabText} className="w-full" onValueChange={(value) => handleChangeTab(value, "textAudio")}>
+            <Tabs value={tabText} className="w-full" onValueChange={(value) => handleChangeTab(value)}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="upload">Upload File</TabsTrigger>
                 <TabsTrigger value="record">Rekam Suara</TabsTrigger>
@@ -231,43 +228,6 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
                 <AudioRecorder
                   onSave={(url) => handleRecord(url, "textAudio")}
                   reset={!formData?.textAudio}
-                />
-              </TabsContent>
-            </Tabs>
-          )}
-        </div>
-
-        {/* Audio Recording for Sentence */}
-        <div className="space-y-2">
-          <Label>Audio Contoh Kalimat *</Label>
-          {isReview ? (
-            formData?.sentenceAudio ? <audio src={formData.sentenceAudio} controls className="w-full" /> : <p className="text-muted-foreground text-center text-sm opacity-60">Tidak ada file yang di upload.</p>
-          ) : (
-            <Tabs defaultValue="upload" className="w-full" onValueChange={(value) => handleChangeTab(value, "sentenceAudio")}>
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="upload">Upload File</TabsTrigger>
-                <TabsTrigger value="record">Rekam Suara</TabsTrigger>
-              </TabsList>
-              <TabsContent value="upload">
-                <div className="space-y-2">
-                  <Input
-                    id="sentenceAudio"
-                    type="file"
-                    accept="audio/*"
-                    className="cursor-pointer"
-                    onChange={(e) => handleFile(e, "sentenceAudio")}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Format: MP3, WAV, M4A (Maks. 10MB)
-                  </p>
-                  {sentenceAudioURL && <audio src={sentenceAudioURL} controls className="w-full" />}
-                </div>
-              </TabsContent>
-              <TabsContent value="record">
-                <p>Sudah terekam pada </p>
-                <AudioRecorder
-                  onSave={(url) => handleRecord(url, "sentenceAudio")}
-                  reset={!formData?.sentenceAudio}
                 />
               </TabsContent>
             </Tabs>
