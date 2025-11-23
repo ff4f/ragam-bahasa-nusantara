@@ -97,6 +97,8 @@ async def translate_text(
         matches=matches
     )
 
+from sqlalchemy.orm import selectinload
+
 @router.get("/", response_model=List[DictionaryResponse])
 @router.get("/search", response_model=DictionaryResponsePaginated) # Add search endpoint alias
 async def get_dictionaries(
@@ -110,7 +112,11 @@ async def get_dictionaries(
     """
     Get all dictionary entries with optional filtering.
     """
-    query = db.query(Dictionary)
+    # Eager load relationships to avoid N+1 problem
+    query = db.query(Dictionary).options(
+        selectinload(Dictionary.likes),
+        selectinload(Dictionary.comments)
+    )
 
     if source_lang:
         query = query.filter(Dictionary.source_lang == source_lang)

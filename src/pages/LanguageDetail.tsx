@@ -21,6 +21,7 @@ import { vocabulary, comments } from "@/lib/dummy";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { dictionaryService } from "@/services/dictionary.service";
+import { useDebounce } from "@/hooks/use-debounce";
 import FormContribution from "@/components/FormContribution";
 
 const LanguageDetail = () => {
@@ -31,13 +32,15 @@ const LanguageDetail = () => {
   const language = location.state?.language;
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const debouncedSearch = useDebounce(searchQuery, 500);
   const [vocabs, setVocabs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   // edit modal
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [formDataModal, setFormDataModal] = useState<any>(INITIAL_FORM_CONTRIBUTION);
+  const [formDataModal, setFormDataModal] = useState<any>(null);
   const [editLoading, setEditLoading] = useState(false);
+  const [selectedVocabId, setSelectedVocabId] = useState<number | null>(null);
 
   // comment modal
   const [openCommentModal, setOpenCommentModal] = useState(false);
@@ -74,8 +77,6 @@ const LanguageDetail = () => {
     setEditLoading(false);
   };
 
-  const [selectedVocabId, setSelectedVocabId] = useState<number | null>(null);
-
   const handleLike = async (id: any) => {
     if (!user) return;
     try {
@@ -95,7 +96,7 @@ const LanguageDetail = () => {
       if (language.id === "10") { // Bahasa Jawa Banyumasan
         setLoading(true);
         try {
-          const response = await dictionaryService.search(searchQuery, "jv_ngapak");
+          const response = await dictionaryService.search(debouncedSearch, "jv_ngapak");
           // Transform API response to match UI format
           const mappedVocabs = response.items.map((item: any) => ({
             id: item.id,
