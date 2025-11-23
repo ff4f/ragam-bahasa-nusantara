@@ -17,6 +17,7 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
+import Logo from "./components/Logo";
 import { UserProvider } from "./context/UserContext";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <BrowserRouter>
+          <Logo />
           <ScrollToTop />
           <Layout>
             <Routes>

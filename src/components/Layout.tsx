@@ -16,6 +16,8 @@ import { useToast } from "@/hooks/use-toast";
 import { navLinks } from "@/lib/constants";
 import { getInitials } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
+import { motion } from "motion/react";
+import logo from "@/assets/logo-rana.svg";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -47,15 +49,30 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <nav className="container mx-auto flex h-16 items-center justify-between px-4">
-          <NavLink to="/" className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-hero" />
-            <span className="text-xl font-bold text-foreground">RANA</span>
-          </NavLink>
+      <motion.header
+        className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+        initial={{ height: 0 }}
+        animate={{ height: "4rem" }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+      >
+        <nav className="container mx-auto flex h-16 items-center justify-between pr-4 pl-2">
+          <motion.div
+            initial={{ translateX: "-150%" }}
+            animate={{ translateX: 0 }}
+            transition={{ duration: 0.25, delay: 0.6, ease: "backInOut" }}
+          >
+            <NavLink to="/" className="flex items-center space-x-2">
+              <img src={logo} alt="Logo RANA" className="w-16 h-16" />
+            </NavLink>
+          </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden items-center space-x-6 md:flex">
+          <motion.div
+            className="hidden items-center space-x-6 md:flex"
+            initial={{ translateX: "120%" }}
+            animate={{ translateX: 0 }}
+            transition={{ duration: 0.25, delay: 0.6, ease: "backInOut" }}
+          >
             {menus.map((link) => link.show && (
               <NavLink
                 key={link.to}
@@ -101,7 +118,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 </Button>
               </NavLink>
             )}
-          </div>
+          </motion.div>
 
           {/* Mobile Menu Button */}
           <button
@@ -174,7 +191,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </div>
           </div>
         )}
-      </header>
+      </motion.header>
 
       <main>{children}</main>
 
@@ -182,12 +199,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <div className="container mx-auto px-4">
           <div className="grid gap-8 md:grid-cols-4">
             <div>
-              <div className="mb-4 flex items-center space-x-2">
-                <div className="h-8 w-8 rounded-lg bg-gradient-hero" />
-                <span className="text-lg font-bold">RANA</span>
-              </div>
+              <img src={logo} alt="Logo RANA" className="w-16 h-16" />
               <p className="text-sm text-muted-foreground">
-                Ragam Bahasa Nusantara - Melestarikan Bahasa, Menghidupkan Budaya Digital
+                Ragam Bahasa Nusantara - Menjaga Bahasa, Merawat Identitas
               </p>
             </div>
             
