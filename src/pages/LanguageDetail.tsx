@@ -35,8 +35,10 @@ const LanguageDetail = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const debouncedSearch = useDebounce(searchQuery, 500);
   const [vocabs, setVocabs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const totalPages = 10; // dummy total pages
+  const [totalPages, setTotalPages] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   // edit modal
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -98,7 +100,7 @@ const LanguageDetail = () => {
       if (language.id === "10") { // Bahasa Jawa Banyumasan
         setLoading(true);
         try {
-          const response = await dictionaryService.search(debouncedSearch, "jv_ngapak");
+          const response = await dictionaryService.search(debouncedSearch, "Bahasa Jawa Banyumasan", page, ITEMS_PER_PAGE);
           // Transform API response to match UI format
           const mappedVocabs = response.items.map((item: any) => ({
             id: item.id,
@@ -114,6 +116,8 @@ const LanguageDetail = () => {
             created_by: "system"
           }));
           setVocabs(mappedVocabs);
+          // Calculate total pages from API response
+          setTotalPages(Math.ceil(response.total / ITEMS_PER_PAGE));
         } catch (error) {
           console.error("Failed to fetch vocabulary:", error);
           toast({ title: "Gagal memuat data kosakata", variant: "destructive" });
@@ -129,11 +133,12 @@ const LanguageDetail = () => {
           return matchesSearch && matchesStatus;
         });
         setVocabs(filteredVocabulary);
+        setTotalPages(Math.ceil(filteredVocabulary.length / ITEMS_PER_PAGE));
       }
     };
 
     fetchVocabulary();
-  }, [language, searchQuery, statusFilter]);
+  }, [language, debouncedSearch, statusFilter, page]);
 
   return (
     <div className="py-16">

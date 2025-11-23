@@ -5,7 +5,7 @@ import time
 
 from .config import settings
 from .database import init_db, SessionLocal
-from .routers import auth_router, user_router, contact_router, dictionary_router, interaction_router
+from .routers import auth_router, user_router, contact_router, dictionary_router, interaction_router, contribution_router
 from .utils.seeder import seed_dictionaries
 from .utils.seed_csv import seed_ngapak
 
@@ -63,6 +63,7 @@ app.include_router(user_router)
 app.include_router(contact_router)
 app.include_router(dictionary_router)
 app.include_router(interaction_router)
+app.include_router(contribution_router)
 
 
 # Root endpoint

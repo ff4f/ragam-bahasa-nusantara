@@ -102,7 +102,7 @@ from sqlalchemy.orm import selectinload
 @router.get("/", response_model=List[DictionaryResponse])
 @router.get("/search", response_model=DictionaryResponsePaginated) # Add search endpoint alias
 async def get_dictionaries(
-    skip: int = 0,
+    page: int = 1,  # Changed from skip to page for easier frontend integration
     limit: int = 100,
     source_lang: Optional[str] = None,
     target_lang: Optional[str] = None,
@@ -112,6 +112,9 @@ async def get_dictionaries(
     """
     Get all dictionary entries with optional filtering.
     """
+    # Convert page to skip offset
+    skip = (page - 1) * limit
+    
     # Eager load relationships to avoid N+1 problem
     query = db.query(Dictionary).options(
         selectinload(Dictionary.likes),
@@ -134,7 +137,7 @@ async def get_dictionaries(
     total = query.count()
     items = query.offset(skip).limit(limit).all()
 
-    return {"items": items, "total": total, "page": (skip // limit) + 1, "limit": limit}
+    return {"items": items, "total": total, "page": page, "limit": limit}
 
 @router.post("/seed", status_code=status.HTTP_201_CREATED)
 async def seed_dictionary(
@@ -259,7 +262,7 @@ async def seed_dictionary(
             source_text=item["source"].lower(),
             target_text=item["target"].lower(),
             source_lang="id",
-            target_lang="jv_ngapak",
+            target_lang="Bahasa Jawa Banyumasan",
             example_source=item["ex_src"],
             example_target=item["ex_tgt"],
             category="word",

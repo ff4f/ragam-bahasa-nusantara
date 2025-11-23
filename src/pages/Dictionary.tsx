@@ -13,13 +13,13 @@ const Dictionary = () => {
   const [sourceText, setSourceText] = useState("");
   const [targetText, setTargetText] = useState("");
   const [sourceLang, setSourceLang] = useState("id");
-  const [targetLang, setTargetLang] = useState("jv_ngapak");
+  const [targetLang, setTargetLang] = useState("Bahasa Jawa Banyumasan");
   const [isLoading, setIsLoading] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
 
   const languages = [
     { code: "id", name: "Bahasa Indonesia" },
-    { code: "jv_ngapak", name: "Jawa Ngapak (Banyumasan)" },
+    { code: "Bahasa Jawa Banyumasan", name: "Jawa Ngapak (Banyumasan)" },
     { code: "jv", name: "Bahasa Jawa (Umum)" },
     { code: "sd", name: "Bahasa Sunda" },
   ];
@@ -249,7 +249,7 @@ const Dictionary = () => {
                   onClick={() => {
                     setSourceText(item.id);
                     setSourceLang("id");
-                    setTargetLang("jv_ngapak");
+                    setTargetLang("Bahasa Jawa Banyumasan");
                   }}
                 >
                   <div className="text-left">

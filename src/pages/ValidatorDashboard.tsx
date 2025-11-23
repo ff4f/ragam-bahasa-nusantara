@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -6,23 +6,23 @@ import Header from '@/components/Header';
 import DataTable from '@/components/DataTable';
 import FormContribution from '@/components/FormContribution';
 import { Tooltip } from '@/components/ui/tooltip';
-import { CheckCircle2, XCircle, FileAudio, FileText, BookOpen, Languages, FileSearch } from 'lucide-react';
-import { mockRecordings } from '@/lib/dummy';
+import { CheckCircle2, XCircle, FileSearch, Loader2 } from 'lucide-react';
 import { INITIAL_FORM_CONTRIBUTION } from '@/lib/constants';
 import { validateForm } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
 import moment from "moment";
+import { contributionService, Contribution } from '@/services/contribution.service';
 
-const columnsValidations = ({ setSelectedContribution, setFormData }) => [
+const columnsValidations = ({ setSelectedContribution, setFormData }: any) => [
   {
-    id: "text",
+    id: "target_text",
     name: "Kosakata",
-    render: ({ value }) => <span className="font-medium">{value}</span>
+    render: ({ value }: any) => <span className="font-medium">{value}</span>
   },
   {
-    id: "languageName",
+    id: "language",
     name: "Bahasa",
   },
   {
@@ -32,28 +32,35 @@ const columnsValidations = ({ setSelectedContribution, setFormData }) => [
   {
     id: "created_at",
     name: "Tanggal Dibuat",
-    render: ({ value }) => <span>{moment(value).format("DD/MM/YYYY")}</span>,
+    render: ({ value }: any) => <span>{moment(value).format("DD/MM/YYYY")}</span>,
   },
   {
     id: "action",
     name: "Aksi",
-    actions: [
-      {
-        id: "review",
-        label: "Tinjau",
-        action: (row) => {
-          setFormData(row);
-          setSelectedContribution(true);
-        },
-      },
-    ],
-    render: ({ row }) => (
+    render: ({ row }: any) => (
       <Tooltip label="Tinjau">
         <Button
           size="icon"
           variant="ghost"
           onClick={() => {
-            setFormData(row);
+            // Map API data to form data structure
+            const formData = {
+              ...INITIAL_FORM_CONTRIBUTION,
+              id: row.id,
+              contribution_type: row.contribution_type,
+              province: [row.province], // MultiSelect expects array
+              region: [row.region], // MultiSelect expects array
+              language: row.language,
+              dialect: row.dialect,
+              ethnic: row.ethnic,
+              text: row.target_text,
+              textTranslation: row.source_text,
+              sentence: row.example_target,
+              sentenceTranslation: row.example_source,
+              textAudio: row.audio_url,
+              notes: row.notes
+            };
+            setFormData(formData);
             setSelectedContribution(true);
           }}
         >
@@ -66,12 +73,12 @@ const columnsValidations = ({ setSelectedContribution, setFormData }) => [
 
 const columnsHistory = [
   {
-    id: "text",
+    id: "target_text",
     name: "Kosakata",
-    render: ({ value }) => <span className="font-medium">{value}</span>
+    render: ({ value }: any) => <span className="font-medium">{value}</span>
   },
   {
-    id: "languageName",
+    id: "language",
     name: "Bahasa",
   },
   {
@@ -79,13 +86,18 @@ const columnsHistory = [
     name: "Dibuat Oleh",
   },
   {
-    id: "validated_at",
-    name: "Tanggal Terverifikasi",
-    render: ({ value }) => <span>{moment(value).format("DD/MM/YYYY")}</span>,
+    id: "reviewed_at",
+    name: "Tanggal Verifikasi",
+    render: ({ value }: any) => <span>{value ? moment(value).format("DD/MM/YYYY") : "-"}</span>,
   },
   {
-    id: "notes",
-    name: "Catatan",
+    id: "status",
+    name: "Status",
+    render: ({ value }: any) => (
+      <span className={`capitalize ${value === 'approved' ? 'text-green-600' : 'text-red-600'}`}>
+        {value === 'approved' ? 'Disetujui' : 'Ditolak'}
+      </span>
+    )
   },
 ];
 
@@ -93,29 +105,65 @@ const ValidatorDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useUser();
-  const [currentPage, setCurrentPage] = useState(1);
   const [selectedContribution, setSelectedContribution] = useState(false);
   const [formData, setFormData] = useState(INITIAL_FORM_CONTRIBUTION);
   const [reviewLoading, setReviewLoading] = useState(false);
-  const itemsPerPage = 5;
 
-  // Separate pending and validated recordings
-  const pendingRecordings = mockRecordings.filter(r => r.status === 'pending');
-  const validatedRecordings = mockRecordings.filter(r => r.status === 'approved' || r.status === 'rejected');
-  
-  // Pagination for pending recordings
-  const totalPages = Math.ceil(pendingRecordings.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedRecordings = pendingRecordings.slice(startIndex, startIndex + itemsPerPage);
+  // Data states
+  const [pendingContributions, setPendingContributions] = useState<Contribution[]>([]);
+  const [historyContributions, setHistoryContributions] = useState<Contribution[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Pagination for validated recordings
-  const totalPagesValidated = Math.ceil(validatedRecordings.length / itemsPerPage);
+  // Stats
+  const [stats, setStats] = useState({
+    totalValidated: 0,
+    totalPending: 0,
+    percentageValidated: 0
+  });
 
-  // Stats calculations
-  const totalValidated = validatedRecordings.length;
-  const totalPending = pendingRecordings.length;
-  const totalRecordings = mockRecordings.length;
-  const percentageValidated = totalRecordings > 0 ? Math.round((totalValidated / totalRecordings) * 100) : 0;
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      // Fetch pending
+      const pendingRes = await contributionService.getAllContributions(1, 100, 'pending');
+      setPendingContributions(pendingRes.items);
+
+      // Fetch history (approved/rejected)
+      // We need to fetch both and combine, or just fetch all and filter client side if not too many
+      // For now let's fetch all without status filter and separate them
+      const allRes = await contributionService.getAllContributions(1, 1000); // Get more items
+
+      const pending = allRes.items.filter((c: Contribution) => c.status === 'pending');
+      const history = allRes.items.filter((c: Contribution) => c.status !== 'pending');
+
+      setPendingContributions(pending);
+      setHistoryContributions(history);
+
+      // Calculate stats
+      const totalValidated = history.length;
+      const totalPending = pending.length;
+      const total = allRes.total;
+      const percentage = total > 0 ? Math.round((totalValidated / total) * 100) : 0;
+
+      setStats({
+        totalValidated,
+        totalPending,
+        percentageValidated: percentage
+      });
+
+    } catch (error) {
+      console.error("Failed to fetch contributions:", error);
+      toast({ title: "Gagal memuat data kontribusi", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
+
+  useEffect(() => {
+    if (user && (user.role === 'validator' || user.role === 'admin')) {
+      fetchData();
+    }
+  }, [user, fetchData]);
 
   if (!user || (user.role !== 'validator' && user.role !== 'admin')) {
     return (
@@ -132,46 +180,38 @@ const ValidatorDashboard = () => {
     );
   }
 
-  const getContributionTypeIcon = (type: string) => {
-    switch (type) {
-      case 'voice': return <FileAudio className="h-4 w-4" />;
-      case 'vocabulary': return <FileText className="h-4 w-4" />;
-      case 'folktale': return <BookOpen className="h-4 w-4" />;
-      case 'translation': return <Languages className="h-4 w-4" />;
-      default: return <FileText className="h-4 w-4" />;
+  const handleReview = async (status: 'approved' | 'rejected') => {
+    if (!formData.id) return;
+
+    setReviewLoading(true);
+    try {
+      await contributionService.updateStatus(formData.id, status, formData.notes); // Use notes from form if any
+      toast({ title: `Kontribusi berhasil ${status === 'approved' ? 'disetujui' : 'ditolak'}` });
+      setSelectedContribution(false);
+      fetchData(); // Refresh data
+    } catch (error) {
+      console.error("Failed to update status:", error);
+      toast({ title: "Gagal memproses kontribusi", variant: "destructive" });
+    } finally {
+      setReviewLoading(false);
     }
   };
 
-  const getContributionTypeLabel = (type: string) => {
-    const labels = {
-      voice: 'Rekam Suara',
-      vocabulary: 'Kosakata',
-      folktale: 'Cerita Rakyat',
-      translation: 'Terjemahan'
-    };
-    return labels[type as keyof typeof labels] || type;
-  };
+  // We need to adapt FormContribution to support review actions (Approve/Reject)
+  // Since FormContribution is designed for submission, we might need to pass a custom handler or render buttons outside
+  // But FormContribution has `isReview` prop which renders verification buttons.
+  // We need to check how FormContribution handles the buttons.
+  // It calls `handleConfirmation` then `ConfirmationDialog`.
+  // We need to pass the actual action to `handleSubmit` or similar.
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm(formData)) {
-      toast({ title: "Silahkan lengkapi field kontribusi yang diperlukan!" });
-      return;
-    };
-    setReviewLoading(true);
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    toast({ title: "Kontribusi berhasil dikirim! Terima kasih atas partisipasi Anda." });
-    
-    setReviewLoading(false);
-  };
+  // Actually FormContribution calls `handleConfirmation` which sets state, then `ConfirmationDialog` calls `handleSubmit`.
+  // So we need to pass a `handleSubmit` that handles the confirmation.
+  // But `FormContribution` logic is a bit coupled.
+  // Let's look at FormContribution again.
 
   return (
     <div className="py-16">
       <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header */}
         <Header
           title="Dashboard Validasi"
           description="Validasi dan verifikasi kontribusi dari para kontributor"
@@ -184,7 +224,7 @@ const ValidatorDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Total Validasi Selesai</p>
-                  <p className="text-3xl font-bold text-foreground">{totalValidated}</p>
+                  <p className="text-3xl font-bold text-foreground">{stats.totalValidated}</p>
                 </div>
                 <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
                   <CheckCircle2 className="h-6 w-6 text-primary" />
@@ -198,7 +238,7 @@ const ValidatorDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Validasi Menunggu</p>
-                  <p className="text-3xl font-bold text-foreground">{totalPending}</p>
+                  <p className="text-3xl font-bold text-foreground">{stats.totalPending}</p>
                 </div>
                 <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center">
                   <XCircle className="h-6 w-6 text-accent" />
@@ -212,10 +252,10 @@ const ValidatorDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Persentase Tervalidasi</p>
-                  <p className="text-3xl font-bold text-foreground">{percentageValidated}%</p>
+                  <p className="text-3xl font-bold text-foreground">{stats.percentageValidated}%</p>
                 </div>
                 <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center">
-                  <span className="text-lg font-bold text-secondary">{percentageValidated}</span>
+                  <span className="text-lg font-bold text-secondary">{stats.percentageValidated}</span>
                 </div>
               </div>
             </CardContent>
@@ -231,11 +271,17 @@ const ValidatorDashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <DataTable
-              columns={columnsValidations({ setSelectedContribution, setFormData })}
-              rows={paginatedRecordings}
-              totalPages={totalPages}
-            />
+            {loading ? (
+              <div className="flex justify-center p-8">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : (
+              <DataTable
+                columns={columnsValidations({ setSelectedContribution, setFormData })}
+                rows={pendingContributions}
+                totalPages={1} // Client side pagination for now or implement server side
+              />
+            )}
           </CardContent>
         </Card>
 
@@ -248,11 +294,17 @@ const ValidatorDashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <DataTable
-              columns={columnsHistory}
-              rows={validatedRecordings}
-              totalPages={totalPagesValidated}
-            />
+            {loading ? (
+              <div className="flex justify-center p-8">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : (
+              <DataTable
+                columns={columnsHistory}
+                rows={historyContributions}
+                totalPages={1}
+              />
+            )}
           </CardContent>
         </Card>
       </div>
@@ -268,13 +320,39 @@ const ValidatorDashboard = () => {
               Anda bisa meninjau, dan memverifikasi kontribusi berikut
             </DialogDescription>
           </DialogHeader>
-          <FormContribution
-            formData={formData}
-            setFormData={setFormData}
-            handleSubmit={handleSubmit}
-            loading={reviewLoading}
-            isReview
-          />
+
+          {/* Custom review buttons wrapper or modify FormContribution to accept onApprove/onReject */}
+          {/* FormContribution has internal logic for buttons. Let's see how to hook into it. */}
+          {/* It calls handleSubmit when confirmation dialog is confirmed. */}
+          {/* But it doesn't pass the type (verify/delete) to handleSubmit. */}
+          {/* We might need to modify FormContribution to pass the action type or handle it differently. */}
+          {/* For now, let's assume we can modify FormContribution or just render our own buttons if isReview is true. */}
+
+          <div className="space-y-6">
+            <FormContribution
+              formData={formData}
+              setFormData={setFormData}
+              handleSubmit={() => { }} // Dummy, not used for review
+              loading={reviewLoading}
+              isReview
+              onApprove={() => handleReview('approved')}
+              onReject={() => handleReview('rejected')}
+            />
+
+            {/* We render our own buttons because FormContribution's buttons might not be flexible enough without modification */}
+            {/* Actually FormContribution renders buttons if isReview is true. */}
+            {/* Let's check FormContribution again. */}
+            {/* It renders: Verifikasi (calls handleConfirmation('verification')) and Hapus (calls handleConfirmation('delete')) */}
+            {/* handleConfirmation sets openConfirmation(true). */}
+            {/* ConfirmationDialog calls handleSubmit prop when confirmed. */}
+            {/* So handleSubmit is called for BOTH actions. We don't know which one. */}
+
+            {/* To fix this properly, I should probably modify FormContribution to accept onApprove and onReject props. */}
+            {/* OR, I can just hide the buttons in FormContribution (if I can) and render my own. */}
+            {/* But I can't easily hide them. */}
+
+            {/* Quick fix: Modify FormContribution to pass the action type to handleSubmit or accept separate handlers. */}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

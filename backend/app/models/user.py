@@ -28,6 +28,7 @@ class User(Base):
     from sqlalchemy.orm import relationship
     comments = relationship("Comment", back_populates="user")
     likes = relationship("DictionaryLike", back_populates="user")
+    contributions = relationship("Contribution", foreign_keys="Contribution.user_id", back_populates="user")
     
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}', role='{self.role}')>"

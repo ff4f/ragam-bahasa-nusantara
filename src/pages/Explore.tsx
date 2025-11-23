@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,30 +13,56 @@ import { Tooltip } from '@/components/ui/tooltip';
 import { getStatusColor } from '@/lib/utils';
 import { statusList } from '@/lib/constants';
 import { languageArchive } from '@/lib/dummy';
+import { useDebounce } from '@/hooks/use-debounce';
 
 const Explore = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 300); // Debounce search for better performance
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedProvince, setSelectedProvince] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState<string[]>([]);
   const [page, setPage] = useState(1);
-  
-  const totalPages = 10; // dummy total pages
-  const filteredLanguages = languageArchive.filter((lang) => {
-    const matchesSearch = lang.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         lang.region.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || lang.status === statusFilter;
-    const matchesProvince = selectedProvince.length === 0 || lang.regionId.some(item => selectedProvince.includes(item));
-    return matchesSearch && matchesStatus && matchesProvince;
-  });
+  const ITEMS_PER_PAGE = 12; // 12 items per page (4 rows of 3 on desktop)
+
+  // Memoize filtered languages to prevent unnecessary recalculations
+  const filteredLanguages = useMemo(() => {
+    return languageArchive.filter((lang) => {
+      const matchesSearch = lang.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        lang.region.toLowerCase().includes(debouncedSearch.toLowerCase());
+      const matchesStatus = statusFilter === "all" || lang.status === statusFilter;
+      const matchesProvince = selectedProvince.length === 0 || lang.regionId.some(item => selectedProvince.includes(item));
+      return matchesSearch && matchesStatus && matchesProvince;
+    });
+  }, [debouncedSearch, statusFilter, selectedProvince]);
+
+  // Calculate total pages based on filtered data
+  const totalPages = Math.ceil(filteredLanguages.length / ITEMS_PER_PAGE);
+
+  // Get paginated data
+  const paginatedLanguages = useMemo(() => {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return filteredLanguages.slice(startIndex, endIndex);
+  }, [filteredLanguages, page]);
+
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, statusFilter, selectedProvince]);
 
   const handleClickProvince = useCallback((geo: any) => {
     const code = geo.properties.province_bps_code;
-    let result = [ ...selectedProvince ];
-    if (selectedProvince.indexOf(code) < 0) result.push(code);
-    else result.splice(selectedProvince.indexOf(code), 1);
-    setSelectedProvince(result);
-  }, [selectedProvince]);
+    setSelectedProvince(prev => {
+      const index = prev.indexOf(code);
+      if (index < 0) {
+        return [...prev, code];
+      } else {
+        const result = [...prev];
+        result.splice(index, 1);
+        return result;
+      }
+    });
+  }, []);
 
   return (
     <div className="py-16">
@@ -95,7 +121,7 @@ const Explore = () => {
               <Info className="h-4 w-4" />
               <span className="text-sm">Pilih satu atau lebih provinsi untuk memfilter bahasa</span>
             </div>
-            
+
           </Card>
         </section>
 
@@ -131,7 +157,7 @@ const Explore = () => {
         {/* Language Archive Results */}
         <section className="mb-8">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredLanguages.map((language, index) => (
+            {paginatedLanguages.map((language, index) => (
               <Card
                 key={index}
                 className={`border-border shadow-soft transition-all hover:shadow-warm ${language?.status === "recorded" ? "cursor-pointer" : "cursor-default opacity-50"}`}

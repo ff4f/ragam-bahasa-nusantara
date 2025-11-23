@@ -6,30 +6,44 @@ import Header from "./Header";
 import FormContribution from "./FormContribution";
 import DataTable from "./DataTable";
 import { Award, Pencil } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { leaderboard } from "@/lib/dummy";
 import { INITIAL_FORM_CONTRIBUTION } from "@/lib/constants";
 import { validateForm } from "@/lib/utils";
-import { mockRecordings } from "@/lib/dummy";
 import moment from "moment";
+import { contributionService, Contribution } from "@/services/contribution.service";
 
-const columnsHistory = ({ setFormDataModal, setOpenEditModal }) => [
+const columnsHistory = ({ setFormDataModal, setOpenEditModal }: any) => [
   {
-    id: "text",
+    id: "target_text",
     name: "Kosakata",
-    render: ({ value }) => <span className="font-medium">{value}</span>
+    render: ({ value }: any) => <span className="font-medium">{value}</span>
   },
   {
-    id: "languageName",
+    id: "language",
     name: "Bahasa",
+  },
+  {
+    id: "status",
+    name: "Status",
+    render: ({ value }: any) => {
+      let color = "text-yellow-600 bg-yellow-100";
+      if (value === "approved") color = "text-green-600 bg-green-100";
+      if (value === "rejected") color = "text-red-600 bg-red-100";
+      return (
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>
+          {value === "pending" ? "Menunggu" : value === "approved" ? "Diterima" : "Ditolak"}
+        </span>
+      );
+    }
   },
   {
     id: "created_at",
     name: "Tanggal Dibuat",
-    render: ({ value }) => <span>{moment(value).format("DD/MM/YYYY")}</span>
+    render: ({ value }: any) => <span>{moment(value).format("DD/MM/YYYY")}</span>
   },
   {
     id: "action",
@@ -38,19 +52,46 @@ const columnsHistory = ({ setFormDataModal, setOpenEditModal }) => [
       {
         id: "edit",
         label: "Ubah",
-        action: (row) => {
-          setFormDataModal(row);
+        action: (row: any) => {
+          // Map back to form data structure
+          const formData = {
+            province: row.province ? [row.province] : [], // Adjust based on how province is stored
+            region: row.region ? [row.region] : [],
+            language: row.language,
+            ethnic: row.ethnic,
+            dialect: row.dialect,
+            text: row.target_text,
+            textTranslation: row.source_text,
+            sentence: row.example_target,
+            sentenceTranslation: row.example_source,
+            textAudio: row.audio_url,
+            notes: row.notes
+          };
+          setFormDataModal(formData);
           setOpenEditModal(true);
         },
       },
     ],
-    render: ({ row }) => (
+    render: ({ row }: any) => (
       <Tooltip label="Ubah">
         <Button
           size="icon"
           variant="ghost"
           onClick={() => {
-            setFormDataModal(row);
+            const formData = {
+              province: row.province ? [row.province] : [],
+              region: row.region ? [row.region] : [],
+              language: row.language,
+              ethnic: row.ethnic,
+              dialect: row.dialect,
+              text: row.target_text,
+              textTranslation: row.source_text,
+              sentence: row.example_target,
+              sentenceTranslation: row.example_source,
+              textAudio: row.audio_url,
+              notes: row.notes
+            };
+            setFormDataModal(formData);
             setOpenEditModal(true);
           }}
         >
@@ -70,29 +111,104 @@ const ContributeLoggedIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState(INITIAL_FORM_CONTRIBUTION);
 
+  // History state
+  const [history, setHistory] = useState<Contribution[]>([]);
+  const [historyPage, setHistoryPage] = useState(1);
+  const [historyTotalPages, setHistoryTotalPages] = useState(1);
+
   // edit modal
   const [openEditModal, setOpenEditModal] = useState(false);
   const [formDataModal, setFormDataModal] = useState(INITIAL_FORM_CONTRIBUTION);
   const [editLoading, setEditLoading] = useState(false);
 
-  const totalPages = Math.ceil(mockRecordings.length / 5);
+  const fetchHistory = useCallback(async () => {
+    try {
+      const response = await contributionService.getMyContributions(historyPage, 5);
+      setHistory(response.items);
+      setHistoryTotalPages(Math.ceil(response.total / 5));
+    } catch (error) {
+      console.error("Failed to fetch contribution history:", error);
+    }
+  }, [historyPage]);
+
+  useEffect(() => {
+    if (userContext) {
+      fetchHistory();
+    }
+  }, [userContext, fetchHistory]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate required fields
     if (!validateForm(formData)) {
       toast({ title: "Silahkan lengkapi field kontribusi yang diperlukan!" });
       return;
-    };
+    }
+
+    // Additional validation for specific fields
+    if (!formData.province || formData.province.length === 0) {
+      toast({ title: "Provinsi harus dipilih!" });
+      return;
+    }
+
+    if (!formData.language || formData.language.trim() === "") {
+      toast({ title: "Bahasa Daerah harus dipilih!" });
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      // Map form data to API schema
+      const contributionData = {
+        contribution_type: "vocabulary",
+        province: String(formData.province[0] || ""), // Ensure string
+        region: String(formData.region[0] || ""), // Ensure string
+        language: formData.language,
+        dialect: formData.dialect,
+        ethnic: formData.ethnic,
+        source_text: formData.textTranslation, // Indonesian
+        target_text: formData.text, // Regional
+        example_source: formData.sentenceTranslation, // Indonesian
+        example_target: formData.sentence, // Regional
+        audio_url: typeof formData.textAudio === 'string' ? formData.textAudio : null, // Only send URLs, not Blob objects
+        notes: formData.notes
+      };
 
-    toast({ title: "Kontribusi berhasil dikirim! Terima kasih atas partisipasi Anda." });
+      await contributionService.create(contributionData);
 
-    // Reset form
-    setFormData(INITIAL_FORM_CONTRIBUTION);
-    setIsSubmitting(false);
+      toast({ title: "Kontribusi berhasil dikirim! Terima kasih atas partisipasi Anda." });
+
+      // Reset form
+      setFormData(INITIAL_FORM_CONTRIBUTION);
+
+      // Refresh history
+      fetchHistory();
+    } catch (error: any) {
+      console.error("Failed to submit contribution:", error);
+      console.error("Error response:", error.response?.data);
+
+      // Safely extract error message
+      let errorMessage = "Terjadi kesalahan";
+      if (error.response?.data?.detail) {
+        if (Array.isArray(error.response.data.detail)) {
+          // If detail is array of errors (Pydantic style), take the first one
+          const firstError = error.response.data.detail[0];
+          errorMessage = `${firstError.loc?.join('.')} ${firstError.msg}`;
+        } else {
+          errorMessage = error.response.data.detail;
+        }
+      }
+
+      toast({
+        title: "Gagal mengirim kontribusi",
+        description: errorMessage,
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSubmitEdit = async (e: React.FormEvent) => {
@@ -103,7 +219,7 @@ const ContributeLoggedIn = () => {
     };
     setEditLoading(true);
 
-    // Simulate API call
+    // TODO: Implement update API if needed, currently just simulating
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     toast({ title: "Kontribusi berhasil diubah! Terima kasih atas partisipasi Anda." });
@@ -220,8 +336,9 @@ const ContributeLoggedIn = () => {
               <CardContent>
                 <DataTable
                   columns={columnsHistory({ setFormDataModal, setOpenEditModal })}
-                  rows={mockRecordings}
-                  totalPages={totalPages}
+                  rows={history}
+                  totalPages={historyTotalPages}
+                  onChangePage={setHistoryPage}
                 />
               </CardContent>
             </Card>

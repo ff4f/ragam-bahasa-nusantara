@@ -17,13 +17,15 @@ interface FormContributionProps {
   handleSubmit: (e: any) => void;
   loading?: boolean;
   isReview?: boolean;
+  onApprove?: () => void;
+  onReject?: () => void;
 }
 
-const FormContribution = ({ formData, setFormData, handleSubmit, loading, isReview }: FormContributionProps) => {
+const FormContribution = ({ formData, setFormData, handleSubmit, loading, isReview, onApprove, onReject }: FormContributionProps) => {
 
   const [notesValidator, setNotesValidator] = useState("");
   const [openConfirmation, setOpenConfirmation] = useState(false);
-  const [confirmation, setConfirmation] = useState(null);
+  const [confirmation, setConfirmation] = useState<any>(null);
   const [tabText, setTabText] = useState("upload");
 
   const textAudioURL = tabText === "upload" && (formData?.textAudio && formData.textAudio instanceof Blob ? URL.createObjectURL(formData.textAudio) : formData?.textAudio);
@@ -42,8 +44,8 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
   };
 
   const handleConfirmation = (type: string) => {
-    if (type === "verification") setConfirmation({ title: "Verifikasi", description: "memverifikasi" });
-    else setConfirmation({ title: "Hapus", description: "menghapus" });
+    if (type === "verification") setConfirmation({ title: "Verifikasi", description: "memverifikasi", type });
+    else setConfirmation({ title: "Hapus", description: "menghapus", type });
     setOpenConfirmation(true);
   };
 
@@ -57,6 +59,7 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
             <MultiSelect
               placeholder={!isReview ? "Pilih provinsi" : ""}
               options={provinceList}
+              optionValue="label"
               value={formData.province}
               onChange={(value) =>
                 setFormData({ ...formData, province: value })
@@ -70,6 +73,7 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
             <MultiSelect
               placeholder={!isReview ? "Pilih asal daerah" : ""}
               options={regionList}
+              optionValue="label"
               value={formData.region}
               onChange={(value) =>
                 setFormData({ ...formData, region: value })
@@ -96,7 +100,7 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
               </SelectTrigger>
               <SelectContent>
                 {languageArchive.map((lang) => (
-                  <SelectItem key={lang.id} value={lang.id}>
+                  <SelectItem key={lang.id} value={lang.name}>
                     {lang.name}
                   </SelectItem>
                 ))}
@@ -196,7 +200,7 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
               disabled={isReview}
             />
           </div>
-        </div>                  
+        </div>
 
         {/* Audio Recording for Text */}
         <div className="space-y-2">
@@ -269,13 +273,13 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
       {isReview && (
         <>
           <hr className="mt-4 mb-2" />
-          
+
           {/* Notes Validator */}
           <div className="space-y-2">
             <Label htmlFor="notesValidator">Catatan Validator</Label>
             <Textarea
               id="notesValidator"
-              placeholder={"Tambahkan catatan atau feedback untuk kontribusi ini..." }
+              placeholder={"Tambahkan catatan atau feedback untuk kontribusi ini..."}
               value={notesValidator}
               onChange={(e) => setNotesValidator(e.target.value)}
               rows={3}
@@ -297,7 +301,16 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
       <ConfirmationDialog
         open={openConfirmation}
         handleClose={() => setOpenConfirmation(false)}
-        handleSubmit={() => setOpenConfirmation(false)}
+        handleSubmit={() => {
+          setOpenConfirmation(false);
+          if (confirmation?.type === 'verification' && onApprove) {
+            onApprove();
+          } else if (confirmation?.type === 'delete' && onReject) {
+            onReject();
+          } else {
+            handleSubmit(new Event('submit')); // Fallback
+          }
+        }}
         title={confirmation?.title || ""}
         description={confirmation?.description ? `Apakah anda yakin untuk ${confirmation.description} dataset ini?` : ""}
       />

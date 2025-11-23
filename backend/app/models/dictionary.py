@@ -9,7 +9,7 @@ class Dictionary(Base):
     source_text = Column(String(255), index=True, nullable=False)  # Bahasa Indonesia
     target_text = Column(String(255), nullable=False)  # Bahasa Daerah
     source_lang = Column(String(10), default="id")
-    target_lang = Column(String(10), nullable=False)  # e.g., 'jv_ngapak'
+    target_lang = Column(String(100), nullable=False)  # e.g., 'jv_ngapak' or 'Bahasa Jawa Banyumasan'
     
     # Metadata
     example_source = Column(Text, nullable=True)
