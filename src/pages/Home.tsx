@@ -21,7 +21,7 @@ const Home = () => {
             y,
           }}
         />
-        <img src={banner} alt="Banner RANA" className="absolute top-[50%] -translate-y-[50%] left-[50%] -translate-x-[50%] w-[80%]" />
+        <img src={banner} alt="Banner RANA" className="absolute top-[50%] -translate-y-[50%] left-[50%] -translate-x-[50%] w-[80%] max-h-[200px] sm:max-h-[600px]" />
       </section>
 
       {/* Stats Section */}
