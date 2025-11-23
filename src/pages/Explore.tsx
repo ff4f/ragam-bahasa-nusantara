@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Header from '@/components/Header';
+import PaginationComponent from '@/components/Pagination';
 import { MapPin, Search, Info } from "lucide-react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import geoJson from "../assets/indonesia-province-38.json";
@@ -18,7 +19,9 @@ const Explore = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedProvince, setSelectedProvince] = useState([]);
-
+  const [page, setPage] = useState(1);
+  
+  const totalPages = 10; // dummy total pages
   const filteredLanguages = languageArchive.filter((lang) => {
     const matchesSearch = lang.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          lang.region.toLowerCase().includes(searchQuery.toLowerCase());
@@ -33,10 +36,6 @@ const Explore = () => {
     if (selectedProvince.indexOf(code) < 0) result.push(code);
     else result.splice(selectedProvince.indexOf(code), 1);
     setSelectedProvince(result);
-  }, [selectedProvince]);
-
-  useEffect(() => {
-
   }, [selectedProvince]);
 
   return (
@@ -192,6 +191,15 @@ const Explore = () => {
               </CardContent>
             </Card>
           )}
+        </section>
+
+        {/* Pagination */}
+        <section>
+          <PaginationComponent
+            page={page}
+            setPage={setPage}
+            totalPages={totalPages}
+          />
         </section>
 
       </div>

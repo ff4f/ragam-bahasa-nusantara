@@ -23,6 +23,7 @@ import { useUser } from "@/hooks/use-user";
 import { dictionaryService } from "@/services/dictionary.service";
 import { useDebounce } from "@/hooks/use-debounce";
 import FormContribution from "@/components/FormContribution";
+import PaginationComponent from "@/components/Pagination";
 
 const LanguageDetail = () => {
   const location = useLocation();
@@ -34,7 +35,8 @@ const LanguageDetail = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const debouncedSearch = useDebounce(searchQuery, 500);
   const [vocabs, setVocabs] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const totalPages = 10; // dummy total pages
 
   // edit modal
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -315,6 +317,14 @@ const LanguageDetail = () => {
             </Card>
           ))}
         </div>
+      </div>
+
+      <div className="mt-8">
+        <PaginationComponent
+          page={page}
+          setPage={setPage}
+          totalPages={totalPages}
+        />
       </div>
 
       {/* Edit Modal */}
