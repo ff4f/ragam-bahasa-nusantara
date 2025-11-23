@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Card, CardContent } from './ui/card';
 import {
   DropdownMenu,
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from '@/components/ui/button';
 import { EllipsisVertical } from 'lucide-react';
+import PaginationComponent from './Pagination';
 
 interface DataTableProps {
   columns: any[];
@@ -71,7 +71,7 @@ const DataTable = ({
                 {columns.map(col => col.id !== "action" && (
                   <div className="mb-2" key={col.id}>
                     <p className="text-xs text-muted-foreground">{col.name}</p>
-                    <p className="text-sm font-medium">{row?.render?.({ value: row[col.id], row }) || row?.[col.id] || "-"}</p>
+                    <p className="text-sm font-medium">{col?.render?.({ value: row[col.id], row }) || row?.[col.id] || "-"}</p>
                   </div>
                 ))}
               </div>
@@ -97,33 +97,12 @@ const DataTable = ({
 
       {!disablePagination && totalPages > 1 && (
         <div className="mt-4">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious 
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                />
-              </PaginationItem>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <PaginationItem key={page}>
-                  <PaginationLink
-                    onClick={() => setCurrentPage(page)}
-                    isActive={currentPage === page}
-                    className="cursor-pointer"
-                  >
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext 
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <PaginationComponent
+            page={currentPage}
+            setPage={setCurrentPage}
+            totalPages={100}
+            simplified
+          />
         </div>
       )}
     </>

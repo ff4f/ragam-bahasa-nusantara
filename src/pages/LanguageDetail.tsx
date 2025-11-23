@@ -21,6 +21,7 @@ import { vocabulary, comments } from "@/lib/dummy";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import FormContribution from "@/components/FormContribution";
+import PaginationComponent from "@/components/Pagination";
 
 const LanguageDetail = () => {
   const location = useLocation();
@@ -31,6 +32,8 @@ const LanguageDetail = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [vocabs, setVocabs] = useState<any[]>([]);
+  const [page, setPage] = useState(1);
+  const totalPages = 10; // dummy total pages
 
   // edit modal
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -269,6 +272,14 @@ const LanguageDetail = () => {
             </Card>
           ))}
         </div>
+      </div>
+
+      <div className="mt-8">
+        <PaginationComponent
+          page={page}
+          setPage={setPage}
+          totalPages={totalPages}
+        />
       </div>
 
       {/* Edit Modal */}
