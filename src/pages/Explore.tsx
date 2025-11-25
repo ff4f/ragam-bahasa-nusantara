@@ -68,18 +68,18 @@ const Explore = () => {
                           geography={geo}
                           style={{
                             default: {
-                              fill: selectedProvince.includes(geo.properties.province_bps_code) ? "hsl(188 65% 35%)" : "#D6D6DA",
+                              fill: selectedProvince.includes(geo.properties.province_bps_code) ? "hsl(var(--primary))" : "#D6D6DA",
                               stroke: "#FFF",
                               strokeWidth: 0.5,
                               outline: "none",
                             },
                             hover: {
-                              fill: "hsl(188 65% 35%)",
+                              fill: "hsl(var(--primary))",
                               outline: "none",
                               cursor: "pointer",
                             },
                             pressed: {
-                              fill: "hsla(188, 66%, 28%, 1.00)",
+                              fill: "hsl(var(--primary) / 0.9)",
                               outline: "none",
                             },
                           }}

@@ -11,13 +11,14 @@ export interface User {
   name: string;
   email: string;
   role: string;
-  xp: number;
+  points: number;
+  coins: number;
   badges: any[];
   validationCount: number;
   accuracy: number;
   avatar?: string;
   level: number;
-  nextXp: number;
+  nextLevel: number;
 }
 
 interface UserContextType {

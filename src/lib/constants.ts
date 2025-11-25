@@ -8,14 +8,22 @@ import {
   Globe,
   Heart,
   TrendingUp,
+  Mail,
+  MapPin,
+  Phone,
+  MessageCircle,
 } from "lucide-react";
 
 export const STORAGE_USER_KEY = 'rana_user';
+export const MOBILE_BREAKPOINT = 768;
+export const TOAST_LIMIT = 1;
+export const TOAST_REMOVE_DELAY = 1000000;
+export const HOME_ANIMATION_DELAY = 2;
 
 export const navLinks = [
   { to: "/", label: "Beranda", show: true },
   { to: "/about", label: "Tentang", show: true },
-  // { to: "/learn", label: "Belajar", show: true },
+  { to: "/game", label: "Bermain", show: true },
   { to: "/explore", label: "Eksplor", show: true },
   { to: "/dictionary", label: "Kamus", show: true },
   { to: "/missions", label: "Misi", show: false },
@@ -102,6 +110,33 @@ export const contributionTypes = [
     benefits: ["Flagging konten bermasalah", "Koreksi makna atau penulisan"],
   },
 ];
+
+export const CONTACT_INFO = [
+    {
+      icon: Mail,
+      title: "Email",
+      value: "hello@rana.id",
+      description: "Kirim email untuk pertanyaan umum",
+    },
+    {
+      icon: Phone,
+      title: "Telepon",
+      value: "+62 812-3456-7890",
+      description: "Senin - Jumat, 09:00 - 17:00 WIB",
+    },
+    {
+      icon: MapPin,
+      title: "Alamat",
+      value: "Jakarta, Indonesia",
+      description: "Kantor pusat RANA",
+    },
+    {
+      icon: MessageCircle,
+      title: "Forum Komunitas",
+      value: "forum.rana.id",
+      description: "Diskusi dengan sesama anggota",
+    },
+  ];
 
 export const INITIAL_FORM_CONTRIBUTION = {
   province: [],

@@ -1,12 +1,25 @@
-import { motion } from "motion/react";
+import { useEffect } from "react";
+import { motion, useAnimationControls } from "motion/react";
 import logo from "@/assets/logo-rana.svg";
 import map from "@/assets/map-indonesia.svg";
+import { useApps } from "@/hooks/use-apps";
 
 const Logo = () => {
+  const { loaded } = useApps();
+  const controls = useAnimationControls();
+
+  useEffect(() => {
+    if (loaded) controls.start("slide")
+  }, [loaded]);
+
   return (
     <motion.div
-      initial={{ translateX: 0 }}
-      animate={{ translateX: "100%" }}
+      variants={{
+        initial: {translateX: 0},
+        slide: { translateX: "100%" },
+      }}
+      initial="initial"
+      animate={controls}
       transition={{ duration: 0.5, delay: 1.5, ease: [1, 0, 1, 0.5] }}
       className="fixed top-0 left-0 right-0 h-screen bg-background z-[99] flex justify-center items-center"
     >

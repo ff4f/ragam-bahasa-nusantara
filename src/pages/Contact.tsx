@@ -5,36 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import Header from "@/components/Header";
-import { Mail, MapPin, Phone, MessageCircle } from "lucide-react";
+import { useUser } from "@/hooks/use-user";
+import { CONTACT_INFO } from "@/lib/constants";
 
 const Contact = () => {
   const navigate = useNavigate();
-  const contactInfo = [
-    {
-      icon: Mail,
-      title: "Email",
-      value: "hello@rana.id",
-      description: "Kirim email untuk pertanyaan umum",
-    },
-    {
-      icon: Phone,
-      title: "Telepon",
-      value: "+62 812-3456-7890",
-      description: "Senin - Jumat, 09:00 - 17:00 WIB",
-    },
-    {
-      icon: MapPin,
-      title: "Alamat",
-      value: "Jakarta, Indonesia",
-      description: "Kantor pusat RANA",
-    },
-    {
-      icon: MessageCircle,
-      title: "Forum Komunitas",
-      value: "forum.rana.id",
-      description: "Diskusi dengan sesama anggota",
-    },
-  ];
+  const { user } = useUser();
 
   return (
     <div className="py-16">
@@ -97,7 +73,7 @@ const Contact = () => {
                 <CardTitle>Informasi Kontak</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {contactInfo.map((info, index) => (
+                {CONTACT_INFO.map((info, index) => (
                   <div key={index} className="flex gap-4">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                       <info.icon className="h-5 w-5 text-primary" />
@@ -119,19 +95,21 @@ const Contact = () => {
             </Card>
 
             {/* Join Community CTA */}
-            <Card className="border-border bg-gradient-hero shadow-warm">
-              <CardContent className="p-6">
-                <h3 className="mb-2 text-lg font-semibold text-primary-foreground">
-                  Bergabung dengan Komunitas
-                </h3>
-                <p className="mb-4 text-sm text-primary-foreground/90">
-                  Terhubung dengan ribuan pelestari bahasa dari seluruh Nusantara
-                </p>
-                <Button className="w-full bg-secondary hover:bg-secondary/90" onClick={() => navigate("/auth")}>
-                  Gabung Sekarang
-                </Button>
-              </CardContent>
-            </Card>
+            {!user && (
+              <Card className="border-border bg-gradient-hero shadow-warm">
+                <CardContent className="p-6">
+                  <h3 className="mb-2 text-lg font-semibold text-primary-foreground">
+                    Bergabung dengan Komunitas
+                  </h3>
+                  <p className="mb-4 text-sm text-primary-foreground/90">
+                    Terhubung dengan ribuan pelestari bahasa dari seluruh Nusantara
+                  </p>
+                  <Button className="w-full bg-secondary hover:bg-secondary/90" onClick={() => navigate("/auth")}>
+                    Gabung Sekarang
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
 

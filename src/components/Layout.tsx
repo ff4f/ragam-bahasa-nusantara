@@ -13,10 +13,11 @@ import { Menu, X, User as UserIcon, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { navLinks } from "@/lib/constants";
+import { navLinks, HOME_ANIMATION_DELAY } from "@/lib/constants";
 import { getInitials } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
-import { motion } from "motion/react";
+import { useApps } from "@/hooks/use-apps";
+import { motion, useAnimationControls } from "motion/react";
 import logo from "@/assets/logo-rana.svg";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -26,6 +27,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user: userContext, logout } = useUser();
+  const { loaded } = useApps();
+  const controls = useAnimationControls();
 
   const handleLogout = () => {
     logout();
@@ -47,19 +50,31 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     })));
   }, [userContext]);
 
+  useEffect(() => {
+    if (loaded) controls.start("animate");
+  }, [loaded]);
+
   return (
     <div className="min-h-screen bg-background">
       <motion.header
         className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
-        initial={{ height: 0 }}
-        animate={{ height: "4rem" }}
-        transition={{ duration: 0.25, ease: "easeInOut" }}
+        variants={{
+          initial: { translateY: "-100%" },
+          animate: { translateY: 0 },
+        }}
+        initial="initial"
+        animate={controls}
+        transition={{ duration: 0.25, delay: HOME_ANIMATION_DELAY + 0, ease: "easeInOut" }}
       >
         <nav className="container mx-auto flex h-16 items-center justify-between pr-4 pl-2">
           <motion.div
-            initial={{ translateX: "-150%" }}
-            animate={{ translateX: 0 }}
-            transition={{ duration: 0.25, delay: 0.6, ease: "backInOut" }}
+            variants={{
+              initial: { translateX: "-150%"  },
+              animate: { translateX: 0 },
+            }}
+            initial="initial"
+            animate={controls}
+            transition={{ duration: 0.25, delay: HOME_ANIMATION_DELAY + 0.6, ease: "backInOut" }}
           >
             <NavLink to="/" className="flex items-center space-x-2">
               <img src={logo} alt="Logo RANA" className="w-16 h-16" />
@@ -69,9 +84,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           {/* Desktop Navigation */}
           <motion.div
             className="hidden items-center space-x-6 md:flex"
-            initial={{ translateX: "120%" }}
-            animate={{ translateX: 0 }}
-            transition={{ duration: 0.25, delay: 0.6, ease: "backInOut" }}
+            variants={{
+              initial: { translateX: "120%"  },
+              animate: { translateX: 0 },
+            }}
+            initial="initial"
+            animate={controls}
+            transition={{ duration: 0.25, delay: HOME_ANIMATION_DELAY + 0.6, ease: "backInOut" }}
           >
             {menus.map((link) => link.show && (
               <NavLink
@@ -208,7 +227,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <div>
               <h4 className="mb-4 font-semibold">Platform</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><NavLink to="/learn" className="hover:text-foreground">Belajar Bahasa</NavLink></li>
+                <li><NavLink to="/game" className="hover:text-foreground">Bermain</NavLink></li>
                 <li><NavLink to="/explore" className="hover:text-foreground">Eksplor Bahasa</NavLink></li>
                 <li><NavLink to="/contribute" className="hover:text-foreground">Kontribusi</NavLink></li>
               </ul>

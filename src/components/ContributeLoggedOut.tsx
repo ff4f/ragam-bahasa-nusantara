@@ -105,9 +105,9 @@ const ContributeLoggedOut = () => {
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-bold text-primary">
-                        {contributor.xp}
+                        {contributor.points}
                       </div>
-                      <div className="text-xs text-muted-foreground">XP</div>
+                      <div className="text-xs text-muted-foreground">Poin</div>
                     </div>
                   </div>
                 ))}

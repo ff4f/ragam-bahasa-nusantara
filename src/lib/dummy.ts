@@ -302,11 +302,11 @@ export const languageArchive = [
 
 // sample leaderboard data
 export const leaderboard = [
-  { rank: 1, name: "Ibu Siti Nurhaliza", region: "Jawa Tengah", contributions: 342, xp: 3420 },
-  { rank: 2, name: "Bapak Ahmad Dahlan", region: "Sumatera Barat", contributions: 298, xp: 2980 },
-  { rank: 3, name: "Ni Luh Ketut Ayu", region: "Bali", contributions: 276, xp: 2760 },
-  { rank: 4, name: "Raden Mas Wijaya", region: "Jawa Barat", contributions: 254, xp: 2540 },
-  { rank: 5, name: "Andi Mappasessu", region: "Sulawesi Selatan", contributions: 231, xp: 2310 },
+  { rank: 1, name: "Ibu Siti Nurhaliza", region: "Jawa Tengah", contributions: 342, points: 3420 },
+  { rank: 2, name: "Bapak Ahmad Dahlan", region: "Sumatera Barat", contributions: 298, points: 2980 },
+  { rank: 3, name: "Ni Luh Ketut Ayu", region: "Bali", contributions: 276, points: 2760 },
+  { rank: 4, name: "Raden Mas Wijaya", region: "Jawa Barat", contributions: 254, points: 2540 },
+  { rank: 5, name: "Andi Mappasessu", region: "Sulawesi Selatan", contributions: 231, points: 2310 },
 ];
 
 // sample missions data
@@ -315,7 +315,8 @@ export const mockMissions = [
     id: '1',
     title: '5 Kata Dasar Daerahmu',
     description: 'Kontributor diminta menambahkan 5 kosakata dasar dari bahasa daerahnya, lengkap dengan arti dan contoh kalimat.',
-    reward_xp: 25,
+    reward_points: 25,
+    reward_coins: 500,
     type: 'contributor',
     difficulty: 'easy',
     done: true,
@@ -324,7 +325,8 @@ export const mockMissions = [
     id: '2',
     title: 'Rekam 3 Kalimat dengan Dialek Aslimu',
     description: 'Pengguna merekam 3 kalimat natural menggunakan logat/dialek daerah tertentu.',
-    reward_xp: 30,
+    reward_points: 30,
+    reward_coins: 600,
     type: 'contributor',
     difficulty: 'easy',
     done: true,
@@ -333,7 +335,8 @@ export const mockMissions = [
     id: '3',
     title: '2 Bahasa Daerah Berbeda Provinsi',
     description: 'Buat kosakata bahasa daerah di 2 bahasa daerah yang berbeda provinsi.',
-    reward_xp: 50,
+    reward_points: 50,
+    reward_coins: 1000,
     type: 'contributor',
     difficulty: 'medium',
     done: false,
@@ -342,7 +345,8 @@ export const mockMissions = [
     id: '4',
     title: '3 Kosakata Terverifikasi',
     description: 'Buat 3 kosakata baru dan tunggu hingga terverifikasi oleh validator.',
-    reward_xp: 100,
+    reward_points: 100,
+    reward_coins: 2000,
     type: 'contributor',
     difficulty: 'hard',
     done: false,
@@ -351,7 +355,8 @@ export const mockMissions = [
     id: '5',
     title: '3 Bahasa Daerah Berbeda',
     description: 'Buat kosakata di 3 bahasa daerah yang berbeda.',
-    reward_xp: 75,
+    reward_points: 75,
+    reward_coins: 1500,
     type: 'contributor',
     difficulty: 'medium',
     done: false,
@@ -671,3 +676,79 @@ export const comments = [
     ]
   }
 ];
+
+// sample data level
+// export const QUIZ_LEVELS = [
+//   {
+//     id: "1",
+//     title: "Level 1",
+//     description: "Pasangkan kosakata bahasa indonesia sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+//     questions: 5,
+//   },
+//   {
+//     id: "2",
+//     title: "Level 2",
+//     description: "Pasangkan frasa bahasa indonesia berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+//     questions: 5,
+//   },
+// ];
+
+// sample data game level 1
+export const QUIZ_ITEMS_LEVEL_1 = [
+  {
+    id: "1",
+    indonesia: "makan",
+    correct: "mangan",
+    question: "Sobat RANA! Silakan pasangkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    options: [
+      { id: "1", name: "turu", mean: "tidur" },
+      { id: "2", name: "mangan", mean: "makan" },
+      { id: "3", name: "mlayu", mean: "Berlari" },
+      { id: "4", name: "njagong", mean: "duduk" },
+      { id: "5", name: "nginum", mean: "minum" },
+    ],
+  },
+  {
+    id: "2",
+    indonesia: "Melihat",
+    correct: "Ndeleng",
+    question: "Sobat RANA! Silakan pasangkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    options: [
+      { id: "1", name: "Lungguh", mean: "Duduk" },
+      { id: "2", name: "Turu", mean: "Tidur" },
+      { id: "3", name: "Ndeleng", mean: "Melihat" },
+      { id: "4", name: "Mlayu", mean: "Berlari" },
+      { id: "5", name: "Maca", mean: "Membaca" },
+    ],
+  },
+];
+
+// sample data game level 2
+// export const QUIZ_ITEMS_LEVEL_2 = [
+//   {
+//     id: "1",
+//     indonesia: "Saya berdiri",
+//     correct: "Nyong njanggleng",
+//     question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+//     options: [
+//       { id: "1", name: "Nyong njanggleng", mean: "Saya berdiri" },
+//       { id: "2", name: "Nyong lungguh", mean: "Saya duduk" },
+//       { id: "3", name: "Nyong mlayu", mean: "Saya berlari" },
+//       { id: "4", name: "Koe mlaku", mean: "Kamu berjalan" },
+//       { id: "5", name: "Koe tangi", mean: "Kamu bangun" },
+//     ],
+//   },
+//   {
+//     id: "2",
+//     indonesia: "Kamu membaca",
+//     correct: "Koe maca",
+//     question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+//     options: [
+//       { id: "1", name: "Koe nulis", mean: "Kamu menulis" },
+//       { id: "2", name: "Nyong ngombé", mean: "Saya minum" },
+//       { id: "3", name: "Koe maca", mean: "Kamu membaca" },
+//       { id: "4", name: "Koe mlaku", mean: "Kamu berjalan" },
+//       { id: "5", name: "Nyong turu", mean: "Saya tidur" },
+//     ],
+//   },
+// ];

@@ -166,15 +166,15 @@ const Profile = () => {
                 ) : (
                   <>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">XP</span>
-                      <span className="text-2xl font-bold text-primary">{user.xp}</span>
+                      <span className="text-sm text-muted-foreground">Poin</span>
+                      <span className="text-2xl font-bold text-primary">{user.points}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Level</span>
+                      <span className="text-sm text-muted-foreground">Tingkat</span>
                       <span className="text-2xl font-medium">{user.level}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Badge</span>
+                      <span className="text-sm text-muted-foreground">Lencana</span>
                       <span className="text-2xl font-medium">{user.badges.length}</span>
                     </div>
                   </>
@@ -187,7 +187,7 @@ const Profile = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Award className="h-5 w-5" />
-                    Badge
+                    Lencana
                   </CardTitle>
                 </CardHeader>
                 <CardContent>

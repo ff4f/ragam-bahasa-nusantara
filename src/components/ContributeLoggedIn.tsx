@@ -164,15 +164,15 @@ const ContributeLoggedIn = () => {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Total XP</span>
-                    <span className="font-bold text-primary">{user.xp}</span>
+                    <span className="text-sm text-muted-foreground">Total Poin</span>
+                    <span className="font-bold text-primary">{user.points}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Level</span>
+                    <span className="text-sm text-muted-foreground">Tingkat</span>
                     <span className="font-medium">{user.level}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Badge</span>
+                    <span className="text-sm text-muted-foreground">Lencana</span>
                     <span className="font-medium">{user.badges.length}</span>
                   </div>
                 </CardContent>
@@ -183,7 +183,7 @@ const ContributeLoggedIn = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Kontributor Teratas</CardTitle>
-                <CardDescription>Peringkat berdasarkan XP minggu ini</CardDescription>
+                <CardDescription>Peringkat berdasarkan Poin minggu ini</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -202,8 +202,8 @@ const ContributeLoggedIn = () => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold">{contributor.xp}</p>
-                        <p className="text-xs text-muted-foreground">XP</p>
+                        <p className="text-sm font-bold">{contributor.points}</p>
+                        <p className="text-xs text-muted-foreground">Poin</p>
                       </div>
                     </div>
                   ))}

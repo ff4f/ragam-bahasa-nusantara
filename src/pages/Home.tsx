@@ -65,7 +65,7 @@ const Home = () => {
                     <span className="font-semibold">Contoh:</span> "Sugeng enjing" - Selamat pagi
                   </p>
                 </div>
-                <Link to="/learn">
+                <Link to="/explore">
                   <Button variant="outline" size="sm">
                     Pelajari Lebih Banyak
                   </Button>
