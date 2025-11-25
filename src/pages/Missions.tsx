@@ -4,6 +4,7 @@ import { Progress } from '@/components/ui/progress';
 import Header from '@/components/Header';
 import { Trophy, Target, CheckCircle2, Clock, ChartNoAxesCombined, Coins } from 'lucide-react';
 import { mockMissions } from '@/lib/dummy';
+import { thousandSeparator } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/hooks/use-user';
 
@@ -44,7 +45,7 @@ const Missions = () => {
                   <Coins className="h-5 w-5 text-amber-500" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{user?.coins || 0}</p>
+                  <p className="text-2xl font-bold text-foreground">{thousandSeparator(user?.coins || 0)}</p>
                   <p className="text-sm text-muted-foreground">Total Koin</p>
                 </div>
               </div>
@@ -58,7 +59,7 @@ const Missions = () => {
                   <Trophy className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{user?.points || 0}</p>
+                  <p className="text-2xl font-bold text-foreground">{thousandSeparator(user?.points || 0)}</p>
                   <p className="text-sm text-muted-foreground">Total Poin</p>
                 </div>
               </div>
@@ -73,7 +74,7 @@ const Missions = () => {
                   <ChartNoAxesCombined className="h-5 w-5 text-teal-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{user?.level || 1}</p>
+                  <p className="text-2xl font-bold text-foreground">{thousandSeparator(user?.level || 1)}</p>
                   <p className="text-sm text-muted-foreground">Tingkat</p>
                 </div>
               </div>
@@ -87,7 +88,7 @@ const Missions = () => {
                   <CheckCircle2 className="h-5 w-5 text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{user?.badges?.length || 0}</p>
+                  <p className="text-2xl font-bold text-foreground">{thousandSeparator(user?.badges?.length || 0)}</p>
                   <p className="text-sm text-muted-foreground">Lencana</p>
                 </div>
               </div>
@@ -101,7 +102,7 @@ const Missions = () => {
                   <Target className="h-5 w-5 text-destructive" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{completedMissions}</p>
+                  <p className="text-2xl font-bold text-foreground">{thousandSeparator(completedMissions)}</p>
                   <p className="text-sm text-muted-foreground">Misi Selesai</p>
                 </div>
               </div>
@@ -116,7 +117,7 @@ const Missions = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">
-                    {mockMissions.length - completedMissions}
+                    {thousandSeparator(mockMissions.length - completedMissions)}
                   </p>
                   <p className="text-sm text-muted-foreground">Misi Tersedia</p>
                 </div>
@@ -130,7 +131,7 @@ const Missions = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm font-medium text-foreground">Progress ke Tingkat Berikutnya</p>
-              <p className="text-sm text-muted-foreground">{user?.points || 0} / {nextLevel} Poin</p>
+              <p className="text-sm text-muted-foreground">{thousandSeparator(user?.points || 0)} / {thousandSeparator(nextLevel)} Poin</p>
             </div>
             <Progress value={((user?.points || 0) / nextLevel) * 100} />
           </CardContent>
@@ -160,13 +161,13 @@ const Missions = () => {
                       <div className="flex items-center gap-1">
                         <Coins className="h-4 w-4 text-amber-500" />
                         <span className="text-sm font-medium text-foreground">
-                          +{mission.reward_coins} Koin
+                          +{thousandSeparator(mission.reward_coins)} Koin
                         </span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Trophy className="h-4 w-4 text-primary" />
                         <span className="text-sm font-medium text-foreground">
-                          +{mission.reward_points} Poin
+                          +{thousandSeparator(mission.reward_points)} Poin
                         </span>
                       </div>
                     </div>

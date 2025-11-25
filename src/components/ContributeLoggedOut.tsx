@@ -6,6 +6,7 @@ import Header from "./Header";
 import { Award, Sparkles } from "lucide-react";
 import { contributionTypes } from "@/lib/constants";
 import { leaderboard } from "@/lib/dummy";
+import { thousandSeparator } from "@/lib/utils";
 
 const ContributeLoggedOut = () => {
   const navigate = useNavigate();
@@ -105,7 +106,7 @@ const ContributeLoggedOut = () => {
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-bold text-primary">
-                        {contributor.points}
+                        {thousandSeparator(contributor.points)}
                       </div>
                       <div className="text-xs text-muted-foreground">Poin</div>
                     </div>

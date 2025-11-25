@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Heart, MessageCircle, X, SendHorizontal } from "lucide-react";
-import { getInitials } from "@/lib/utils";
+import { getInitials, thousandSeparator } from "@/lib/utils";
 
 interface CommentsDialogProps {
   open: boolean;
@@ -136,7 +136,7 @@ const CommentsDialog = ({ comments, user, open, handleClose }: CommentsDialogPro
                             <Heart className={comment?.liked ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
                           </Button>
                         </Tooltip>
-                        <span className="text-xs text-muted-foreground">{comment.likes}</span>
+                        <span className="text-xs text-muted-foreground">{thousandSeparator(comment.likes)}</span>
                       </div>
                       <div className="flex items-center">
                         <Tooltip label="Komentar">
@@ -149,7 +149,7 @@ const CommentsDialog = ({ comments, user, open, handleClose }: CommentsDialogPro
                             <MessageCircle className={comment?.openReplies ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
                           </Button>
                         </Tooltip>
-                        <span className="text-xs text-muted-foreground">{comment.replies?.length || 0}</span>
+                        <span className="text-xs text-muted-foreground">{thousandSeparator(comment.replies?.length || 0)}</span>
                       </div>
                     </div>
 
@@ -180,7 +180,7 @@ const CommentsDialog = ({ comments, user, open, handleClose }: CommentsDialogPro
                                       <Heart className={reply?.liked ? "text-primary" : ""} style={{ width: "1.2rem", height: "1.2rem" }}/>
                                     </Button>
                                   </Tooltip>
-                                  <span className="text-xs text-muted-foreground">{reply.likes}</span>
+                                  <span className="text-xs text-muted-foreground">{thousandSeparator(reply.likes)}</span>
                                 </div>
                               </div>
                             </div>

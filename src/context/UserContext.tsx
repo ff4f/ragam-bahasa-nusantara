@@ -4,7 +4,7 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { STORAGE_USER_KEY } from "@/lib/constants";
+import { STORAGE_KEY } from "@/lib/constants";
 
 export interface User {
   data: string;
@@ -34,12 +34,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   // Load saved user when app starts
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_USER_KEY);
+    const saved = localStorage.getItem(STORAGE_KEY.USER);
     if (saved) {
       try {
         setUser(JSON.parse(saved));
       } catch {
-        localStorage.removeItem(STORAGE_USER_KEY);
+        localStorage.removeItem(STORAGE_KEY.USER);
       }
     }
   }, []);
@@ -47,20 +47,20 @@ export function UserProvider({ children }: { children: ReactNode }) {
   // Persist to localStorage whenever user changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(user));
+      localStorage.setItem(STORAGE_KEY.USER, JSON.stringify(user));
     } else {
-      localStorage.removeItem(STORAGE_USER_KEY);
+      localStorage.removeItem(STORAGE_KEY.USER);
     }
   }, [user]);
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem(STORAGE_USER_KEY);
+    localStorage.removeItem(STORAGE_KEY.USER);
   };
 
   const updateProfile = (data: User) => {
     setUser(data);
-    localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(data));
+    localStorage.setItem(STORAGE_KEY.USER, JSON.stringify(data));
   };
 
   return (

@@ -677,22 +677,6 @@ export const comments = [
   }
 ];
 
-// sample data level
-// export const QUIZ_LEVELS = [
-//   {
-//     id: "1",
-//     title: "Level 1",
-//     description: "Pasangkan kosakata bahasa indonesia sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
-//     questions: 5,
-//   },
-//   {
-//     id: "2",
-//     title: "Level 2",
-//     description: "Pasangkan frasa bahasa indonesia berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
-//     questions: 5,
-//   },
-// ];
-
 // sample data game level 1
 export const QUIZ_ITEMS_LEVEL_1 = [
   {
@@ -721,34 +705,132 @@ export const QUIZ_ITEMS_LEVEL_1 = [
       { id: "5", name: "Maca", mean: "Membaca" },
     ],
   },
+  {
+    id: "3",
+    indonesia: "Baju",
+    correct: "Klambi",
+    question: "Sobat RANA! Silakan pasangkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    options: [
+      { id: "1", name: "Mlaku", mean: "Berjalan" },
+      { id: "2", name: "Pit", mean: "Sepeda" },
+      { id: "3", name: "Tèng", mean: "Ke" },
+      { id: "4", name: "Klambi", mean: "Baju" },
+      { id: "5", name: "Pring", mean: "Bambu" },
+    ],
+  },
+  {
+    id: "4",
+    indonesia: "Minum",
+    correct: "Ngombé",
+    question: "Sobat RANA! Silakan pasangkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    options: [
+      { id: "1", name: "Ngombé", mean: "Minum" },
+      { id: "2", name: "Mangan", mean: "Makan" },
+      { id: "3", name: "Mlaku", mean: "Berjalan" },
+      { id: "4", name: "Turu", mean: "Tidur" },
+      { id: "5", name: "Nggawa", mean: "Membawa" },
+    ],
+  },
+  {
+    id: "5",
+    indonesia: "Berjalan",
+    correct: "Mlaku",
+    question: "Sobat RANA! Silakan pasangkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    options: [
+      { id: "1", name: "Ngaso", mean: "Istirahat" },
+      { id: "2", name: "Mlayu", mean: "Berlari" },
+      { id: "3", name: "Mlaku", mean: "Berjalan" },
+      { id: "4", name: "Nggawa", mean: "Membawa" },
+      { id: "5", name: "Turu", mean: "Tidur" },
+    ],
+  },
 ];
 
 // sample data game level 2
-// export const QUIZ_ITEMS_LEVEL_2 = [
-//   {
-//     id: "1",
-//     indonesia: "Saya berdiri",
-//     correct: "Nyong njanggleng",
-//     question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
-//     options: [
-//       { id: "1", name: "Nyong njanggleng", mean: "Saya berdiri" },
-//       { id: "2", name: "Nyong lungguh", mean: "Saya duduk" },
-//       { id: "3", name: "Nyong mlayu", mean: "Saya berlari" },
-//       { id: "4", name: "Koe mlaku", mean: "Kamu berjalan" },
-//       { id: "5", name: "Koe tangi", mean: "Kamu bangun" },
-//     ],
-//   },
-//   {
-//     id: "2",
-//     indonesia: "Kamu membaca",
-//     correct: "Koe maca",
-//     question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
-//     options: [
-//       { id: "1", name: "Koe nulis", mean: "Kamu menulis" },
-//       { id: "2", name: "Nyong ngombé", mean: "Saya minum" },
-//       { id: "3", name: "Koe maca", mean: "Kamu membaca" },
-//       { id: "4", name: "Koe mlaku", mean: "Kamu berjalan" },
-//       { id: "5", name: "Nyong turu", mean: "Saya tidur" },
-//     ],
-//   },
-// ];
+export const QUIZ_ITEMS_LEVEL_2 = [
+  {
+    id: "1",
+    indonesia: "Saya berdiri",
+    correct: "Nyong njanggleng",
+    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    options: [
+      { id: "1", name: "Nyong njanggleng", mean: "Saya berdiri" },
+      { id: "2", name: "Nyong lungguh", mean: "Saya duduk" },
+      { id: "3", name: "Nyong mlayu", mean: "Saya berlari" },
+      { id: "4", name: "Koe mlaku", mean: "Kamu berjalan" },
+      { id: "5", name: "Koe tangi", mean: "Kamu bangun" },
+    ],
+  },
+  {
+    id: "2",
+    indonesia: "Kamu membaca",
+    correct: "Koe maca",
+    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    options: [
+      { id: "1", name: "Koe nulis", mean: "Kamu menulis" },
+      { id: "2", name: "Nyong ngombé", mean: "Saya minum" },
+      { id: "3", name: "Koe maca", mean: "Kamu membaca" },
+      { id: "4", name: "Koe mlaku", mean: "Kamu berjalan" },
+      { id: "5", name: "Nyong turu", mean: "Saya tidur" },
+    ],
+  },
+  {
+    id: "3",
+    indonesia: "Saya ingin pergi",
+    correct: "Nyong arep lunga",
+    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    options: [
+      { id: "1", name: "Nyong wis mlaku", mean: "Saya sudah berjalan" },
+      { id: "2", name: "Nyong arep lunga", mean: "Saya mau pergi" },
+      { id: "3", name: "Koe arep ngaso", mean: "Kamu mau istirahat" },
+      { id: "4", name: "Koe wis turu", mean: "Kamu sudah tidur" },
+      { id: "5", name: "Mangan", mean: "Makan" },
+    ],
+  },
+  {
+    id: "4",
+    indonesia: "Dia sudah lapar",
+    correct: "Kae wis kencot",
+    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    options: [
+      { id: "1", name: "Nyong wis mangan", mean: "Saya sudah makan" },
+      { id: "2", name: "Kae wis kencot", mean: "Dia sudah lapar" },
+      { id: "3", name: "Koe urung mangan", mean: "Kamu belum makan" },
+      { id: "4", name: "Nyong urung mangan", mean: "Saya belum makan" },
+      { id: "5", name: "Kae urung kencot", mean: "Dia belum lapar" },
+    ],
+  },
+  {
+    id: "5",
+    indonesia: "Aku menjemputmu",
+    correct: "Nyong nyamper koe",
+    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    options: [
+      { id: "1", name: "Nyong nyamper koe", mean: "Saya menjemputmu" },
+      { id: "2", name: "Koe dolan karo nyong", mean: "Kamu bermain bersamaku" },
+      { id: "3", name: "Kae nyamper koe", mean: "Dia menjemput kamu" },
+      { id: "4", name: "Nyong arep nyamper", mean: "Saya mau menjemput" },
+      { id: "5", name: "Koe wis nyamper nyong", mean: "Kamu sudah menjemputku" },
+    ],
+  },
+];
+
+// sample data level
+export const QUIZ_LEVELS = [
+  {
+    id: "1",
+    title: "Level 1 (Kosakata)",
+    description: "Pasangkan kosakata bahasa indonesia sesuai dengan bahasa ngapaknya!",
+    questions: 5,
+    locked: false,
+    details: QUIZ_ITEMS_LEVEL_1,
+  },
+  {
+    id: "2",
+    title: "Level 2 (Frasa)",
+    description: "Pasangkan frasa bahasa indonesia berikut sesuai dengan bahasa ngapaknya!",
+    questions: 5,
+    locked: true,
+    details: QUIZ_ITEMS_LEVEL_2,
+  },
+];

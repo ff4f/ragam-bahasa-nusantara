@@ -69,3 +69,9 @@ export const getInitials = (name: string) => {
     .toUpperCase()
     .slice(0, 2);
 };
+
+export const thousandSeparator = (value: number | string, separator = ".") => {
+  return !Number(value) ? value : value
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+}

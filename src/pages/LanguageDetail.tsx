@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import CommentsDialog from "@/components/CommentsDialog";
 import { MapPin, Users, Volume2, ArrowLeft, BadgeCheck, EllipsisVertical, Search, Heart, MessageCircle } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getStatusColor, capitalize, validateForm } from "@/lib/utils";
+import { getStatusColor, capitalize, validateForm, thousandSeparator } from "@/lib/utils";
 import { statusList, verifiedStatusList, INITIAL_FORM_CONTRIBUTION } from "@/lib/constants";
 import { vocabulary, comments } from "@/lib/dummy";
 import { useToast } from "@/hooks/use-toast";
@@ -131,19 +131,19 @@ const LanguageDetail = () => {
           <div className="grid gap-4 md:grid-cols-3">
             <Card className="border-border">
               <CardContent className="pt-6 text-center">
-                <div className="text-3xl font-bold text-primary">{language.vocabularyCount}</div>
+                <div className="text-3xl font-bold text-primary">{thousandSeparator(language.vocabularyCount)}</div>
                 <div className="text-sm text-muted-foreground">Kosakata</div>
               </CardContent>
             </Card>
             <Card className="border-border">
               <CardContent className="pt-6 text-center">
-                <div className="text-3xl font-bold text-primary">{language.audioCount}</div>
+                <div className="text-3xl font-bold text-primary">{thousandSeparator(language.audioCount)}</div>
                 <div className="text-sm text-muted-foreground">Rekaman Audio</div>
               </CardContent>
             </Card>
             <Card className="border-border">
               <CardContent className="pt-6 text-center">
-                <div className="text-3xl font-bold text-primary">{language.contributorCount}</div>
+                <div className="text-3xl font-bold text-primary">{thousandSeparator(language.contributorCount)}</div>
                 <div className="text-sm text-muted-foreground">Kontributor</div>
               </CardContent>
             </Card>
@@ -203,7 +203,7 @@ const LanguageDetail = () => {
                     </Tooltip>
                     {item.verified ? (
                       <Tooltip label="Terverifikasi">
-                        <BadgeCheck className="text-[#1f8493ff]"/>
+                        <BadgeCheck className="text-primary"/>
                       </Tooltip>
                     ) : null}
                   </div>
@@ -243,7 +243,7 @@ const LanguageDetail = () => {
 
               <div className="absolute bottom-6 right-6 flex items-end gap-2">
                 <div className="flex items-center">
-                  <span className="text-xs text-muted-foreground">{item.comment || 0}</span>
+                  <span className="text-xs text-muted-foreground">{thousandSeparator(item.comment || 0)}</span>
                   <Tooltip label="Komentar">
                     <Button
                       variant="ghost"
@@ -256,7 +256,7 @@ const LanguageDetail = () => {
                   </Tooltip>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-xs text-muted-foreground">{item.like || 0}</span>
+                  <span className="text-xs text-muted-foreground">{thousandSeparator(item.like || 0)}</span>
                   <Tooltip label="Suka">
                     <Button
                       variant="ghost"

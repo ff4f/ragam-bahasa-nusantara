@@ -9,6 +9,7 @@ import { Award, Edit2, Save, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
+import { thousandSeparator } from "@/lib/utils";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -156,26 +157,26 @@ const Profile = () => {
                   <>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Validasi</span>
-                      <span className="text-2xl font-medium">{user.validationCount || 0}</span>
+                      <span className="text-2xl font-medium">{thousandSeparator(user.validationCount || 0)}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Belum Validasi</span>
-                      <span className="text-2xl font-medium">{user.notValidatedCount || 0}</span>
+                      <span className="text-2xl font-medium">{thousandSeparator(user.notValidatedCount || 0)}</span>
                     </div>
                   </>
                 ) : (
                   <>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Poin</span>
-                      <span className="text-2xl font-bold text-primary">{user.points}</span>
+                      <span className="text-2xl font-bold text-primary">{thousandSeparator(user.points)}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Tingkat</span>
-                      <span className="text-2xl font-medium">{user.level}</span>
+                      <span className="text-2xl font-medium">{thousandSeparator(user.level)}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Lencana</span>
-                      <span className="text-2xl font-medium">{user.badges.length}</span>
+                      <span className="text-2xl font-medium">{thousandSeparator(user.badges.length)}</span>
                     </div>
                   </>
                 )}

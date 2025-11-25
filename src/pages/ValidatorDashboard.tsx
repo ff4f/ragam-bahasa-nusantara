@@ -6,10 +6,10 @@ import Header from '@/components/Header';
 import DataTable from '@/components/DataTable';
 import FormContribution from '@/components/FormContribution';
 import { Tooltip } from '@/components/ui/tooltip';
-import { CheckCircle2, XCircle, FileAudio, FileText, BookOpen, Languages, FileSearch } from 'lucide-react';
+import { CheckCircle2, XCircle, FileAudio, FileText, BookOpen, Languages, FileSearch, Percent } from 'lucide-react';
 import { mockRecordings } from '@/lib/dummy';
 import { INITIAL_FORM_CONTRIBUTION } from '@/lib/constants';
-import { validateForm } from '@/lib/utils';
+import { validateForm, thousandSeparator } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/use-user';
@@ -184,7 +184,7 @@ const ValidatorDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Total Validasi Selesai</p>
-                  <p className="text-3xl font-bold text-foreground">{totalValidated}</p>
+                  <p className="text-3xl font-bold text-foreground">{thousandSeparator(totalValidated)}</p>
                 </div>
                 <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
                   <CheckCircle2 className="h-6 w-6 text-primary" />
@@ -198,10 +198,10 @@ const ValidatorDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Validasi Menunggu</p>
-                  <p className="text-3xl font-bold text-foreground">{totalPending}</p>
+                  <p className="text-3xl font-bold text-foreground">{thousandSeparator(totalPending)}</p>
                 </div>
-                <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center">
-                  <XCircle className="h-6 w-6 text-accent" />
+                <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
+                  <XCircle className="h-6 w-6 text-muted-foreground" />
                 </div>
               </div>
             </CardContent>
@@ -214,8 +214,8 @@ const ValidatorDashboard = () => {
                   <p className="text-sm text-muted-foreground mb-1">Persentase Tervalidasi</p>
                   <p className="text-3xl font-bold text-foreground">{percentageValidated}%</p>
                 </div>
-                <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center">
-                  <span className="text-lg font-bold text-secondary">{percentageValidated}</span>
+                <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center">
+                  <Percent className="h-6 w-6 text-accent" />
                 </div>
               </div>
             </CardContent>

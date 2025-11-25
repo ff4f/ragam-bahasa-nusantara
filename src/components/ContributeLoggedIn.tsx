@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { leaderboard } from "@/lib/dummy";
 import { INITIAL_FORM_CONTRIBUTION } from "@/lib/constants";
-import { validateForm } from "@/lib/utils";
+import { validateForm, thousandSeparator } from "@/lib/utils";
 import { mockRecordings } from "@/lib/dummy";
 import moment from "moment";
 
@@ -165,15 +165,15 @@ const ContributeLoggedIn = () => {
                 <CardContent className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Total Poin</span>
-                    <span className="font-bold text-primary">{user.points}</span>
+                    <span className="font-bold text-primary">{thousandSeparator(user.points)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Tingkat</span>
-                    <span className="font-medium">{user.level}</span>
+                    <span className="font-medium">{thousandSeparator(user.level)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Lencana</span>
-                    <span className="font-medium">{user.badges.length}</span>
+                    <span className="font-medium">{thousandSeparator(user.badges.length)}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -202,7 +202,7 @@ const ContributeLoggedIn = () => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold">{contributor.points}</p>
+                        <p className="text-sm font-bold">{thousandSeparator(contributor.points)}</p>
                         <p className="text-xs text-muted-foreground">Poin</p>
                       </div>
                     </div>

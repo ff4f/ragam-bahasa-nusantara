@@ -286,7 +286,7 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
               <CheckCircle2 className="mr-2 h-4 w-4" />
               Verifikasi
             </Button>
-            <Button onClick={() => handleConfirmation("delete")} variant="destructive" className="flex-1">
+            <Button onClick={() => handleConfirmation("delete")} variant="outline" className="flex-1">
               <Trash2 className="mr-2 h-4 w-4" />
               Hapus
             </Button>

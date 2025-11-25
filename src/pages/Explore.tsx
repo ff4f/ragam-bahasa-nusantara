@@ -10,7 +10,7 @@ import { MapPin, Search, Info } from "lucide-react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import geoJson from "../assets/indonesia-province-38.json";
 import { Tooltip } from '@/components/ui/tooltip';
-import { getStatusColor } from '@/lib/utils';
+import { getStatusColor, thousandSeparator } from '@/lib/utils';
 import { statusList } from '@/lib/constants';
 import { languageArchive } from '@/lib/dummy';
 
@@ -165,15 +165,15 @@ const Explore = () => {
 
                   <div className="mb-4 grid grid-cols-3 gap-2 rounded-lg bg-muted/30 p-3">
                     <div className="text-center">
-                      <div className="text-lg font-bold text-primary">{language.vocabularyCount}</div>
+                      <div className="text-lg font-bold text-primary">{thousandSeparator(language.vocabularyCount)}</div>
                       <div className="text-xs text-muted-foreground">Kosakata</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-primary">{language.audioCount}</div>
+                      <div className="text-lg font-bold text-primary">{thousandSeparator(language.audioCount)}</div>
                       <div className="text-xs text-muted-foreground">Audio</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-primary">{language.contributorCount}</div>
+                      <div className="text-lg font-bold text-primary">{thousandSeparator(language.contributorCount)}</div>
                       <div className="text-xs text-muted-foreground">Kontributor</div>
                     </div>
                   </div>

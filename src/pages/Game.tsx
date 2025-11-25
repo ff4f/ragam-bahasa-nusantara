@@ -1,13 +1,16 @@
 import { useState } from "react";
 import QuizDragDrop from "@/components/Game/QuizDragDrop";
 import QuizMenu from "@/components/Game/QuizMenu";
-import { QUIZ_ITEMS_LEVEL_1 } from "@/lib/dummy";
+import QuizLevel from "@/components/Game/QuizLevel";
 
 const Game = () => {
   const [currentState, setCurrentState] = useState<string>("start");
+  const [levelData, setLevelData] = useState<any>(null);
+  const [score, setScore] = useState<number>(0);
 
   const handleStartQuiz = () => {
-    setCurrentState("ongoing");
+    setCurrentState("choose_level");
+    setScore(0);
   };
 
   return (
@@ -16,14 +19,21 @@ const Game = () => {
         {["start", "finish"].includes(currentState) ? (
           <QuizMenu
             state={currentState}
+            score={score}
             handleStartQuiz={handleStartQuiz}
             setState={setCurrentState}
           />
+        ) : currentState === "choose_level" ? (
+          <QuizLevel
+            setState={setCurrentState}
+            setLevelData={setLevelData}
+          />
         ) : (
           <QuizDragDrop
-            level={1}
-            data={QUIZ_ITEMS_LEVEL_1}
+            data={levelData}
             setState={setCurrentState}
+            setScore={setScore}
+            handleStartQuiz={handleStartQuiz}
           />
         )}
       </div>

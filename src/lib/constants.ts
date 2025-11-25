@@ -14,7 +14,10 @@ import {
   MessageCircle,
 } from "lucide-react";
 
-export const STORAGE_USER_KEY = 'rana_user';
+export const STORAGE_KEY = {
+  USER: "rana_user",
+  QUIZ: "rana_quiz",
+};
 export const MOBILE_BREAKPOINT = 768;
 export const TOAST_LIMIT = 1;
 export const TOAST_REMOVE_DELAY = 1000000;
