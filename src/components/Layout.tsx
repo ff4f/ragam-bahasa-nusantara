@@ -13,7 +13,7 @@ import { Menu, X, User as UserIcon, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { navLinks, HOME_ANIMATION_DELAY } from "@/lib/constants";
+import { NAV_LINKS, HOME_ANIMATION_DELAY } from "@/lib/constants";
 import { getInitials } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
 import { useApps } from "@/hooks/use-apps";
@@ -23,7 +23,7 @@ import logo from "@/assets/logo-rana.svg";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [menus, setMenus] = useState(navLinks);
+  const [menus, setMenus] = useState(NAV_LINKS);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user: userContext, logout } = useUser();
@@ -44,7 +44,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       "/contribute": !userContext || userContext?.role === "contributor",
       "/validate": userContext?.role === "validator",
     };
-    setMenus(navLinks.map(item => ({
+    setMenus(NAV_LINKS.map(item => ({
       ...item,
       show: specialMenuConditions[item.to] ?? item.show
     })));
@@ -227,7 +227,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <div>
               <h4 className="mb-4 font-semibold">Platform</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><NavLink to="/game" className="hover:text-foreground">Bermain</NavLink></li>
+                <li><NavLink to="/game" className="hover:text-foreground">Permainan</NavLink></li>
                 <li><NavLink to="/explore" className="hover:text-foreground">Eksplor Bahasa</NavLink></li>
                 <li><NavLink to="/contribute" className="hover:text-foreground">Kontribusi</NavLink></li>
               </ul>

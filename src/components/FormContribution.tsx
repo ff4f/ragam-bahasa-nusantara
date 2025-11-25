@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import MultiSelect from "./MultiSelect";
 import ConfirmationDialog from "./ConfirmationDialog";
+import InputFile from "./InputFIle";
 import { AudioRecorder } from "./AudioRecorder";
 import { Upload, Loader2, CheckCircle2, Trash2 } from "lucide-react";
 import { provinceList, regionList, languageArchive } from "@/lib/dummy";
@@ -206,16 +207,15 @@ const FormContribution = ({ formData, setFormData, handleSubmit, loading, isRevi
           ) : (
             <Tabs value={tabText} className="w-full" onValueChange={(value) => handleChangeTab(value)}>
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="upload">Upload File</TabsTrigger>
+                <TabsTrigger value="upload">Unggah Berkas</TabsTrigger>
                 <TabsTrigger value="record">Rekam Suara</TabsTrigger>
               </TabsList>
               <TabsContent value="upload">
                 <div className="space-y-2">
-                  <Input
+                  <InputFile
                     id="textAudio"
                     type="file"
                     accept="audio/*"
-                    className="cursor-pointer"
                     onChange={(e) => handleFile(e, "textAudio")}
                   />
                   <p className="text-xs text-muted-foreground">

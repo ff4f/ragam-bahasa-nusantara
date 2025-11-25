@@ -11,7 +11,7 @@ import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import geoJson from "../assets/indonesia-province-38.json";
 import { Tooltip } from '@/components/ui/tooltip';
 import { getStatusColor, thousandSeparator } from '@/lib/utils';
-import { statusList } from '@/lib/constants';
+import { RECORDED_STATUS_LIST } from '@/lib/constants';
 import { languageArchive } from '@/lib/dummy';
 
 const Explore = () => {
@@ -44,7 +44,7 @@ const Explore = () => {
         {/* Header */}
         <Header
           title="Eksplor Bahasa Nusantara"
-          description="Jelajahi keberagaman luar biasa dari lebih dari 700 bahasa daerah yang tersebar di seluruh kepulauan Indonesia"
+          description="Jelajahi keberagaman luar biasa dari lebih dari 700 bahasa daerah yang tersebar di di seluruh Nusantara."
         />
 
         {/* Map Section */}
@@ -119,7 +119,7 @@ const Explore = () => {
                       <SelectValue placeholder="Pilih Status" />
                     </SelectTrigger>
                     <SelectContent>
-                      {statusList.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
+                      {RECORDED_STATUS_LIST.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
@@ -142,7 +142,7 @@ const Explore = () => {
                     <div className="mb-2 flex items-start justify-between">
                       <CardTitle className="text-xl">{language.name}</CardTitle>
                       <Badge className={getStatusColor(language.status)}>
-                        {statusList.find(item => item.id === language.status)?.name || ""}
+                        {RECORDED_STATUS_LIST.find(item => item.id === language.status)?.name || ""}
                       </Badge>
                     </div>
                   )}

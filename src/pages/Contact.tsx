@@ -39,7 +39,7 @@ const Contact = () => {
                       <Input id="name" placeholder="Masukkan nama Anda" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
+                      <Label htmlFor="email">Pos-el (<i>e-mail</i>)</Label>
                       <Input id="email" type="email" placeholder="nama@email.com" />
                     </div>
                   </div>

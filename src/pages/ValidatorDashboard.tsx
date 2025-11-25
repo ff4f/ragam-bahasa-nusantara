@@ -173,7 +173,7 @@ const ValidatorDashboard = () => {
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <Header
-          title="Dashboard Validasi"
+          title="Dasbor Validasi"
           description="Validasi dan verifikasi kontribusi dari para kontributor"
         />
 

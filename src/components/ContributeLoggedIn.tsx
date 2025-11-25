@@ -135,9 +135,9 @@ const ContributeLoggedIn = () => {
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Form</CardTitle>
+                <CardTitle>Formulir</CardTitle>
                 <CardDescription>
-                  Lengkapi semua field kontribusi yang diperlukan
+                  Lengkapi semua kolom kontribusi yang diperlukan
                 </CardDescription>
               </CardHeader>
               <CardContent>

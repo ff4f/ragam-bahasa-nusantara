@@ -128,7 +128,7 @@ const Profile = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Pos-el (<i>e-mail</i>)</Label>
                   <Input
                     id="email"
                     type="email"
@@ -139,7 +139,7 @@ const Profile = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Role</Label>
+                  <Label>Peran</Label>
                   <Input value={user.role} disabled />
                 </div>
               </div>

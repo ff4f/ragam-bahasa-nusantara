@@ -16,7 +16,7 @@ import CommentsDialog from "@/components/CommentsDialog";
 import { MapPin, Users, Volume2, ArrowLeft, BadgeCheck, EllipsisVertical, Search, Heart, MessageCircle } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getStatusColor, capitalize, validateForm, thousandSeparator } from "@/lib/utils";
-import { statusList, verifiedStatusList, INITIAL_FORM_CONTRIBUTION } from "@/lib/constants";
+import { RECORDED_STATUS_LIST, VERIFIED_STATUS_LIST, INITIAL_FORM_CONTRIBUTION } from "@/lib/constants";
 import { vocabulary, comments } from "@/lib/dummy";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
@@ -123,7 +123,7 @@ const LanguageDetail = () => {
               </div>
             </div>
             <Badge className={getStatusColor(language.status)}>
-              {statusList.find(item => item.id === language.status)?.name || ""}
+              {RECORDED_STATUS_LIST.find(item => item.id === language.status)?.name || ""}
             </Badge>
           </div>
 
@@ -172,7 +172,7 @@ const LanguageDetail = () => {
                     <SelectValue placeholder="Pilih Status" />
                   </SelectTrigger>
                   <SelectContent>
-                    {verifiedStatusList.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
+                    {VERIFIED_STATUS_LIST.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { featuresHome, statsHome } from "@/lib/constants";
+import { HOME_FEATURES, HOME_STATS } from "@/lib/constants";
 import { useParallax } from "@/hooks/use-parallax";
 import { motion } from "framer-motion";
 import map from "@/assets/map-indonesia.svg";
@@ -28,7 +28,7 @@ const Home = () => {
       <section className="border-b border-border bg-card py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-            {statsHome.map((stat, index) => (
+            {HOME_STATS.map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="mb-2 text-3xl font-bold text-primary md:text-4xl">
                   {stat.value}
@@ -90,7 +90,7 @@ const Home = () => {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuresHome.map((feature, index) => (
+            {HOME_FEATURES.map((feature, index) => (
               <Card key={index} className="border-border shadow-soft transition-all hover:shadow-warm">
                 <CardContent className="p-6">
                   <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-3">
