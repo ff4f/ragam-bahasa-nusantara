@@ -37,7 +37,7 @@ export interface TranslateResponse {
 
 export const dictionaryService = {
     translate: async (text: string, sourceLang: string, targetLang: string): Promise<TranslateResponse> => {
-        const response = await apiClient.post<TranslateResponse>('/api/dictionary/translate', {
+        const response = await apiClient.post<TranslateResponse>('/dictionary/translate', {
             text,
             source_lang: sourceLang,
             target_lang: targetLang
@@ -46,12 +46,12 @@ export const dictionaryService = {
     },
 
     seed: async () => {
-        const response = await apiClient.post('/api/dictionary/seed');
+        const response = await apiClient.post('/dictionary/seed');
         return response.data;
     },
 
     search: async (query: string = "", targetLang: string = "", page: number = 1, limit: number = 50) => {
-        const response = await apiClient.get('/api/dictionary/search', {
+        const response = await apiClient.get('/dictionary/search', {
             params: {
                 q: query,
                 target_lang: targetLang,
@@ -63,12 +63,12 @@ export const dictionaryService = {
     },
 
     getComments: async (dictionaryId: number) => {
-        const response = await apiClient.get<Comment[]>(`/api/interactions/dictionary/${dictionaryId}/comments`);
+        const response = await apiClient.get<Comment[]>(`/interactions/dictionary/${dictionaryId}/comments`);
         return response.data;
     },
 
     addComment: async (dictionaryId: number, content: string, parentId?: number) => {
-        const response = await apiClient.post<Comment>(`/api/interactions/dictionary/${dictionaryId}/comments`, {
+        const response = await apiClient.post<Comment>(`/interactions/dictionary/${dictionaryId}/comments`, {
             content,
             parent_id: parentId
         });
@@ -76,7 +76,7 @@ export const dictionaryService = {
     },
 
     toggleLike: async (dictionaryId: number) => {
-        const response = await apiClient.post<{ liked: boolean, total_likes: number }>(`/api/interactions/dictionary/${dictionaryId}/like`);
+        const response = await apiClient.post<{ liked: boolean, total_likes: number }>(`/interactions/dictionary/${dictionaryId}/like`);
         return response.data;
     }
 };

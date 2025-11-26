@@ -135,7 +135,12 @@ const LanguageDetail = () => {
             comment: item.comment_count || 0,
             liked: item.is_liked || false,
             created_by: "system",
-            audio_url: item.audio_url ? `${API_URL.replace('/api', '')}${item.audio_url}` : null
+            audio_url: item.audio_url ? (() => {
+              const baseUrl = API_URL.replace(/\/api\/?$/, '');
+              const fullUrl = `${baseUrl}${item.audio_url}`;
+              console.log('🔌 Debug Audio URL:', { API_URL, baseUrl, original: item.audio_url, fullUrl });
+              return fullUrl;
+            })() : null
           }));
           setVocabs(mappedVocabs);
           // Calculate total pages from API response

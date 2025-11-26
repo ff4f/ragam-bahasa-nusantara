@@ -37,7 +37,7 @@ class AuthService {
      * Register a new user
      */
     async register(data: RegisterData): Promise<User> {
-        const response = await apiClient.post<User>('/api/auth/register', data);
+        const response = await apiClient.post<User>('/auth/register', data);
         return response.data;
     }
 
@@ -45,7 +45,7 @@ class AuthService {
      * Login user and get JWT token
      */
     async login(credentials: LoginCredentials): Promise<TokenResponse> {
-        const response = await apiClient.post<TokenResponse>('/api/auth/login', credentials);
+        const response = await apiClient.post<TokenResponse>('/auth/login', credentials);
         const { access_token } = response.data;
 
         // Store token in localStorage
@@ -58,7 +58,7 @@ class AuthService {
      * Get current user information
      */
     async getCurrentUser(): Promise<User> {
-        const response = await apiClient.get<User>('/api/auth/me');
+        const response = await apiClient.get<User>('/auth/me');
         return response.data;
     }
 

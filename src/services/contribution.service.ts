@@ -27,19 +27,19 @@ export interface Contribution extends ContributionCreate {
 
 export const contributionService = {
     create: async (data: ContributionCreate): Promise<Contribution> => {
-        const response = await apiClient.post<Contribution>('/api/contributions/', data);
+        const response = await apiClient.post<Contribution>('/contributions/', data);
         return response.data;
     },
 
     getMyContributions: async (page: number = 1, limit: number = 50) => {
-        const response = await apiClient.get('/api/contributions/', {
+        const response = await apiClient.get('/contributions/', {
             params: { page, limit }
         });
         return response.data;
     },
 
     getAllContributions: async (page: number = 1, limit: number = 50, status?: string) => {
-        const response = await apiClient.get('/api/contributions/all', {
+        const response = await apiClient.get('/contributions/all', {
             params: { page, limit, status_filter: status }
         });
         return response.data;
