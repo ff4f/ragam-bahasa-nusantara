@@ -10,8 +10,8 @@ import { MapPin, Search, Info } from "lucide-react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import geoJson from "../assets/indonesia-province-38.json";
 import { Tooltip } from '@/components/ui/tooltip';
-import { getStatusColor } from '@/lib/utils';
-import { statusList } from '@/lib/constants';
+import { getStatusColor, thousandSeparator } from '@/lib/utils';
+import { RECORDED_STATUS_LIST } from '@/lib/constants';
 import { languageArchive } from '@/lib/dummy';
 import { useDebounce } from '@/hooks/use-debounce';
 
@@ -70,7 +70,7 @@ const Explore = () => {
         {/* Header */}
         <Header
           title="Eksplor Bahasa Nusantara"
-          description="Jelajahi keberagaman luar biasa dari lebih dari 700 bahasa daerah yang tersebar di seluruh kepulauan Indonesia"
+          description="Jelajahi keberagaman luar biasa dari lebih dari 700 bahasa daerah yang tersebar di di seluruh Nusantara."
         />
 
         {/* Map Section */}
@@ -94,18 +94,18 @@ const Explore = () => {
                           geography={geo}
                           style={{
                             default: {
-                              fill: selectedProvince.includes(geo.properties.province_bps_code) ? "hsl(188 65% 35%)" : "#D6D6DA",
+                              fill: selectedProvince.includes(geo.properties.province_bps_code) ? "hsl(var(--primary))" : "#D6D6DA",
                               stroke: "#FFF",
                               strokeWidth: 0.5,
                               outline: "none",
                             },
                             hover: {
-                              fill: "hsl(188 65% 35%)",
+                              fill: "hsl(var(--primary))",
                               outline: "none",
                               cursor: "pointer",
                             },
                             pressed: {
-                              fill: "hsla(188, 66%, 28%, 1.00)",
+                              fill: "hsl(var(--primary) / 0.9)",
                               outline: "none",
                             },
                           }}
@@ -145,7 +145,7 @@ const Explore = () => {
                       <SelectValue placeholder="Pilih Status" />
                     </SelectTrigger>
                     <SelectContent>
-                      {statusList.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
+                      {RECORDED_STATUS_LIST.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
@@ -168,7 +168,7 @@ const Explore = () => {
                     <div className="mb-2 flex items-start justify-between">
                       <CardTitle className="text-xl">{language.name}</CardTitle>
                       <Badge className={getStatusColor(language.status)}>
-                        {statusList.find(item => item.id === language.status)?.name || ""}
+                        {RECORDED_STATUS_LIST.find(item => item.id === language.status)?.name || ""}
                       </Badge>
                     </div>
                   )}
@@ -191,15 +191,15 @@ const Explore = () => {
 
                   <div className="mb-4 grid grid-cols-3 gap-2 rounded-lg bg-muted/30 p-3">
                     <div className="text-center">
-                      <div className="text-lg font-bold text-primary">{language.vocabularyCount}</div>
+                      <div className="text-lg font-bold text-primary">{thousandSeparator(language.vocabularyCount)}</div>
                       <div className="text-xs text-muted-foreground">Kosakata</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-primary">{language.audioCount}</div>
+                      <div className="text-lg font-bold text-primary">{thousandSeparator(language.audioCount)}</div>
                       <div className="text-xs text-muted-foreground">Audio</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-primary">{language.contributorCount}</div>
+                      <div className="text-lg font-bold text-primary">{thousandSeparator(language.contributorCount)}</div>
                       <div className="text-xs text-muted-foreground">Kontributor</div>
                     </div>
                   </div>

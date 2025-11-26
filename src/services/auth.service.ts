@@ -19,6 +19,12 @@ export interface User {
     role: 'contributor' | 'validator';
     is_active: boolean;
     created_at: string;
+    // Gamification fields - may not be returned by backend initially
+    points?: number;
+    coins?: number;
+    badges?: any[];
+    level?: number;
+    nextLevel?: number;
 }
 
 export interface TokenResponse {

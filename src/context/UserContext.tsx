@@ -4,7 +4,7 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { STORAGE_USER_KEY } from "@/lib/constants";
+import { STORAGE_KEY } from "@/lib/constants";
 import authService from "@/services/auth.service";
 
 export interface User {
@@ -14,14 +14,18 @@ export interface User {
   role: 'contributor' | 'validator';
   is_active: boolean;
   created_at: string;
-  // Legacy fields for compatibility with existing components
+  // Stats and gamification fields - optional as backend may not return them initially
+  points?: number;
+  coins?: number;
+  badges?: any[];
+  level?: number;
+  nextLevel?: number;
+  // Legacy/optional fields for compatibility
   data?: string;
   xp?: number;
-  badges?: any[];
   validationCount?: number;
   accuracy?: number;
   avatar?: string;
-  level?: number;
   nextXp?: number;
 }
 
@@ -57,9 +61,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
   // Persist to localStorage whenever user changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(user));
+      localStorage.setItem(STORAGE_KEY.USER, JSON.stringify(user));
     } else {
-      localStorage.removeItem(STORAGE_USER_KEY);
+      localStorage.removeItem(STORAGE_KEY.USER);
     }
   }, [user]);
 
@@ -70,7 +74,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       console.error("Logout error:", error);
     } finally {
       setUser(null);
-      localStorage.removeItem(STORAGE_USER_KEY);
+      localStorage.removeItem(STORAGE_KEY.USER);
     }
   };
 
@@ -78,7 +82,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     if (user) {
       const updatedUser = { ...user, ...data };
       setUser(updatedUser);
-      localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(updatedUser));
+      localStorage.setItem(STORAGE_KEY.USER, JSON.stringify(updatedUser));
     }
   };
 

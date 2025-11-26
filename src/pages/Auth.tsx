@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip } from "@/components/ui/tooltip";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
@@ -19,6 +21,9 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const ShowPasswordIcon = showPassword ? EyeOff : Eye;
 
   useEffect(() => {
     if (user) {
@@ -126,7 +131,7 @@ const Auth = () => {
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
+                  <Label htmlFor="login-email">Pos-el (<i>e-mail</i>)</Label>
                   <Input
                     id="login-email"
                     type="email"
@@ -138,16 +143,26 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={isLoading}
-                  />
+                  <Label htmlFor="login-password">Kata Sandi</Label>
+                  <div className="relative">
+                    <Input
+                      id="login-password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      disabled={isLoading}
+                    />
+                    <div className="absolute right-3 top-[50%] -translate-y-[50%]">
+                      <Tooltip label={`${showPassword ? "Sembunyikan" : "Lihat"} Kata Sandi`}>
+                        <ShowPasswordIcon
+                          className="cursor-pointer text-foreground/60"
+                          onClick={() => setShowPassword(!showPassword)}
+                        />
+                      </Tooltip>
+                    </div>
+                  </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Memproses..." : "Masuk"}
@@ -164,7 +179,7 @@ const Auth = () => {
                       <SelectValue placeholder="Pilih peran yang diinginkan" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="contributor">Contributor</SelectItem>
+                      <SelectItem value="contributor">Kontributor</SelectItem>
                       <SelectItem value="validator">Validator</SelectItem>
                     </SelectContent>
                   </Select>
@@ -182,7 +197,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
+                  <Label htmlFor="signup-email">Pos-el (<i>e-mail</i>)</Label>
                   <Input
                     id="signup-email"
                     type="email"
@@ -194,17 +209,27 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
-                  <Input
-                    id="signup-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                    disabled={isLoading}
-                  />
+                  <Label htmlFor="signup-password">Kata Sandi</Label>
+                  <div className="relative">
+                    <Input
+                      id="signup-password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      minLength={6}
+                      disabled={isLoading}
+                    />
+                    <div className="absolute right-3 top-[50%] -translate-y-[50%]">
+                      <Tooltip label={`${showPassword ? "Sembunyikan" : "Lihat"} Kata Sandi`}>
+                        <ShowPasswordIcon
+                          className="cursor-pointer text-foreground/60"
+                          onClick={() => setShowPassword(!showPassword)}
+                        />
+                      </Tooltip>
+                    </div>
+                  </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Memproses..." : "Daftar"}

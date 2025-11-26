@@ -8,23 +8,37 @@ import {
   Globe,
   Heart,
   TrendingUp,
+  Mail,
+  MapPin,
+  Phone,
+  MessageCircle,
+  Target,
+  Eye,
+  Sparkles,
 } from "lucide-react";
 
-export const STORAGE_USER_KEY = 'rana_user';
+export const STORAGE_KEY = {
+  USER: "rana_user",
+  QUIZ: "rana_quiz",
+};
+export const MOBILE_BREAKPOINT = 768;
+export const TOAST_LIMIT = 1;
+export const TOAST_REMOVE_DELAY = 1000000;
+export const HOME_ANIMATION_DELAY = 2;
 
-export const navLinks = [
+export const NAV_LINKS = [
   { to: "/", label: "Beranda", show: true },
-  { to: "/about", label: "Tentang", show: true },
-  // { to: "/learn", label: "Belajar", show: true },
-  { to: "/explore", label: "Eksplor", show: true },
-  { to: "/dictionary", label: "Kamus", show: true },
-  { to: "/missions", label: "Misi", show: false },
   { to: "/contribute", label: "Kontribusi", show: true },
   { to: "/validate", label: "Validasi", show: false },
+  { to: "/missions", label: "Misi", show: false },
+  { to: "/explore", label: "Eksplor", show: true },
+  { to: "/dictionary", label: "Kamus", show: true },
+  { to: "/game", label: "Permainan", show: true },
+  { to: "/about", label: "Tentang", show: true },
   { to: "/contact", label: "Kontak", show: true },
 ];
 
-export const featuresHome = [
+export const HOME_FEATURES = [
   {
     icon: BookOpen,
     title: "Arsip Bahasa Interaktif",
@@ -42,7 +56,7 @@ export const featuresHome = [
   },
   {
     icon: Heart,
-    title: "Micro-Learning & Gamifikasi",
+    title: <span><i>Micro-Learning</i> & Gamifikasi</span>,
     description: "Kartu kosakata visual, tantangan harian, kuis interaktif, dan audio dari penutur asli",
   },
   {
@@ -57,26 +71,26 @@ export const featuresHome = [
   },
 ];
 
-export const statsHome = [
+export const HOME_STATS = [
   { value: "700+", label: "Bahasa Daerah" },
   { value: "10K+", label: "Kontributor Aktif" },
   { value: "100K+", label: "Kosakata" },
   { value: "50K+", label: "Rekaman Suara" },
 ];
 
-export const statusList = [
+export const RECORDED_STATUS_LIST = [
   { id: "all", name: "Semua Status" },
   { id: "recorded", name: "Sudah Tercatat" },
   { id: "not_recorded", name: "Belum Tercatat" },
 ];
 
-export const verifiedStatusList = [
+export const VERIFIED_STATUS_LIST = [
   { id: "all", name: "Semua Status" },
   { id: "verified", name: "Sudah Terverifikasi" },
   { id: "not_verified", name: "Belum Terverifikasi" },
 ];
 
-export const contributionTypes = [
+export const CONTRIBUTION_TYPES = [
   {
     icon: FileText,
     title: "Menambahkan Data Baru",
@@ -85,7 +99,7 @@ export const contributionTypes = [
   },
   {
     icon: Mic,
-    title: "Upload Sample Audio Dialek",
+    title: "Unggah Sample Audio Dialek",
     description: "Kontributor mengunggah rekaman suara untuk mengilustrasikan pengucapan dialek tertentu.",
     benefits: ["Pelatihan model TTS", "Memperkaya dialek tertentu"],
   },
@@ -99,7 +113,57 @@ export const contributionTypes = [
     icon: Flag,
     title: "Melaporkan Data yang Salah",
     description: "Pengguna umum dapat melaporkan data yang dianggap tidak relevan, keliru, atau menyesatkan.",
-    benefits: ["Flagging konten bermasalah", "Koreksi makna atau penulisan"],
+    benefits: [<span><i>Flagging</i> konten bermasalah</span>, "Koreksi makna atau penulisan"],
+  },
+];
+
+export const ABOUT_FEATURES = [
+  {
+    icon: Target,
+    title: "Misi Kami",
+    description: "Melestarikan dan menghidupkan kembali bahasa daerah Indonesia melalui teknologi AI dan kolaborasi komunitas, menciptakan ekosistem digital yang berkelanjutan untuk warisan budaya Nusantara.",
+  },
+  {
+    icon: Eye,
+    title: "Visi Kami",
+    description: "Menjadi platform pelestarian bahasa terdepan di Indonesia, di mana setiap bahasa daerah memiliki tempat di era digital dan generasi muda bangga untuk belajar dan menggunakan bahasa leluhur mereka.",
+  },
+  {
+    icon: Users,
+    title: "Pendekatan Kolaboratif",
+    description: "Menggabungkan kearifan penutur asli, kreativitas kreator konten, dan kekuatan teknologi AI untuk menciptakan pengalaman belajar yang autentik dan menarik.",
+  },
+  {
+    icon: Sparkles,
+    title: "Inovasi Digital",
+    description: <span>Memanfaatkan <i>AI voice dataset</i>, pembelajaran interaktif, dan ekonomi kreatif untuk memberikan nilai nyata bagi pelestari bahasa dan komunitas lokal.</span>,
+  },
+];
+
+export const CONTACT_INFO = [
+  {
+    icon: Mail,
+    title: <span>Pos-el (<i>e-mail</i>)</span>,
+    value: "hello@rana.id",
+    description: <span>Kirim pos-el (<i>e-mail</i>) untuk pertanyaan umum</span>,
+  },
+  {
+    icon: Phone,
+    title: "Telepon",
+    value: "+62 812-3456-7890",
+    description: "Senin - Jumat, 09:00 - 17:00 WIB",
+  },
+  {
+    icon: MapPin,
+    title: "Alamat",
+    value: "Jakarta, Indonesia",
+    description: "Kantor pusat RANA",
+  },
+  {
+    icon: MessageCircle,
+    title: "Forum Komunitas",
+    value: "forum.rana.id",
+    description: "Diskusi dengan sesama anggota",
   },
 ];
 

@@ -1,31 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/components/Header";
-import { Target, Eye, Users, Sparkles } from "lucide-react";
+import { ABOUT_FEATURES } from "@/lib/constants";
 
 const About = () => {
-  const values = [
-    {
-      icon: Target,
-      title: "Misi Kami",
-      description: "Melestarikan dan menghidupkan kembali bahasa daerah Indonesia melalui teknologi AI dan kolaborasi komunitas, menciptakan ekosistem digital yang berkelanjutan untuk warisan budaya Nusantara.",
-    },
-    {
-      icon: Eye,
-      title: "Visi Kami",
-      description: "Menjadi platform pelestarian bahasa terdepan di Indonesia, di mana setiap bahasa daerah memiliki tempat di era digital dan generasi muda bangga untuk belajar dan menggunakan bahasa leluhur mereka.",
-    },
-    {
-      icon: Users,
-      title: "Pendekatan Kolaboratif",
-      description: "Menggabungkan kearifan penutur asli, kreativitas kreator konten, dan kekuatan teknologi AI untuk menciptakan pengalaman belajar yang autentik dan menarik.",
-    },
-    {
-      icon: Sparkles,
-      title: "Inovasi Digital",
-      description: "Memanfaatkan AI voice dataset, pembelajaran interaktif, dan ekonomi kreatif untuk memberikan nilai nyata bagi pelestari bahasa dan komunitas lokal.",
-    },
-  ];
-
   return (
     <div className="py-16">
       <div className="container mx-auto px-4">
@@ -45,20 +22,7 @@ const About = () => {
                 </h2>
                 <div className="space-y-4 text-muted-foreground">
                   <p>
-                    Indonesia adalah rumah bagi lebih dari 700 bahasa daerah, menjadikannya salah satu 
-                    negara dengan keberagaman linguistik tertinggi di dunia. Namun, banyak dari bahasa-bahasa 
-                    ini menghadapi risiko kepunahan karena dominasi bahasa nasional dan kurangnya dokumentasi digital.
-                  </p>
-                  <p>
-                    RANA (Ragam Bahasa Nusantara) lahir dari keprihatinan dan kecintaan terhadap kekayaan budaya Indonesia. 
-                    Kami percaya bahwa setiap bahasa adalah jendela unik untuk memahami dunia, dan kehilangan 
-                    satu bahasa berarti kehilangan cara berpikir, bercerita, dan memahami alam yang tidak dapat 
-                    digantikan.
-                  </p>
-                  <p>
-                    Dengan menggabungkan teknologi AI terkini, metode pembelajaran interaktif, dan kekuatan 
-                    kolaborasi komunitas, kami menciptakan ekosistem digital yang tidak hanya mendokumentasikan 
-                    bahasa, tetapi juga menghidupkannya kembali dalam kehidupan sehari-hari generasi muda.
+                    Lebih dari 40% bahasa Nusantara terancam punah. Kondisi ini diperburuk oleh dokumentasi yang tidak terpusat dan belum terdigitalisasi, rendahnya minat generasi muda karena media pembelajaran yang kurang relevan, serta program revitalisasi yang terbatas pada daftar kosakata tanpa platform interaktif. Belum ada pusat data nasional yang menyatukan berbagai sumber, meskipun Balai Bahasa provinsi telah menghasilkan banyak data seperti kosakata, rekaman, dan glosarium. Tanpa digitalisasi berbasis komunitas, bahasa Nusantara berisiko punah dalam 1–2 generasi.
                   </p>
                 </div>
               </CardContent>
@@ -78,7 +42,7 @@ const About = () => {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            {values.map((value, index) => (
+            {ABOUT_FEATURES.map((value, index) => (
               <Card key={index} className="border-border shadow-soft transition-all hover:shadow-warm">
                 <CardContent className="p-6">
                   <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-3">
@@ -110,7 +74,7 @@ const About = () => {
                   <ul className="ml-6 list-disc space-y-2">
                     <li>
                       <strong className="text-foreground">AI Voice Dataset:</strong> Rekaman suara penutur asli 
-                      menjadi aset berharga untuk pengembangan teknologi speech recognition dan text-to-speech
+                      menjadi aset berharga untuk pengembangan teknologi <i>speech recognition</i> dan <i>text-to-speech</i>
                     </li>
                     <li>
                       <strong className="text-foreground">Konten Kreatif:</strong> Kreator budaya dapat 

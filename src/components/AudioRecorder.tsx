@@ -76,7 +76,7 @@ export const AudioRecorder = ({ onSave, showButtonSave, reset, disabled }: Audio
             )}
 
             {audioURL && !isRecording && (
-              <div className="flex flex-col items-center gap-4 w-full min-w-80">
+              <div className="flex flex-col items-center gap-4 w-full">
                 <audio src={audioURL} controls className="w-full" />
                 <div className="flex gap-2">
                   {showButtonSave && onSave && (

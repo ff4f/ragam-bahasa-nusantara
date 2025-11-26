@@ -12,7 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { leaderboard } from "@/lib/dummy";
 import { INITIAL_FORM_CONTRIBUTION } from "@/lib/constants";
-import { validateForm } from "@/lib/utils";
+import { validateForm, thousandSeparator } from "@/lib/utils";
+import { mockRecordings } from "@/lib/dummy";
 import moment from "moment";
 import { contributionService, Contribution } from "@/services/contribution.service";
 
@@ -251,9 +252,9 @@ const ContributeLoggedIn = () => {
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Form</CardTitle>
+                <CardTitle>Formulir</CardTitle>
                 <CardDescription>
-                  Lengkapi semua field kontribusi yang diperlukan
+                  Lengkapi semua kolom kontribusi yang diperlukan
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -280,16 +281,16 @@ const ContributeLoggedIn = () => {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Total XP</span>
-                    <span className="font-bold text-primary">{user.xp ?? 0}</span>
+                    <span className="text-sm text-muted-foreground">Total Poin</span>
+                    <span className="font-bold text-primary">{thousandSeparator(user.points || 0)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Level</span>
-                    <span className="font-medium">{user.level ?? 1}</span>
+                    <span className="text-sm text-muted-foreground">Tingkat</span>
+                    <span className="font-medium">{thousandSeparator(user.level || 1)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Badge</span>
-                    <span className="font-medium">{user.badges?.length ?? 0}</span>
+                    <span className="text-sm text-muted-foreground">Lencana</span>
+                    <span className="font-medium">{thousandSeparator(user.badges?.length || 0)}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -299,7 +300,7 @@ const ContributeLoggedIn = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Kontributor Teratas</CardTitle>
-                <CardDescription>Peringkat berdasarkan XP minggu ini</CardDescription>
+                <CardDescription>Peringkat berdasarkan Poin minggu ini</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -318,8 +319,8 @@ const ContributeLoggedIn = () => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold">{contributor.xp}</p>
-                        <p className="text-xs text-muted-foreground">XP</p>
+                        <p className="text-sm font-bold">{thousandSeparator(contributor.points)}</p>
+                        <p className="text-xs text-muted-foreground">Poin</p>
                       </div>
                     </div>
                   ))}

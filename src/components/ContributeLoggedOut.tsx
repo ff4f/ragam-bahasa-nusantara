@@ -1,15 +1,14 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Header from "./Header";
 import { Award, Sparkles } from "lucide-react";
-import { contributionTypes } from "@/lib/constants";
+import { CONTRIBUTION_TYPES } from "@/lib/constants";
 import { leaderboard } from "@/lib/dummy";
+import { thousandSeparator } from "@/lib/utils";
 
 const ContributeLoggedOut = () => {
   const navigate = useNavigate();
-  const [selectedContribution, setSelectedContribution] = useState<string | null>(null);
 
   return (
     <div className="py-16">
@@ -29,7 +28,7 @@ const ContributeLoggedOut = () => {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            {contributionTypes.map((type, index) => (
+            {CONTRIBUTION_TYPES.map((type, index) => (
               <Card key={index} className="border-border shadow-soft transition-all hover:shadow-warm flex overflow-hidden">
                 <div className="bg-primary/10 py-8 px-6 flex-1 flex justify-center">
                   <type.icon className="h-12 w-12 text-primary" />
@@ -105,9 +104,9 @@ const ContributeLoggedOut = () => {
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-bold text-primary">
-                        {contributor.xp}
+                        {thousandSeparator(contributor.points)}
                       </div>
-                      <div className="text-xs text-muted-foreground">XP</div>
+                      <div className="text-xs text-muted-foreground">Poin</div>
                     </div>
                   </div>
                 ))}
