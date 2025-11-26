@@ -1,7 +1,8 @@
 import os
 import glob
 from typing import Optional
-import pymysql
+from sqlalchemy import text
+from ..database import engine
 
 def get_audio_url(entry_id: int, target_text: str) -> Optional[str]:
     """Find audio file for dictionary entry using strict naming convention"""
@@ -23,26 +24,24 @@ def get_audio_url(entry_id: int, target_text: str) -> Optional[str]:
 
 def populate_audio_urls():
     """Populate audio_url field for all existing dictionary entries"""
-    conn = pymysql.connect(
-        host="localhost",
-        user="rbnuser",
-        password="devpassword123",
-        database="ragam_bahasa_db"
-    )
     
     try:
-        with conn.cursor() as cursor:
-            # Get all entry IDs and target_text
-            cursor.execute("SELECT id, target_text FROM dictionaries")
-            entries = cursor.fetchall()
+        with engine.connect() as conn:
+            # Get all entries
+            result = conn.execute(text("SELECT id, target_text FROM dictionaries"))
+            entries = result.fetchall()
             updated_count = 0
             
-            for (entry_id, target_text) in entries:
+            for row in entries:
+                entry_id = row[0]
+                target_text = row[1]
                 audio_url = get_audio_url(entry_id, target_text)
+                
                 if audio_url:
-                    cursor.execute(
-                        "UPDATE dictionaries SET audio_url = %s WHERE id = %s",
-                        (audio_url, entry_id)
+                    # Update using SQL
+                    conn.execute(
+                        text("UPDATE dictionaries SET audio_url = :audio_url WHERE id = :id"),
+                        {"audio_url": audio_url, "id": entry_id}
                     )
                     updated_count += 1
             
@@ -51,10 +50,9 @@ def populate_audio_urls():
         
     except Exception as e:
         print(f"❌ Error populating audio URLs: {e}")
-        conn.rollback()
-    finally:
-        conn.close()
+        raise
 
 if __name__ == "__main__":
     populate_audio_urls()
+
 
