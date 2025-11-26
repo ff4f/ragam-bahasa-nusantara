@@ -8,6 +8,7 @@ from .database import init_db, SessionLocal
 from .routers import auth_router, user_router, contact_router, dictionary_router, interaction_router, contribution_router
 from .utils.seeder import seed_dictionaries
 from .utils.seed_csv import seed_ngapak
+from fastapi.staticfiles import StaticFiles
 from .utils.db_migrations import ensure_audio_column, ensure_user_gamification_columns
 from .utils.populate_audio import populate_audio_urls
 
@@ -20,6 +21,9 @@ app = FastAPI(
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json"
 )
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Startup event - initialize database and seed data
 @app.on_event("startup")

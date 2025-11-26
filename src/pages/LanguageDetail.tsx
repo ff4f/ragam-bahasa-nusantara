@@ -21,6 +21,7 @@ import { vocabulary, comments } from "@/lib/dummy";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { dictionaryService } from "@/services/dictionary.service";
+import { API_URL } from "@/services/api";
 import { useDebounce } from "@/hooks/use-debounce";
 import FormContribution from "@/components/FormContribution";
 import PaginationComponent from "@/components/Pagination";
@@ -134,7 +135,7 @@ const LanguageDetail = () => {
             comment: item.comment_count || 0,
             liked: item.is_liked || false,
             created_by: "system",
-            audio_url: item.audio_url
+            audio_url: item.audio_url ? `${API_URL.replace('/api', '')}${item.audio_url}` : null
           }));
           setVocabs(mappedVocabs);
           // Calculate total pages from API response

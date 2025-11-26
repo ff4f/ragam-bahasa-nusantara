@@ -82,10 +82,22 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 **Settings → Source:**
 - **Root Directory**: `/` (leave empty or put `/`)
 
-**Railway auto-detects:**
-- Build command from `package.json`: `npm run build`
+**✅ Already configured in code:**
+- Build command: `npm run build` (from `railway.json`)
+- Start command: `npm start` (serves with SPA routing support)
 - Output directory: `dist/`
-- Serve static files automatically
+
+**⚠️ CRITICAL: SPA Routing Fix**
+
+Project sudah include fix untuk SPA routing:
+- `package.json`: Script `start` menggunakan `http-server` dengan `--proxy` flag
+- `railway.json`: Configuration untuk Railway buildpack
+- `.railwayignore`: Prevent build artifacts dari di-upload
+
+Fix ini mengatasi masalah:
+- ✅ 404 error pada routes (/about, /auth, dll)
+- ✅ Missing asset files
+- ✅ Inconsistent builds
 
 ### Step 3: Set Environment Variable (Optional)
 
@@ -192,6 +204,19 @@ GitLab CI/CD already configured:
 - **Check:** `package.json` and `package-lock.json` are committed
 - **Check:** Node version compatible
 - **Fix:** Check build logs
+
+**Problem:** 404 Error on Routes (/about, /auth, etc) - SPA Routing**
+- **Cause:** http-server default tidak support SPA routing
+- **Fix:** ✅ Sudah diatasi dengan:
+  - `package.json` → `start` script menggunakan `--proxy` flag
+  - `railway.json` → Config start command
+- **Verify:**
+  ```bash
+  # Test locally
+  npm run build
+  npm start
+  # Buka http://localhost:8080/about (seharusnya tidak 404)
+  ```
 
 **Problem:** Blank page after deploy
 - **Check:** Build output directory is `dist/`

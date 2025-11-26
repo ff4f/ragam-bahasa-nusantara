@@ -8,14 +8,15 @@ def get_audio_url(entry_id: int, target_text: str) -> Optional[str]:
     """Find audio file for dictionary entry using strict naming convention"""
     # Get project root (parent of backend dir)
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.abspath(os.path.join(script_dir, "../../../"))
-    audio_dir = os.path.join(project_root, "public/audio")
+    # backend/app/utils -> backend/app -> backend -> backend/static/audio
+    # script_dir is .../backend/app/utils
+    # we want .../backend/static/audio
+    audio_dir = os.path.abspath(os.path.join(script_dir, "../../static/audio"))
     
     # DEBUG: Print paths to debug Railway issue
     if entry_id == 1:
         print(f"🔍 Debug Path Resolution:")
         print(f"   Script Dir: {script_dir}")
-        print(f"   Project Root: {project_root}")
         print(f"   Audio Dir: {audio_dir}")
         print(f"   Audio Dir Exists? {os.path.exists(audio_dir)}")
         if os.path.exists(audio_dir):
@@ -30,8 +31,8 @@ def get_audio_url(entry_id: int, target_text: str) -> Optional[str]:
     pattern = f"{audio_dir}/{entry_id}_{safe_word}_*.m4a"
     matches = glob.glob(pattern)
     if matches:
-        # Return relative URL path for frontend
-        return f"/audio/{os.path.basename(matches[0])}"
+        # Return relative URL path for frontend (served via /static mount)
+        return f"/static/audio/{os.path.basename(matches[0])}"
     return None
 
 def populate_audio_urls():

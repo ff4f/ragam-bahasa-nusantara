@@ -1,0 +1,165 @@
+╔═══════════════════════════════════════════════════════════════════╗
+║                  RANA MONOLITH - CHEAT SHEET                      ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🚀 QUICK START                                                  │
+└─────────────────────────────────────────────────────────────────┘
+
+# Paling Mudah (Interactive Menu)
+./dev-helper.sh
+
+# Start All Services
+./run-monolith.sh
+
+# Check Status
+./status-monolith.sh
+
+# Stop All Services
+./stop-monolith.sh
+
+# Restart
+./restart-monolith.sh
+
+# View Logs
+./view-logs.sh
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 📍 ACCESS POINTS                                                │
+└─────────────────────────────────────────────────────────────────┘
+
+Frontend:    http://localhost:5173
+Backend:     http://localhost:8000
+API Docs:    http://localhost:8000/api/docs
+MySQL:       localhost:3306
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎯 SERVICE PRIORITY                                             │
+└─────────────────────────────────────────────────────────────────┘
+
+1. MySQL Database     (Port 3306) ← Must start first
+   ↓
+2. Backend API        (Port 8000) ← Needs MySQL
+   ↓
+3. Frontend           (Port 5173) ← Needs Backend
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 📋 LOG FILES                                                    │
+└─────────────────────────────────────────────────────────────────┘
+
+# View Backend Logs
+tail -f logs/backend.log
+
+# View Frontend Logs
+tail -f logs/frontend.log
+
+# View Both
+tail -f logs/backend.log logs/frontend.log
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🔧 TROUBLESHOOTING                                              │
+└─────────────────────────────────────────────────────────────────┘
+
+# Kill Port 8000 (Backend)
+kill $(lsof -ti:8000)
+
+# Kill Port 5173 (Frontend)
+kill $(lsof -ti:5173)
+
+# Check MySQL Status
+brew services list | grep mysql
+
+# Restart MySQL
+brew services restart mysql
+
+# Test Database Connection
+mysql -u rbnuser -p ragam_bahasa_db
+
+# Reinstall Backend Dependencies
+cd backend && source .venv/bin/activate && pip install -r requirements.txt
+
+# Reinstall Frontend Dependencies
+rm -rf node_modules && npm install
+
+┌─────────────────────────────────────────────────────────────────┐
+│ ❤️  HEALTH CHECKS                                               │
+└─────────────────────────────────────────────────────────────────┘
+
+# Backend Health
+curl http://localhost:8000/health
+
+# Frontend Accessible
+curl -I http://localhost:5173
+
+# Check All Services
+./status-monolith.sh
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 📂 FILE STRUCTURE                                               │
+└─────────────────────────────────────────────────────────────────┘
+
+run-monolith.sh          → Start all services
+stop-monolith.sh         → Stop all services
+restart-monolith.sh      → Restart all services
+status-monolith.sh       → Check status
+view-logs.sh             → View logs (interactive)
+dev-helper.sh            → Interactive menu (recommended!)
+
+logs/
+  ├── backend.log        → Backend logs
+  └── frontend.log       → Frontend logs
+
+pids/
+  ├── backend.pid        → Backend process ID
+  └── frontend.pid       → Frontend process ID
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 💡 TIPS                                                         │
+└─────────────────────────────────────────────────────────────────┘
+
+1. Always use ./dev-helper.sh for easiest experience
+2. Check status before debugging: ./status-monolith.sh
+3. View logs for errors: tail -f logs/*.log
+4. MySQL must be running before backend
+5. Backend must be running before frontend
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🆘 EMERGENCY COMMANDS                                           │
+└─────────────────────────────────────────────────────────────────┘
+
+# Kill Everything
+./stop-monolith.sh
+kill $(lsof -ti:8000)
+kill $(lsof -ti:5173)
+
+# Clean Restart
+./stop-monolith.sh
+rm -rf pids/*.pid
+./run-monolith.sh
+
+# Reset Logs
+rm -rf logs/*.log
+./restart-monolith.sh
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 📚 DOCUMENTATION                                                │
+└─────────────────────────────────────────────────────────────────┘
+
+Quick Start:     cat QUICK_START_MONOLITH.md
+Full Docs:       cat MONOLITH_DEPLOYMENT.md
+This Cheat:      cat CHEATSHEET.txt
+Scripts Info:    cat README_SCRIPTS.md
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 🎓 ALIASES (Add to ~/.zshrc or ~/.bash_profile)                │
+└─────────────────────────────────────────────────────────────────┘
+
+alias rana-start='./run-monolith.sh'
+alias rana-stop='./stop-monolith.sh'
+alias rana-status='./status-monolith.sh'
+alias rana-dev='./dev-helper.sh'
+alias rana-logs='./view-logs.sh'
+
+╔═══════════════════════════════════════════════════════════════════╗
+║              Happy Coding! 🎉                                     ║
+╚═══════════════════════════════════════════════════════════════════╝
