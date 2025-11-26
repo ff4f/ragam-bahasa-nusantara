@@ -72,6 +72,7 @@ const Explore = () => {
                               stroke: "#FFF",
                               strokeWidth: 0.5,
                               outline: "none",
+                              transition: "fill 0.3s ease, transform 0.3s ease",
                             },
                             hover: {
                               fill: "hsl(var(--primary))",
@@ -134,7 +135,7 @@ const Explore = () => {
             {filteredLanguages.map((language, index) => (
               <Card
                 key={index}
-                className={`border-border shadow-soft transition-all hover:shadow-warm ${language?.status === "recorded" ? "cursor-pointer" : "cursor-default opacity-50"}`}
+                className={`border-border shadow-soft transition ${language?.status === "recorded" ? "cursor-pointer hover:scale-[1.03] hover:shadow-xl" : "cursor-default opacity-50"}`}
                 onClick={() => language?.status === "recorded" && navigate(`/explore/${encodeURIComponent(language.id)}`, { state: { language } })}
               >
                 <CardHeader>

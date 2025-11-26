@@ -159,7 +159,7 @@ export const CONTACT_INFO = [
     icon: Phone,
     title: "Telepon",
     value: "+62 812-3456-7890",
-    description: "Senin - Jumat, 09:00 - 17:00 WIB",
+    description: "Senin-Jumat, 09:00-17:00 WIB",
   },
   {
     icon: MapPin,

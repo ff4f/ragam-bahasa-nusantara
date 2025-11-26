@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, User as UserIcon, LogOut } from "lucide-react";
+import { X, User as UserIcon, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -17,9 +17,10 @@ import { NAV_LINKS, HOME_ANIMATION_DELAY } from "@/lib/constants";
 import { getInitials } from "@/lib/utils";
 import { useUser } from "@/hooks/use-user";
 import { useApps } from "@/hooks/use-apps";
-import { motion, useAnimationControls } from "motion/react";
+import { motion, useAnimationControls, AnimatePresence } from "motion/react";
 import logo from "@/assets/logo-rana.svg";
 import fab from "@/assets/fab-icon.svg";
+import HamburgerButton from "./HamburgerButton";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -142,76 +143,81 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </motion.div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
+          <HamburgerButton className="md:hidden" isOpen={mobileMenuOpen} toggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
         </nav>
 
         {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="border-t border-border bg-background md:hidden">
-            <div className="container mx-auto space-y-1 px-4 py-4">
-              {menus.map((link) => link.show && (
-                <NavLink
-                  key={link.to}
-                  to={link.to}
-                  className="block rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  activeClassName="bg-primary/10 text-primary"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </NavLink>
-              ))}
-              {user ? (
-                <>
-                  <div className="border-t border-border pt-4">
-                    <div className="mb-3 flex items-center gap-3 px-4">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src="" />
-                        <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium">{user.name}</p>
-                        <p className="text-xs text-muted-foreground">{user.email}</p>
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ scaleY: 0, transformOrigin: "top" }}
+              animate={{ scaleY: 1 }}
+              exit={{ scaleY: 0, transformOrigin: "top", transition: { delay: 0.5 } }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="border-t border-border bg-background md:hidden absolute left-0 right-0 border-b"
+            >
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { delay: 0.5 } }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="container mx-auto space-y-1 px-4 py-4"
+              >
+                {menus.map((link) => link.show && (
+                  <NavLink
+                    key={link.to}
+                    to={link.to}
+                    className="block rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    activeClassName="bg-primary/10 text-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </NavLink>
+                ))}
+                {user ? (
+                  <>
+                    <div className="border-t border-border pt-4">
+                      <div className="mb-3 flex items-center gap-3 px-4">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src="" />
+                          <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm font-medium">{user.name}</p>
+                          <p className="text-xs text-muted-foreground">{user.email}</p>
+                        </div>
                       </div>
+                      <NavLink
+                        to="/profile"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        <UserIcon className="mr-2 inline-block h-4 w-4" />
+                        Profil
+                      </NavLink>
+                      <button
+                        onClick={() => {
+                          handleLogout();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="w-full rounded-lg px-4 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        <LogOut className="mr-2 inline-block h-4 w-4" />
+                        Keluar
+                      </button>
                     </div>
-                    <NavLink
-                      to="/profile"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    >
-                      <UserIcon className="mr-2 inline-block h-4 w-4" />
-                      Profil
-                    </NavLink>
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="w-full rounded-lg px-4 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    >
-                      <LogOut className="mr-2 inline-block h-4 w-4" />
-                      Keluar
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <NavLink to="/auth" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="mt-2 w-full bg-gradient-hero">
-                    Masuk
-                  </Button>
-                </NavLink>
-              )}
-            </div>
-          </div>
-        )}
+                  </>
+                ) : (
+                  <NavLink to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                    <Button className="mt-2 w-full bg-gradient-hero">
+                      Masuk
+                    </Button>
+                  </NavLink>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.header>
 
       <main>{children}</main>
@@ -260,19 +266,27 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </div>
       </footer>
 
-      {showFAB && (
-        <div className="fixed bottom-6 right-10 max-w-40 z-50">
-          <Link to="/contribute">
-            <img src={fab} alt="FAB" className="drop-shadow-lg cursor-pointer" />
-          </Link>
-          <div
-            className="rounded-[50%] bg-primary w-fit p-1 cursor-pointer absolute -top-4 right-0 opacity-70"
-            onClick={() => setShowFAB(false)}
+      <AnimatePresence>
+        {showFAB && (
+          <motion.div
+            initial={{ y: "150%" }}
+            animate={{ y: 0, transition: { delay: HOME_ANIMATION_DELAY + 2 } }}
+            exit={{ y: "200%" }}
+            transition={{ duration: 0.25, type: "spring", stiffness: 1000, damping: 15 }}
+            className="fixed bottom-2 right-4  md:bottom-6 md:right-10 max-w-24 md:max-w-40 z-50"
           >
-            <X className="w-4 h-4 text-white" />
-          </div>
-        </div>
-      )}
+            <Link to="/contribute">
+              <img src={fab} alt="FAB" className="drop-shadow-lg cursor-pointer" />
+            </Link>
+            <div
+              className="rounded-[50%] bg-primary w-fit p-1 cursor-pointer absolute -top-4 right-0 opacity-70"
+              onClick={() => setShowFAB(false)}
+            >
+              <X className="w-2 h-2 md:w-4 md:h-4 text-white" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
