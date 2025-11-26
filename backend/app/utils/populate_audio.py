@@ -11,6 +11,18 @@ def get_audio_url(entry_id: int, target_text: str) -> Optional[str]:
     project_root = os.path.abspath(os.path.join(script_dir, "../../../"))
     audio_dir = os.path.join(project_root, "public/audio")
     
+    # DEBUG: Print paths to debug Railway issue
+    if entry_id == 1:
+        print(f"🔍 Debug Path Resolution:")
+        print(f"   Script Dir: {script_dir}")
+        print(f"   Project Root: {project_root}")
+        print(f"   Audio Dir: {audio_dir}")
+        print(f"   Audio Dir Exists? {os.path.exists(audio_dir)}")
+        if os.path.exists(audio_dir):
+            print(f"   Files in Audio Dir: {len(os.listdir(audio_dir))}")
+            print(f"   First 3 files: {os.listdir(audio_dir)[:3]}")
+
+    
     # Sanitize target_text to match filename format
     safe_word = target_text.lower().replace(' ', '-').replace('/', '-')
     

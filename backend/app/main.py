@@ -8,7 +8,7 @@ from .database import init_db, SessionLocal
 from .routers import auth_router, user_router, contact_router, dictionary_router, interaction_router, contribution_router
 from .utils.seeder import seed_dictionaries
 from .utils.seed_csv import seed_ngapak
-from .utils.db_migrations import ensure_audio_column
+from .utils.db_migrations import ensure_audio_column, ensure_user_gamification_columns
 from .utils.populate_audio import populate_audio_urls
 
 # Create FastAPI application
@@ -30,6 +30,8 @@ async def startup_event():
     
     # Ensure audio_url column exists (backwards compatibility)
     ensure_audio_column()
+    # Ensure gamification columns exist (backwards compatibility)
+    ensure_user_gamification_columns()
     
     # Seed initial data
     db = SessionLocal()
