@@ -683,7 +683,7 @@ export const QUIZ_ITEMS_LEVEL_1 = [
     id: "1",
     indonesia: "makan",
     correct: "mangan",
-    question: "Sobat RANA! Silakan pasangkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    question: "Sobat RANA! Tarik dan letakkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
     options: [
       { id: "1", name: "turu", mean: "tidur" },
       { id: "2", name: "mangan", mean: "makan" },
@@ -696,7 +696,7 @@ export const QUIZ_ITEMS_LEVEL_1 = [
     id: "2",
     indonesia: "Melihat",
     correct: "Ndeleng",
-    question: "Sobat RANA! Silakan pasangkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    question: "Sobat RANA! Tarik dan letakkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
     options: [
       { id: "1", name: "Lungguh", mean: "Duduk" },
       { id: "2", name: "Turu", mean: "Tidur" },
@@ -709,7 +709,7 @@ export const QUIZ_ITEMS_LEVEL_1 = [
     id: "3",
     indonesia: "Baju",
     correct: "Klambi",
-    question: "Sobat RANA! Silakan pasangkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    question: "Sobat RANA! Tarik dan letakkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
     options: [
       { id: "1", name: "Mlaku", mean: "Berjalan" },
       { id: "2", name: "Pit", mean: "Sepeda" },
@@ -722,7 +722,7 @@ export const QUIZ_ITEMS_LEVEL_1 = [
     id: "4",
     indonesia: "Minum",
     correct: "Ngombé",
-    question: "Sobat RANA! Silakan pasangkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    question: "Sobat RANA! Tarik dan letakkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
     options: [
       { id: "1", name: "Ngombé", mean: "Minum" },
       { id: "2", name: "Mangan", mean: "Makan" },
@@ -735,7 +735,7 @@ export const QUIZ_ITEMS_LEVEL_1 = [
     id: "5",
     indonesia: "Berjalan",
     correct: "Mlaku",
-    question: "Sobat RANA! Silakan pasangkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    question: "Sobat RANA! Tarik dan letakkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
     options: [
       { id: "1", name: "Ngaso", mean: "Istirahat" },
       { id: "2", name: "Mlayu", mean: "Berlari" },
@@ -752,7 +752,7 @@ export const QUIZ_ITEMS_LEVEL_2 = [
     id: "1",
     indonesia: "Saya berdiri",
     correct: "Nyong njanggleng",
-    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Tarik dan letakkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
     options: [
       { id: "1", name: "Nyong njanggleng", mean: "Saya berdiri" },
       { id: "2", name: "Nyong lungguh", mean: "Saya duduk" },
@@ -765,7 +765,7 @@ export const QUIZ_ITEMS_LEVEL_2 = [
     id: "2",
     indonesia: "Kamu membaca",
     correct: "Koe maca",
-    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Tarik dan letakkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
     options: [
       { id: "1", name: "Koe nulis", mean: "Kamu menulis" },
       { id: "2", name: "Nyong ngombé", mean: "Saya minum" },
@@ -778,7 +778,7 @@ export const QUIZ_ITEMS_LEVEL_2 = [
     id: "3",
     indonesia: "Saya ingin pergi",
     correct: "Nyong arep lunga",
-    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Tarik dan letakkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
     options: [
       { id: "1", name: "Nyong wis mlaku", mean: "Saya sudah berjalan" },
       { id: "2", name: "Nyong arep lunga", mean: "Saya mau pergi" },
@@ -791,7 +791,7 @@ export const QUIZ_ITEMS_LEVEL_2 = [
     id: "4",
     indonesia: "Dia sudah lapar",
     correct: "Kae wis kencot",
-    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Tarik dan letakkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
     options: [
       { id: "1", name: "Nyong wis mangan", mean: "Saya sudah makan" },
       { id: "2", name: "Kae wis kencot", mean: "Dia sudah lapar" },
@@ -804,7 +804,7 @@ export const QUIZ_ITEMS_LEVEL_2 = [
     id: "5",
     indonesia: "Aku menjemputmu",
     correct: "Nyong nyamper koe",
-    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Silakan pasangkan frasa berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
+    question: "Sobat RANA! Selamat telah menyelesaikan level 1 dengan luar biasa! Tarik dan letakkan kata berikut sesuai dengan bahasa ngapaknya! Kalian yang berhasil memasangkan kata dengan tepat dan cepat akan mendapatkan skor maksimal!",
     options: [
       { id: "1", name: "Nyong nyamper koe", mean: "Saya menjemputmu" },
       { id: "2", name: "Koe dolan karo nyong", mean: "Kamu bermain bersamaku" },
@@ -832,5 +832,21 @@ export const QUIZ_LEVELS = [
     questions: 5,
     locked: true,
     details: QUIZ_ITEMS_LEVEL_2,
+  },
+];
+
+// sample language quiz
+export const languageArchiveQuiz = [
+  {
+    id: "1",
+    name: "Bahasa Jawa Banyumasan",
+    region: "Jawa Tengah",
+    regionId: ["33"],
+    ethnic: "Jawa",
+    speakers: "84,3 juta",
+    status: "recorded",
+    vocabularyCount: 2500,
+    audioCount: 1200,
+    contributorCount: 300,
   },
 ];

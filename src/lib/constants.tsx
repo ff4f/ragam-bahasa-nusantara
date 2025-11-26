@@ -16,6 +16,10 @@ import {
   Eye,
   Sparkles,
 } from "lucide-react";
+import contributionAddData from "@/assets/contribution-add-data.svg";
+import contributionUploadAudio from "@/assets/contribution-audio-sample.svg";
+import contributionValidate from "@/assets/contribution-validate.svg";
+import contributionReportWrongData from "@/assets/contribution-wrong-data.svg";
 
 export const STORAGE_KEY = {
   USER: "rana_user",
@@ -92,28 +96,32 @@ export const VERIFIED_STATUS_LIST = [
 
 export const CONTRIBUTION_TYPES = [
   {
-    icon: FileText,
+    icon: contributionAddData,
     title: "Menambahkan Data Baru",
     description: "Pengguna dapat menambahkan entri baru berupa kosakata, frasa, peribahasa, atau kalimat dalam bahasa daerah tertentu.",
     benefits: ["Kosakata baru", "Frasa, kalimat", "Terjemahan", "Contoh penggunaan", "Audio pengucapan (opsional)"],
+    className: "-top-11",
   },
   {
-    icon: Mic,
-    title: "Unggah Sample Audio Dialek",
+    icon: contributionUploadAudio,
+    title: "Unggah Sampel Audio Dialek",
     description: "Kontributor mengunggah rekaman suara untuk mengilustrasikan pengucapan dialek tertentu.",
     benefits: ["Pelatihan model TTS", "Memperkaya dialek tertentu"],
+    className: "min-h-36 min-w-36",
   },
   {
-    icon: BadgeCheck,
+    icon: contributionValidate,
     title: "Memvalidasi Kontribusi Orang Lain",
     description: "Validator komunitas (pengguna berlevel lebih tinggi) mengecek akurasi teks, arti, dan kualitas audio.",
     benefits: ["Cek kebenaran arti", "Cek ejaan", "Cek kualitas audio", "Cek relevansi konteks"],
+    className: "min-w-72 min-h-72 -top-20",
   },
   {
-    icon: Flag,
+    icon: contributionReportWrongData,
     title: "Melaporkan Data yang Salah",
     description: "Pengguna umum dapat melaporkan data yang dianggap tidak relevan, keliru, atau menyesatkan.",
     benefits: [<span><i>Flagging</i> konten bermasalah</span>, "Koreksi makna atau penulisan"],
+    className: "min-w-52 min-h-52 -top-10"
   },
 ];
 

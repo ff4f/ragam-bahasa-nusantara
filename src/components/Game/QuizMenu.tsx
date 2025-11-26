@@ -1,7 +1,8 @@
 import { RefreshCw } from "lucide-react";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { thousandSeparator } from "@/lib/utils";
+import { thousandSeparator, parseStorage } from "@/lib/utils";
+import { STORAGE_KEY } from "@/lib/constants";
 
 interface QuizMenuProps {
   state: string;
@@ -12,6 +13,7 @@ interface QuizMenuProps {
 
 const QuizMenu = ({ state, score, handleStartQuiz, setState }: QuizMenuProps) => {
   const isFinish = state === "finish";
+  const name = parseStorage(STORAGE_KEY.QUIZ)?.name || "";
 
   const handleStartAgain = () => {
     setState("start");
@@ -21,7 +23,7 @@ const QuizMenu = ({ state, score, handleStartQuiz, setState }: QuizMenuProps) =>
     <>
       <Header
         title={isFinish ? "Permainan Selesai" : "Ayo Bermain"}
-        description={isFinish ? "Selamat kamu mendapatkan skor sebesar" : "Klik tombol untuk memulai"}
+        description={isFinish ? <span>Selamat{name ? <b> {name},</b> : ""} kamu mendapatkan skor sebesar</span> : "Klik tombol untuk memulai"}
       />
       <div className="flex justify-center items-center min-h-80">
         {isFinish ? (

@@ -21,7 +21,7 @@ const QuizDragDrop = ({ data, setState, setScore }: QuizDragDropProps) => {
   const dataQuiz = data?.details;
   const [startedTime, setStartedTime] = useState<number>(0);
   const [currentQuestion, setCurrentQuestion] = useState(1);
-  const [currentData, setCurrentData] = useState(dataQuiz[0]);
+  const [currentData, setCurrentData] = useState(dataQuiz?.[0]);
   const [dragItem, setDragItem] = useState<string | null>(null);
   const [dragOverOption, setDragOverOption] = useState<string | null>(null);
   const [wrongItems, setWrongItems] = useState<Record<string, string>>({});
@@ -137,7 +137,7 @@ const QuizDragDrop = ({ data, setState, setScore }: QuizDragDropProps) => {
             ${dragItem === currentData.indonesia ? "scale-105 shadow-lg" : "bg-white"}
           `}
         >
-          {capitalize(currentData.indonesia)}
+          {capitalize(currentData.indonesia, true)}
         </div>
       </div>
       <div className="w-full">
@@ -180,14 +180,14 @@ const QuizDragDrop = ({ data, setState, setScore }: QuizDragDropProps) => {
                     }
                   `}
                 >
-                  {capitalize(opt.name)} ={" "}
+                  {capitalize(opt.name, true)} ={" "}
                   {isCorrectDrop ? (
                     <span className="font-semibold text-green-700">
-                      {capitalize(lockedItems)}
+                      {capitalize(lockedItems, true)}
                     </span>
                   ) : isWrongDrop ? (
                     <span className="font-semibold text-red-700">
-                      {capitalize(isWrongDrop)}
+                      {capitalize(isWrongDrop, true)}
                     </span>
                   ) : (
                     <span className="text-gray-400">...</span>

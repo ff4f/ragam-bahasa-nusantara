@@ -44,7 +44,7 @@ const Explore = () => {
         {/* Header */}
         <Header
           title="Eksplor Bahasa Nusantara"
-          description="Jelajahi keberagaman luar biasa dari lebih dari 700 bahasa daerah yang tersebar di di seluruh Nusantara."
+          description="Jelajahi keberagaman luar biasa dari lebih dari 700 bahasa daerah yang tersebar di seluruh Nusantara."
         />
 
         {/* Map Section */}
@@ -93,7 +93,7 @@ const Explore = () => {
             </ComposableMap>
             <div className="p-4 flex items-center gap-1 text-muted-foreground">
               <Info className="h-4 w-4" />
-              <span className="text-sm">Pilih satu atau lebih provinsi untuk memfilter bahasa</span>
+              <span className="text-sm">Pilih satu atau lebih provinsi untuk menyaring bahasa</span>
             </div>
             
           </Card>

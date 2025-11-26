@@ -232,9 +232,6 @@ const LanguageDetail = () => {
               <CardContent className="pb-12">
                 <div className="mb-3 space-y-2">
                   <div className="text-sm text-muted-foreground">
-                    Tingkatan: <span className="font-medium text-foreground">{capitalize(item.level)}</span>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
                     Contoh: <span className="font-medium text-foreground italic">{item.example}</span>
                     <span className="ext-foreground italic"> - {item.exampleTranslation}</span>
                   </div>

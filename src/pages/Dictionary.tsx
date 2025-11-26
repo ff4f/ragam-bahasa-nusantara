@@ -60,7 +60,7 @@ const Dictionary = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Translator</CardTitle>
+            <CardTitle>RANA Terjemahan</CardTitle>
             <CardDescription>
               Masukkan teks yang ingin diterjemahkan
             </CardDescription>

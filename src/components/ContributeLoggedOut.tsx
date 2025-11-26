@@ -29,9 +29,9 @@ const ContributeLoggedOut = () => {
 
           <div className="grid gap-6 md:grid-cols-2">
             {CONTRIBUTION_TYPES.map((type, index) => (
-              <Card key={index} className="border-border shadow-soft transition-all hover:shadow-warm flex overflow-hidden">
-                <div className="bg-primary/10 py-8 px-6 flex-1 flex justify-center">
-                  <type.icon className="h-12 w-12 text-primary" />
+              <Card key={index} className="border-border shadow-soft transition-all hover:shadow-warm flex overflow-hidden relative">
+                <div className="bg-primary/10 py-8 px-6 flex-1 flex justify-center relative">
+                  <img src={type.icon} className={`min-h-60 min-w-60 absolute top-0 left-[50%] -translate-x-[50%] ${type?.className || ""}`} />
                 </div>
                 <div className="flex-[6]">
                   <CardHeader>
