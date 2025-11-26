@@ -46,7 +46,7 @@ export const contributionService = {
     },
 
     updateStatus: async (id: number, status: 'approved' | 'rejected', notes?: string) => {
-        const response = await apiClient.patch(`/api/contributions/${id}`, {
+        const response = await apiClient.patch(`/contributions/${id}`, {
             status,
             notes
         });

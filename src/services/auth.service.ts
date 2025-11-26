@@ -67,7 +67,7 @@ class AuthService {
      */
     async logout(): Promise<void> {
         try {
-            await apiClient.post('/api/auth/logout');
+            await apiClient.post('/auth/logout');
         } finally {
             this.clearToken();
         }
