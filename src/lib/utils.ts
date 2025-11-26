@@ -75,3 +75,13 @@ export const thousandSeparator = (value: number | string, separator = ".") => {
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 }
+
+export const parseStorage = (key: string) => {
+  try {
+    const storage = localStorage.getItem(key);
+    const parsedStorage = storage ? JSON.parse(storage) : null;
+    return parsedStorage;
+  } catch {
+    return null;
+  }
+};

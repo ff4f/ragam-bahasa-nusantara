@@ -8,7 +8,7 @@ const About = () => {
       <div className="container mx-auto px-4">
         {/* Header */}
         <Header
-          title="Tentang RANA"
+          title="Tentang"
           description="Ragam Bahasa Nusantara - Platform digital yang berdedikasi untuk melestarikan kekayaan bahasa daerah Indonesia melalui teknologi AI, pembelajaran interaktif, dan kekuatan komunitas"
         />
 
@@ -21,7 +21,7 @@ const About = () => {
                   Latar Belakang
                 </h2>
                 <div className="space-y-4 text-muted-foreground">
-                  <p>
+                  <p className="text-justify">
                     Lebih dari 40% bahasa Nusantara terancam punah. Kondisi ini diperburuk oleh dokumentasi yang tidak terpusat dan belum terdigitalisasi, rendahnya minat generasi muda karena media pembelajaran yang kurang relevan, serta program revitalisasi yang terbatas pada daftar kosakata tanpa platform interaktif. Belum ada pusat data nasional yang menyatukan berbagai sumber, meskipun Balai Bahasa provinsi telah menghasilkan banyak data seperti kosakata, rekaman, dan glosarium. Tanpa digitalisasi berbasis komunitas, bahasa Nusantara berisiko punah dalam 1–2 generasi.
                   </p>
                 </div>

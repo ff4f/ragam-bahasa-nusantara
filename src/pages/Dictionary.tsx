@@ -115,7 +115,7 @@ const Dictionary = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Translator</CardTitle>
+            <CardTitle>RANA Terjemahan</CardTitle>
             <CardDescription>
               Ketik teks untuk menerjemahkan secara otomatis
             </CardDescription>
