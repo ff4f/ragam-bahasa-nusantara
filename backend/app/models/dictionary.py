@@ -17,6 +17,7 @@ class Dictionary(Base):
     category = Column(String(50), default="word")  # word, phrase
     dialect = Column(String(100), nullable=True)   # e.g., Banyumasan
     region = Column(String(100), nullable=True)    # e.g., Purbalingga
+    audio_url = Column(String(255), nullable=True)  # e.g., '/audio/1_20251126-083605.m4a'
     
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

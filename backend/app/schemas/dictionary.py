@@ -12,6 +12,7 @@ class DictionaryBase(BaseModel):
     category: Optional[str] = "word"
     dialect: Optional[str] = None
     region: Optional[str] = None
+    audio_url: Optional[str] = None
 
 class DictionaryCreate(DictionaryBase):
     pass

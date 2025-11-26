@@ -14,6 +14,7 @@ export interface DictionaryEntry {
     like_count?: number;
     comment_count?: number;
     is_liked?: boolean;
+    audio_url?: string;
 }
 
 export interface Comment {

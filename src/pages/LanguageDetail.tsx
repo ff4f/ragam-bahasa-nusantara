@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,7 @@ const LanguageDetail = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const ITEMS_PER_PAGE = 10;
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // edit modal
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -81,6 +82,25 @@ const LanguageDetail = () => {
     setEditLoading(false);
   };
 
+  const playAudio = (audioUrl?: string, word?: string) => {
+    if (audioUrl) {
+      // Play native audio file
+      if (!audioRef.current) {
+        audioRef.current = new Audio(audioUrl);
+      } else {
+        audioRef.current.src = audioUrl;
+      }
+      audioRef.current.play().catch(err => {
+        console.error("Audio playback failed:", err);
+        toast({ title: "Gagal memutar audio", variant: "destructive" });
+      });
+    } else if (word) {
+      // Fallback to TTS
+      const utterance = new SpeechSynthesisUtterance(word);
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   const handleLike = async (id: any) => {
     if (!user) return;
     try {
@@ -113,7 +133,8 @@ const LanguageDetail = () => {
             like: item.like_count || 0,
             comment: item.comment_count || 0,
             liked: item.is_liked || false,
-            created_by: "system"
+            created_by: "system",
+            audio_url: item.audio_url
           }));
           setVocabs(mappedVocabs);
           // Calculate total pages from API response
@@ -240,10 +261,7 @@ const LanguageDetail = () => {
                       <Button
                         variant="ghost"
                         className="h-6 w-6 p-2"
-                        onClick={() => {
-                          const utterance = new SpeechSynthesisUtterance(item.word);
-                          window.speechSynthesis.speak(utterance);
-                        }}
+                        onClick={() => playAudio(item.audio_url, item.word)}
                       >
                         <Volume2 />
                       </Button>
