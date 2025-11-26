@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, X, User as UserIcon, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { NAV_LINKS, HOME_ANIMATION_DELAY } from "@/lib/constants";
 import { getInitials } from "@/lib/utils";
@@ -19,11 +19,13 @@ import { useUser } from "@/hooks/use-user";
 import { useApps } from "@/hooks/use-apps";
 import { motion, useAnimationControls } from "motion/react";
 import logo from "@/assets/logo-rana.svg";
+import fab from "@/assets/fab-icon.svg";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [menus, setMenus] = useState(NAV_LINKS);
+  const [showFAB, setShowFAB] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user: userContext, logout } = useUser();
@@ -257,6 +259,20 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </footer>
+
+      {showFAB && (
+        <div className="fixed bottom-6 right-10 max-w-40 z-50">
+          <Link to="/contribute">
+            <img src={fab} alt="FAB" className="drop-shadow-lg cursor-pointer" />
+          </Link>
+          <div
+            className="rounded-[50%] bg-primary w-fit p-1 cursor-pointer absolute -top-4 right-0 opacity-70"
+            onClick={() => setShowFAB(false)}
+          >
+            <X className="w-4 h-4 text-white" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

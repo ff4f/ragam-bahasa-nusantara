@@ -8,7 +8,7 @@ const About = () => {
       <div className="container mx-auto px-4">
         {/* Header */}
         <Header
-          title="Tentang"
+          title="Tentang RANA"
           description="Ragam Bahasa Nusantara - Platform digital yang berdedikasi untuk melestarikan kekayaan bahasa daerah Indonesia melalui teknologi AI, pembelajaran interaktif, dan kekuatan komunitas"
         />
 
