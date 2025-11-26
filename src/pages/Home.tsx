@@ -1,16 +1,28 @@
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
-import { HOME_FEATURES, HOME_STATS } from "@/lib/constants";
+import { HOME_FEATURES, HOME_STATS, HOME_ANIMATION_DELAY } from "@/lib/constants";
 import { useParallax } from "@/hooks/use-parallax";
-import { motion } from "framer-motion";
+import { useApps } from "@/hooks/use-apps";
+import { motion, useAnimationControls } from "framer-motion";
 import banner from "@/assets/banner-rana.svg";
 import contributeBanner from "@/assets/home-contribute-banner.svg";
 
 const Home = () => {
+  const { loaded, animated, setAnimated } = useApps();
   const y = useParallax();
   const yPeople = useParallax(0.2);
+  const controls = useAnimationControls();
+
+    useEffect(() => {
+    if (loaded) {
+      controls.start("animate");
+      if (!animated) setAnimated(true);
+    }
+  }, [loaded]);
+
   return (
     <div>
       {/* Hero Section */}
@@ -20,7 +32,29 @@ const Home = () => {
           className="absolute inset-0 bg-cover bg-center bg-[url('@/assets/map-indonesia.svg')]"
           style={{ y }}
         />
-        <img src={banner} alt="Banner RANA" className="absolute top-[50%] -translate-y-[50%] left-[50%] -translate-x-[50%] w-[80%] max-h-[200px] sm:max-h-[600px]" />
+        <div className="absolute top-[50%] -translate-y-[50%] left-[50%] -translate-x-[50%] w-[80%]">
+          <motion.img
+            variants={{
+              initial: !animated && { scale: 0, rotate: -10 },
+              animate: !animated && {
+                scale: [0, 1.1, 0.95, 1],
+                rotate: [-10, 8, -4, 0],
+              },
+            }}
+            initial="initial"
+            animate={controls}
+            transition={{
+              duration: 0.6,
+              times: [0, 0.5, 0.75, 1],
+              ease: "easeOut",
+              delay: HOME_ANIMATION_DELAY + 1,
+            }}
+            viewport={{ once: true }}
+            src={banner}
+            alt="Banner RANA"
+            className="max-h-[200px] sm:max-h-[600px]"
+          />
+        </div>
       </section>
 
       {/* Stats Section */}
@@ -28,14 +62,24 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
             {HOME_STATS.map((stat, index) => (
-              <div key={index} className="text-center">
+              <motion.div
+                variants={{
+                  initial: !animated && { opacity: 0, y: 20 },
+                  animate: !animated && { opacity: 1, y: 0 },
+                }}
+                initial="initial"
+                animate={controls}
+                transition={{ duration: 0.6, ease: "easeOut", delay: HOME_ANIMATION_DELAY + 1 }}
+                key={index}
+                className="text-center"
+              >
                 <div className="mb-2 text-3xl font-bold text-primary md:text-4xl">
                   {stat.value}
                 </div>
                 <div className="text-sm text-muted-foreground md:text-base">
                   {stat.label}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -49,7 +93,7 @@ const Home = () => {
       >
         <motion.div className="absolute inset-0 bg-[url('@/assets/home-people.svg')] bg-size-[unset] md:bg-cover bg-center bg-no-repeat opacity-20" style={{ y: yPeople }} ></motion.div>
         <div className="px-4 max-w-fit mx-auto relative z-10">
-          <h2 className="mb-2 font-semibold uppercase tracking-wider uppercase text-center text-2xl text-muted-foreground">
+          <h2 className="mb-2 font-semibold uppercase tracking-wider uppercase text-center text-lg md:text-2xl text-muted-foreground">
             Kata Hari Ini
           </h2>
           <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl">
@@ -57,7 +101,7 @@ const Home = () => {
               <div className="text-center">
                 <div className="bg-white rounded-2xl py-2 relative px-20 mb-2">
                   <Search className="text-foreground font-bold absolute top-[50%] -translate-y-[50%] left-4" size={32} />
-                  <div className="text-4xl font-bold text-foreground md:text-5xl uppercase text-primary">
+                  <div className="text-3xl font-bold text-foreground md:text-5xl uppercase text-primary">
                     Sugeng
                   </div>
                 </div>
@@ -114,7 +158,7 @@ const Home = () => {
       {/* CTA Section */}
       <section className="flex justify-center items-center">
         <div className="relative">
-          <img src={contributeBanner} alt="Beranda Kontribusi"  />
+          <img src={contributeBanner} alt="Beranda Kontribusi" />
           <Link to="/contribute" className="absolute left-[50%] -translate-x-[50%] bottom-[10%] md:bottom-[20%]">
             <Button size="lg" className="bg-secondary hover:bg-secondary/90 w-40 h-8 text-xs sm:w-[unset] sm:h-11 sm:text-sm">
               Mulai Berkontribusi

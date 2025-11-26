@@ -85,7 +85,7 @@ const About = () => {
                       menarik wisatawan untuk belajar dan mengalami budaya lokal secara autentik
                     </li>
                     <li>
-                      <strong className="text-foreground">Kampanye Brand:</strong> Perusahaan dapat terhubung 
+                      <strong className="text-foreground">Kampanye Jenama (<i>Brand</i>):</strong> Perusahaan dapat terhubung 
                       dengan konsumen lokal melalui konten berbahasa daerah yang autentik
                     </li>
                   </ul>
