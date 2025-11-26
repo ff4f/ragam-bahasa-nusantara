@@ -38,7 +38,7 @@ export const NAV_LINKS = [
   { to: "/explore", label: "Eksplor", show: true },
   { to: "/dictionary", label: "Kamus", show: true },
   { to: "/game", label: "Permainan", show: true },
-  { to: "/about", label: "Tentang", show: true },
+  { to: "/about", label: "Tentang RANA", show: true },
   { to: "/contact", label: "Kontak", show: true },
 ];
 

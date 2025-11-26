@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,11 +7,27 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import Header from "@/components/Header";
 import { useUser } from "@/hooks/use-user";
+import { useToast } from "@/hooks/use-toast"; 
 import { CONTACT_INFO } from "@/lib/constants";
 
 const Contact = () => {
   const navigate = useNavigate();
   const { user } = useUser();
+  const { toast } = useToast();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSend = (e) => {
+    if (!name || !email || !subject || !message) {
+      toast({ title: "Silahkan lengkapi data terlebih dahulu!" });
+      return;
+    }
+    const mappedSubject = encodeURIComponent(subject);
+    const mappedMessage = encodeURIComponent(`${message}, ${name}`);
+    window.location.href = `mailto:${email}?subject=${mappedSubject}&body=${mappedMessage}`;
+  };
 
   return (
     <div className="py-16">
@@ -36,17 +53,33 @@ const Contact = () => {
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="name">Nama Lengkap</Label>
-                      <Input id="name" placeholder="Masukkan nama Anda" />
+                      <Input
+                        id="name"
+                        placeholder="Masukkan nama Anda"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Pos-el (<i>e-mail</i>)</Label>
-                      <Input id="email" type="email" placeholder="nama@email.com" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="nama@email.com"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                      />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="subject">Subjek</Label>
-                    <Input id="subject" placeholder="Tentang apa pesan Anda?" />
+                    <Input
+                      id="subject"
+                      placeholder="Tuliskan subjek di sini..."
+                      value={subject}
+                      onChange={e => setSubject(e.target.value)}
+                    />
                   </div>
 
                   <div className="space-y-2">
@@ -55,10 +88,16 @@ const Contact = () => {
                       id="message"
                       placeholder="Tuliskan pesan Anda di sini..."
                       className="min-h-[150px]"
+                      value={message}
+                      onChange={e => setMessage(e.target.value)}
                     />
                   </div>
 
-                  <Button type="submit" className="w-full md:w-auto">
+                  <Button
+                    type="button"
+                    className="w-full md:w-auto"
+                    onClick={handleSend}
+                  >
                     Kirim Pesan
                   </Button>
                 </form>
