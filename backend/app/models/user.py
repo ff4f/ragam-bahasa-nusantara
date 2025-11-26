@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, Enum, DateTime
 from sqlalchemy.sql import func
+from sqlalchemy.dialects.mysql import JSON
 import enum
 from ..database import Base
 
@@ -24,6 +25,12 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
     
+    # Gamification fields
+    points = Column(Integer, default=0, nullable=False, comment="User points for contributions and activities")
+    coins = Column(Integer, default=0, nullable=False, comment="Virtual currency for rewards")
+    level = Column(Integer, default=1, nullable=False, comment="User level based on XP/points")
+    badges = Column(JSON, default=list, nullable=False, comment="Array of earned badges")
+    
     # Relationships
     from sqlalchemy.orm import relationship
     comments = relationship("Comment", back_populates="user")
@@ -31,4 +38,4 @@ class User(Base):
     contributions = relationship("Contribution", foreign_keys="Contribution.user_id", back_populates="user")
     
     def __repr__(self):
-        return f"<User(id={self.id}, email='{self.email}', role='{self.role}')>"
+        return f"<User(id={self.id}, email='{self.email}', role='{self.role}', level={self.level})>"

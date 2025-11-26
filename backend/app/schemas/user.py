@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List, Any
 from ..models.user import UserRole
 
 
@@ -28,6 +28,10 @@ class UserInDB(UserBase):
     is_active: bool
     created_at: datetime
     updated_at: datetime
+    points: int
+    coins: int
+    level: int
+    badges: List[Any]
     
     class Config:
         from_attributes = True
@@ -38,6 +42,10 @@ class User(UserBase):
     id: int
     is_active: bool
     created_at: datetime
+    points: int
+    coins: int
+    level: int
+    badges: List[Any]
     
     class Config:
         from_attributes = True
